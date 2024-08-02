@@ -1,0 +1,3 @@
+@echo off
+echo Activating virtual environment...
+cmd /K "call venv\Scripts\activate"
