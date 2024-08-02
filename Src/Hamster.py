@@ -86,14 +86,8 @@ class HamsterKombatClicker:
     def _buy_upgrade(self, upgradeId: str) -> dict:
         json_data = {'upgradeId': upgradeId, 'timestamp': time.time()}
         response = requests.post('https://api.hamsterkombatgame.io/clicker/buy-upgrade', headers=self.HEADERS, json=json_data)
-        if response.status_code == 200:
-            return response.json()
 
-        elif response.status_code == 400:
-            logging.error(f"🚫  {response.json()['error_message']}")
-            return False
-
-        elif response.json()['on'] == 'headers':
+        if response.json()['on'] == 'headers':
             logging.error(f"🚫  Токен не был предоставлен")
             exit(1)
 
@@ -101,14 +95,20 @@ class HamsterKombatClicker:
             logging.error(f"🚫  Неверный upgradeId")
             exit(1)
 
+        return response.json()
+
     def _collect_upgrades_info(self) -> dict:
         response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self.HEADERS)
         if response.status_code == 200:
             combo = self._get_daily_combo()
             cipher = self._get_daily_cipher()
 
-            response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self.HEADERS)
-            upgradesForBuy = response.json().get('upgradesForBuy', [])
+            try:
+                response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self.HEADERS)
+                upgradesForBuy = response.json().get('upgradesForBuy', [])
+            except Exception as e:
+                logging.error(e)
+                exit(1)
 
             total_price = 0
             total_profit = 0
@@ -149,7 +149,7 @@ class HamsterKombatClicker:
             logging.error(f"🚫  Токен не был предоставлен")
             exit(1)
 
-    def _daily_info(self):
+    def daily_info(self):
         upgrades_info = self._collect_upgrades_info()
         cipher = upgrades_info['cipher']
         morse = text_to_morse(cipher)
@@ -286,11 +286,12 @@ class HamsterKombatClicker:
                                 logging.info(f"✅  Куплена карта `{upgradeId}`")
                             else:
                                 logging.info(f"⚠️  Карта `{upgradeId}` не куплена")
+
                         response = requests.post('https://api.hamsterkombatgame.io/clicker/claim-daily-combo', headers=self.HEADERS)
                         if response.status_code == 200:
                             logging.info(f"✅  Ежедневное комбо выполнено")
                         else:
-                            logging.error(f"🚫  Ежедневное комбо не выполнено")
+                            logging.error(f"🚫  Ежедневное комбо не выполнено. Необходимые карты не были куплены")
 
             else:
                 logging.info(f"ℹ️  Комбо сегодня уже получено. Следующее комбо через: {remain}")
