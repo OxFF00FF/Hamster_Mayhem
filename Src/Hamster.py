@@ -180,12 +180,15 @@ class HamsterKombatClicker:
             current_remain_time = availableTaps / tapsRecoverPerSec
 
             if availableTaps == maxTaps:
-                count = maxTaps / earnPerTap
-                availableTaps = maxTaps - (count * earnPerTap)
+                count = int(maxTaps / earnPerTap)
+                availableTaps = int(maxTaps - (count * earnPerTap))
 
                 json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
-                requests.post('https://api.hamsterkombatgame.io/clicker/tap', headers=self.HEADERS, json=json_data)
-                logging.info(f"✅  Тапы выполнены")
+                response = requests.post('https://api.hamsterkombatgame.io/clicker/tap', headers=self.HEADERS, json=json_data)
+                if response.status_code == 200:
+                    logging.info(f"✅  Тапы выполнены")
+                else:
+                    logging.error(response.json())
             else:
                 remain = remain_time(int(total_remain_time - current_remain_time))
                 logging.error(f"🚫  Тапы еще не накопились. Следующие тапы через: {remain}")
@@ -194,17 +197,23 @@ class HamsterKombatClicker:
             boostsForBuy = response.json().get('boostsForBuy')
             for boost in boostsForBuy:
                 if boost['id'] == 'BoostFullAvailableTaps':
-                    remain = remain_time(boost['cooldownSeconds'])
+                    remain = boost['cooldownSeconds']
                     if remain == 0:
                         json_data = {'boostId': boost['id'], 'timestamp': int(time.time())}
-                        requests.post('https://api.hamsterkombatgame.io/clicker/buy-boost', headers=self.HEADERS, json=json_data)
-                        logging.info(f"✅  Использован буст")
+                        boost_response = requests.post('https://api.hamsterkombatgame.io/clicker/buy-boost', headers=self.HEADERS, json=json_data)
+                        if boost_response.status_code == 200:
+                            logging.info(f"✅  Использован буст")
+                        else:
+                            logging.error(boost_response.json())
 
                         json_data = {'count': int(count), 'availableTaps': availableTaps, 'timestamp': int(time.time())}
-                        requests.post('https://api.hamsterkombatgame.io/clicker/tap', headers=self.HEADERS, json=json_data)
-                        logging.info(f"✅  Тапы выполнены")
+                        taps_response = requests.post('https://api.hamsterkombatgame.io/clicker/tap', headers=self.HEADERS, json=json_data)
+                        if taps_response.status_code == 200:
+                            logging.info(f"✅  Тапы выполнены")
+                        else:
+                            logging.error(taps_response.json())
                     else:
-                        logging.error(f"🚫  Буст еще не готов. Следующий буст через: {remain}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
+                        logging.error(f"🚫  Буст еще не готов. Следующий буст через: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
 
         elif response.json()['on'] == 'headers':
             logging.error(f"🚫  Токен не был предоставлен")
