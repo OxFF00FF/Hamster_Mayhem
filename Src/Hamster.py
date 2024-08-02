@@ -84,19 +84,22 @@ class HamsterKombatClicker:
             exit(1)
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
-        if upgradeId:
-            json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
-            response = requests.post('https://api.hamsterkombatgame.io/clicker/buy-upgrade', headers=self.HEADERS, json=json_data)
-            if response.status_code == 200:
-                return response.json()
+        json_data = {'upgradeId': upgradeId, 'timestamp': time.time()}
+        response = requests.post('https://api.hamsterkombatgame.io/clicker/buy-upgrade', headers=self.HEADERS, json=json_data)
+        if response.status_code == 200:
+            return response.json()
 
-            elif response.json()['on'] == 'headers':
-                logging.error(f"🚫  Токен не был предоставлен")
-                exit(1)
+        elif response.status_code == 400:
+            logging.error(f"🚫  {response.json()['error_message']}")
+            return False
 
-            else:
-                logging.error(f"🚫  Неверный upgradeId")
-                exit(1)
+        elif response.json()['on'] == 'headers':
+            logging.error(f"🚫  Токен не был предоставлен")
+            exit(1)
+
+        else:
+            logging.error(f"🚫  Неверный upgradeId")
+            exit(1)
 
     def _collect_upgrades_info(self) -> dict:
         response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self.HEADERS)
@@ -259,9 +262,8 @@ class HamsterKombatClicker:
     def complete_daily_combo(self, buy_anyway=False, buy=False):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self.HEADERS)
         if response.status_code == 200:
-            isClaimed = response.json()['dailyCombo']['isClaimed']
-
             remain = remain_time(response.json()['dailyCombo']['remainSeconds'])
+            isClaimed = response.json()['dailyCombo']['isClaimed']
             if not isClaimed:
                 upgrades_info = self._collect_upgrades_info()
                 cards = upgrades_info['cards']
@@ -270,20 +272,26 @@ class HamsterKombatClicker:
                     for card in cards:
                         if card['available']:
                             upgradeId = card['id']
-                            self._buy_upgrade(upgradeId)
-                            logging.info(f"✅  Куплена карта `{upgradeId}`")
+                            if self._buy_upgrade(upgradeId):
+                                logging.info(f"✅  Куплена карта `{upgradeId}`")
+                            else:
+                                logging.info(f"⚠️  Карта `{upgradeId}` не куплена")
                         logging.info(f"🚫  Ежедневное комбо не выполнено. Были куплены только доступные карты")
 
                 if buy:
                     if all(card['available'] for card in cards):
                         for card in cards:
                             upgradeId = card['id']
-                            self._buy_upgrade(upgradeId)
-                            logging.info(f"✅  Куплена карта `{upgradeId}`")
-                        requests.post('https://api.hamsterkombatgame.io/clicker/claim-daily-combo', headers=self.HEADERS)
-                        logging.info(f"✅  Ежедневное комбо выполнено")
-                else:
-                    self._daily_info()
+                            if self._buy_upgrade(upgradeId):
+                                logging.info(f"✅  Куплена карта `{upgradeId}`")
+                            else:
+                                logging.info(f"⚠️  Карта `{upgradeId}` не куплена")
+                        response = requests.post('https://api.hamsterkombatgame.io/clicker/claim-daily-combo', headers=self.HEADERS)
+                        if response.status_code == 200:
+                            logging.info(f"✅  Ежедневное комбо выполнено")
+                        else:
+                            logging.error(f"🚫  Ежедневное комбо не выполнено")
+
             else:
                 logging.info(f"ℹ️  Комбо сегодня уже получено. Следующее комбо через: {remain}")
 

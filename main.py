@@ -20,7 +20,7 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
 def main():
     hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
-    hamster_client.complete_taps()
+    hamster_client.complete_daily_combo(buy=True)
 
 
 if __name__ == '__main__':
