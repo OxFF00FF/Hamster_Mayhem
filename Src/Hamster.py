@@ -6,8 +6,7 @@ import re
 import time
 from random import randint
 import requests
-from utils import remain_time
-from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, RESET, text_to_morse
+from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, RESET, text_to_morse, remain_time
 
 
 class HamsterKombatClicker:
