@@ -17,6 +17,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 GROUP_ID = os.getenv('GROUP_ID')
 HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
+
 # --- CONFIG --- #
 
 
@@ -40,6 +41,7 @@ def main():
     main_thread.start()
 
     main_thread.join()
+
 
 if __name__ == '__main__':
     print(banner)
