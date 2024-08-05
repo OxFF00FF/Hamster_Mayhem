@@ -71,3 +71,11 @@ def remain_time(seconds):
     m = str(m).zfill(2)
     s = str(s).zfill(2)
     return f"{h}:{m}:{s}"
+
+
+def loading():
+    spinner = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
+    while True:
+        for frame in spinner:
+            print(f"\r{CYAN}{frame}{WHITE}", end='', flush=True)
+            time.sleep(0.3)
