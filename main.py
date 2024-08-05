@@ -2,7 +2,7 @@ import logging
 import os
 import threading
 
-from Src.utils import WHITE, RESET, banner, loading
+from Src.utils import WHITE, RESET, YELLOW, banner, loading
 from Src.Hamster import HamsterKombatClicker
 
 from dotenv import load_dotenv
@@ -22,8 +22,18 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
 
 def main():
-    hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
-    hamster_client.send_balance_to_group(BOT_TOKEN, GROUP_ID)
+    memu = f"""
+    Выберите действие:
+    1. Выполнить клики
+    2. Завершить задания
+    3. Получить шифр
+    4. Выполнить комбо
+    5. Пройти миниигру
+    6. Получить промокоды
+    7. Использовать промокод
+    """
+
+    print(memu.strip())
 
 
 def generate_promocodes():
