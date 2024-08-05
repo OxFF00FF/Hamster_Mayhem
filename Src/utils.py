@@ -1,5 +1,8 @@
 import os
+import threading
 import time
+
+loading_event = threading.Event()
 
 BLACK = '\x1b[30m'
 RED = '\x1b[31m'
@@ -78,8 +81,10 @@ def remain_time(seconds):
 
 def loading():
     spinner = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
-    while True:
+    while not loading_event.is_set():
         for frame in spinner:
+            if loading_event.is_set():
+                break
             print(f"\r{CYAN}{frame}{WHITE}", end='', flush=True)
             time.sleep(0.3)
 
@@ -88,5 +93,9 @@ def clear_screen():
     os.system('cls')
 
 
-def log_line():
-    print("~" * 60)
+def line_before():
+    print("\n " + "~" * 60)
+
+
+def line_after():
+    print(" " + "~" * 60 + "\n")

@@ -25,6 +25,7 @@ class HamsterKombatClicker:
         self.HEADERS = self._get_headers(hamster_token)
         self.APP_TOKEN = os.getenv('APP_TOKEN')
         self.PROMO_ID = os.getenv('PROMO_ID')
+        self.GROUP_URL = os.getenv('GROUP_URL')
         self.EVENTS_DELAY = 20000
 
     def _get_headers(self, hamster_token):
@@ -520,6 +521,7 @@ class HamsterKombatClicker:
 
         def _start_generate(keys_count):
             keys_count = int(keys_count)
+            logging.info(f"Генерируем {keys_count} ключей\n")
             if keys_count > 0:
                 file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'generated_keys.txt')
                 keys = [None] * keys_count
@@ -543,7 +545,7 @@ class HamsterKombatClicker:
                     for key in keys:
                         keys_text += f"{key}\n"
                         file.write(f'{key}\n')
-                    logging.info(f"Все ключи сохранены в файл `{file_path}`")
+                logging.info(f"Все ключи сохранены в файл `{file_path}`")
                 return keys_text
 
             else:
@@ -553,4 +555,5 @@ class HamsterKombatClicker:
         text = _start_generate(count)
         if send_to_group:
             requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": text}).raise_for_status()
+            logging.info(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
 
