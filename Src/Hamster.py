@@ -180,17 +180,17 @@ class HamsterKombatClicker:
                     if upgradeId == upgrade['id']:
                         available = upgrade['isAvailable']
                         if available:
-                            available = f"✅  Карта доступна для улучшения"
+                            available = f"✅  {GREEN}Карта доступна для улучшения{RESET}"
                             total_price += upgrade['price']
                             total_profit += upgrade['profitPerHourDelta']
                         else:
                             error = self._buy_upgrade(upgrade['id'])
-                            available = f"🚫  Карта недоступна для улучшения ({error})"
+                            available = f"🚫  {RED}Карта недоступна для улучшения ({error}){RESET}"
 
                         cards.append({'description': f"{available} \n"
-                                                     f"🏷  {upgrade['name']} • {upgrade['section']}\n"
-                                                     f"💰  {upgrade['price']:,} \n"
-                                                     f"📈  +{upgrade['profitPerHourDelta']:,} в час \n"
+                                                     f"🏷  {CYAN}{upgrade['name']} • {upgrade['section']}{RESET} \n"
+                                                     f"💰  {YELLOW}{upgrade['price']:,}{RESET} \n"
+                                                     f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} в час{RESET} \n"
                                                      f"⭐️  {upgrade['level']} уровень \n".replace(',', ' '),
                                       'id': upgrade['id'],
                                       'available': upgrade['isAvailable']})
