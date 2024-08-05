@@ -236,7 +236,7 @@ class HamsterKombatClicker:
             info += f"{result['summary']}"
             if '🚫' in result['combo']:
                 info += "⚠️Сегодня вам не все карты доступны"
-            logging.info(f"\n{info}")
+            print(f"\n{info}")
             return result
 
         except Exception as e:
@@ -260,7 +260,7 @@ class HamsterKombatClicker:
                 count = int(maxTaps / earnPerTap)
                 availableTaps = int(maxTaps - (count * earnPerTap))
 
-                json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': time.time()}
+                json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                 taps_response = requests.post('https://api.hamsterkombatgame.io/clicker/tap', headers=self.HEADERS, json=json_data)
                 taps_response.raise_for_status()
                 logging.info(f"✅  Тапы выполнены")
@@ -273,13 +273,13 @@ class HamsterKombatClicker:
                 if boost['id'] == 'BoostFullAvailableTaps':
                     remain = boost['cooldownSeconds']
                     if remain == 0:
-                        json_data = {'boostId': boost['id'], 'timestamp': time.time()}
+                        json_data = {'boostId': boost['id'], 'timestamp': int(time.time())}
                         boost_response = requests.post('https://api.hamsterkombatgame.io/clicker/buy-boost', headers=self.HEADERS, json=json_data)
                         boost_response.raise_for_status()
                         logging.info(f"✅  Использован буст")
 
                         count = int(maxTaps / earnPerTap)
-                        json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': time.time()}
+                        json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                         taps_response = requests.post('https://api.hamsterkombatgame.io/clicker/tap', headers=self.HEADERS, json=json_data)
                         taps_response.raise_for_status()
                         logging.info(f"✅  Тапы выполнены")

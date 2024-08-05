@@ -2,13 +2,13 @@ import logging
 import os
 import threading
 
-from Src.utils import WHITE, RESET, banner, loading, loading_event, line_after, line_before
+from Src.utils import WHITE, RESET, banner, loading, loading_event, line_after, line_before, YELLOW, CYAN
 from Src.Hamster import HamsterKombatClicker
 
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
-logging.basicConfig(format=f" | {WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
 
 # --- CONFIG --- #
 
@@ -23,22 +23,20 @@ hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 
 def show_menu():
-    # clear_screen()
     memu = f"""
-    
     Главное меню
-    👆  1. Выполнить клики
-    🌟  2. Завершить задания
-    🗃   3. Получить шифр
-    💰  4. Выполнить комбо
-    🔑  5. Пройти миниигру
-    🎉  6. Получить промокоды
-    🎁  7. Использовать промокод
-    🚪  8. Выйти
+    👆  {YELLOW}1.{RESET} Выполнить клики
+    🌟  {YELLOW}2.{RESET} Завершить задания
+    🗃   {YELLOW}3.{RESET} Получить шифр
+    💰  {YELLOW}4.{RESET} Выполнить комбо
+    🔑  {YELLOW}5.{RESET} Пройти миниигру
+    🎉  {YELLOW}6.{RESET} Получить промокоды
+    ℹ️  {YELLOW}7.{RESET} Информация
+    🚪  {YELLOW}8.{RESET} Выйти
     """
 
     print(memu.strip())
-    choice = input("\nВыберите действие (1/2/3/4/5/6/7/8): ")
+    choice = input(f"\n{CYAN}Выберите действие (1/2/3/4/5/6/7/8):{RESET} ")
     line_before()
     return choice
 

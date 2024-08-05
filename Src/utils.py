@@ -14,12 +14,23 @@ CYAN = '\x1b[36m'
 WHITE = '\x1b[38;2;%d;%d;%dm' % (200, 200, 200)
 RESET = '\x1b[0m'
 
-CYN = '\x1b[36m'
-YLW = '\x1b[33m'
-RST = '\x1b[0m'
+
+def colors_test():
+    print(f"{BLACK}BLACK{RESET} · "
+          f"{RED}RED{RESET} · "
+          f"{GREEN}GREEN{RESET} · "
+          f"{YELLOW}YELLOW{RESET} · "
+          f"{BLUE}BLUE{RESET} · "
+          f"{MAGENTA}MAGENTA{RESET} · "
+          f"{CYAN}CYAN{RESET} · "
+          f"{WHITE}WHITE{RESET}")
 
 
 def banner():
+    CYN = '\x1b[36m'
+    YLW = '\x1b[33m'
+    RST = '\x1b[0m'
+
     print(f"""
     {YLW}     {RST}   {CYN}██╗   ██╗  █████╗  ███╗   ███╗ ███████╗ ████████╗ ███████╗ █████╗  {RST}  {YLW}     {RST}
     {YLW}    █{RST}   {CYN}██║   ██║ ██╔══██╗ ████╗ ████║ ██╔════╝ ╚══██╔══╝ ██╔════╝ ██╔══██╗{RST}  {YLW}    █{RST}
@@ -85,7 +96,7 @@ def loading():
         for frame in spinner:
             if loading_event.is_set():
                 break
-            print(f"\r{CYAN}{frame}{WHITE}", end='', flush=True)
+            print(f"\r{CYAN}{frame} | {WHITE}", end='', flush=True)
             time.sleep(0.3)
 
 
