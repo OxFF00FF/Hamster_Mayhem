@@ -23,6 +23,11 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
 def main():
     hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
+    hamster_client.send_balance_to_group(BOT_TOKEN, GROUP_ID)
+
+
+def generate_promocodes():
+    hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
     keys_count_to_generate = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
     if keys_count_to_generate == '':

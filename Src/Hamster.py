@@ -17,7 +17,9 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 
 
 class HamsterKombatClicker:
+    """
 
+    """
     def __init__(self, hamster_token):
         self.HEADERS = self._get_headers(hamster_token)
         self.APP_TOKEN = os.getenv('APP_TOKEN')
