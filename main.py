@@ -8,7 +8,7 @@ from Src.Hamster import HamsterKombatClicker
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
-logging.basicConfig(format=f" | {WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
 
 # --- CONFIG --- #
 
@@ -27,6 +27,8 @@ def main():
 
 
 def generate_promocodes():
+    logging.basicConfig(format=f" | {WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
+
     hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
     keys_count_to_generate = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
