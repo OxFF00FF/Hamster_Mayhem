@@ -21,9 +21,9 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 # --- CONFIG --- #
 
 
-def main():
+def show_menu():
     memu = f"""
-    Выберите действие:
+    Главное меню
     1. Выполнить клики
     2. Завершить задания
     3. Получить шифр
@@ -34,6 +34,9 @@ def main():
     """
 
     print(memu.strip())
+    choice = input("\nВыберите действие (1/2/3/4/5/6/7): ")
+    print("~" * 60)
+    return choice
 
 
 def generate_promocodes():
@@ -61,5 +64,5 @@ def generate_promocodes():
 
 
 if __name__ == '__main__':
-    print(banner)
-    main()
+    # print(banner)
+    show_menu()
