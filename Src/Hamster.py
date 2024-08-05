@@ -334,7 +334,7 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             cipher = response.json()['dailyCipher']
-            remain = remain_time(['remainSeconds'])
+            remain = remain_time(cipher['remainSeconds'])
             next_cipher = f"Следующий шифр будет доступен через: {remain}"
 
             isClaimed = cipher['isClaimed']
