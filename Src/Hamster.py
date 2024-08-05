@@ -5,6 +5,7 @@ import os
 import random
 import threading
 import time
+import traceback
 import uuid
 from random import randint
 import requests
@@ -291,6 +292,7 @@ class HamsterKombatClicker:
                 logging.error(f"🚫  Предоставлен неверный токен")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
+                logging.error(traceback.format_exc())
 
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
