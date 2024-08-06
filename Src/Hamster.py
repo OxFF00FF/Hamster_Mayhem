@@ -11,7 +11,7 @@ from random import randint
 import requests
 from fake_useragent import UserAgent
 from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, RESET, text_to_morse, remain_time, CYAN, line_after
-
+from bs4 import BeautifulSoup as BS
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
@@ -69,11 +69,19 @@ class HamsterKombatClicker:
 
     def _get_daily_combo(self) -> dict:
         try:
-            response = requests.post(f'https://api21.datavibe.top/api/GetCombo')
+            response = requests.get('https://hamsterkombo.com/')
             response.raise_for_status()
 
-            logging.info(f"⚙️  Combo: {response.json()['combo']} · Date: {response.json()['date']}")
-            return response.json()
+            html = BS(response.content, 'html.parser')
+            hamster_block = html.select('div[class="w-full flex flex-col gap-4"]')[0]
+            combo_block = hamster_block.select('span[class="font-medium text-[12px] md:text-[16px] lg:font-semibold"]')[:3]
+            date_block = hamster_block.select('span[class="text-center font-light opacity-70 mb-[16px]"]')
+
+            date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.datetime.today().year}"
+            combo = [item.text.strip() for item in combo_block]
+
+            logging.info(f"⚙️  Combo: {combo} · Date: {date}")
+            return {'combo': combo, 'date': date}
 
         except requests.exceptions.HTTPError as http_err:
             logging.error(http_err)
@@ -133,28 +141,18 @@ class HamsterKombatClicker:
             for upgrade in upgradesForBuy:
                 if upgradeId == upgrade['id']:
                     if upgrade['isAvailable'] and not upgrade['isExpired']:
-                        json_data = {'upgradeId': upgradeId, 'timestamp': time.time()}
-                        buy_upgrade = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-                        buy_upgrade.raise_for_status()
-
+                        json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
+                        response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                        response.raise_for_status()
                         logging.info(f"✅  Карта `{upgrade['name']}` улучшена · ⭐️ {upgrade['level'] + 1} уровень")
-                        return buy_upgrade.json()['upgradesForBuy']
 
-                    if upgrade['isAvailable'] and upgrade['isExpired']:
-                        json_data = {'upgradeId': upgradeId, 'timestamp': time.time()}
-                        buy_upgrade = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-                        buy_upgrade.raise_for_status()
-
+                    elif upgrade['isAvailable'] and upgrade['isExpired']:
                         logging.error(f"🚫  Карта `{upgrade['name']}` недоступна для улучшения. Время на покупку истекло")
-                        return buy_upgrade.json()['error_message']
 
-                    if not upgrade['isAvailable']:
-                        json_data = {'upgradeId': upgradeId, 'timestamp': time.time()}
-                        buy_upgrade = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data).json()
-                        buy_upgrade.raise_for_status()
-
-                        logging.error(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. {buy_upgrade['error_message']}")
-                        return buy_upgrade.json()['error_message']
+                    elif not upgrade['isAvailable']:
+                        json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
+                        response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                        logging.error(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. {response.json()['error_message']}")
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -266,10 +264,10 @@ class HamsterKombatClicker:
                 json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                 taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 taps_response.raise_for_status()
-                logging.info(f"✅  Тапы выполнены")
+                print(f"✅  Тапы выполнены")
             else:
                 remain = remain_time(int(total_remain_time - current_remain_time))
-                logging.error(f"🚫  Тапы еще не накопились. Следующие тапы через: {remain}")
+                print(f"🚫  Тапы еще не накопились. Следующие тапы через: {remain}")
 
             boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
             for boost in boostsForBuy:
@@ -285,9 +283,9 @@ class HamsterKombatClicker:
                         json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                         taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         taps_response.raise_for_status()
-                        logging.info(f"✅  Тапы выполнены")
+                        print(f"✅  Тапы выполнены")
                     else:
-                        logging.error(f"🚫  Буст еще не готов. Следующий буст через: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
+                        print(f"🚫  Буст еще не готов. Следующий буст через: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -372,19 +370,19 @@ class HamsterKombatClicker:
 
             isClaimed = combo['isClaimed']
             if not isClaimed:
-                combo = self._get_daily_combo()
-                # cards = upgrades_info['cards']
+                upgrades_info = self._collect_upgrades_info()
+                cards = upgrades_info['cards']
 
-                # if all(card['available'] for card in cards):
-                #     for upgrade in cards:
-                #         self._buy_upgrade(upgrade['id'])
-                #     claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
-                #     claim_combo.raise_for_status()
-                #     logging.info(f"✅  Ежедневное комбо выполнено. {next_combo}")
-                # else:
-                #     for upgrade in cards:
-                #         self._buy_upgrade(upgrade['id'])
-                #     logging.info(f"🚫  Ежедневное комбо не выполнено. Были куплены только доступные карты")
+                if all(card['available'] for card in cards):
+                    for upgrade in cards:
+                        self._buy_upgrade(upgrade['id'])
+                    claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
+                    claim_combo.raise_for_status()
+                    logging.info(f"✅  Ежедневное комбо выполнено. {next_combo}")
+                else:
+                    for upgrade in cards:
+                        self._buy_upgrade(upgrade['id'])
+                    logging.info(f"🚫  Ежедневное комбо не выполнено. Были куплены только доступные карты")
             else:
                 logging.info(f"ℹ️  Комбо сегодня уже получено. {next_combo}")
 

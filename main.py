@@ -1,6 +1,7 @@
 import logging
 import os
 import threading
+import time
 
 from Src.utils import WHITE, RESET, banner, loading, loading_event, line_after, line_before, YELLOW, CYAN
 from Src.Hamster import HamsterKombatClicker
@@ -95,7 +96,8 @@ def main():
             line_after()
 
         elif choice == '7':
-            print(hamster_client.daily_info())
+            info = hamster_client.daily_info()
+            print(info)
             line_after()
 
         elif choice == '8':
@@ -104,8 +106,8 @@ def main():
 
 
 def test():
-    print(hamster_client._get_telegram_user_id())
+    print(hamster_client.complete_daily_combo())
 
 
 if __name__ == '__main__':
-    main()
+    test()
