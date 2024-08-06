@@ -44,7 +44,7 @@ def show_menu():
     return choice
 
 
-def generate_promocodes(apply_promo=False):
+def generate_promocodes(apply_promo=None):
     keys_count_to_generate = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
     if keys_count_to_generate == '':
         keys_count_to_generate = 1
@@ -54,7 +54,7 @@ def generate_promocodes(apply_promo=False):
         logging.error(f"Количество должно быть числом больше 0")
         exit(1)
 
-    main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(keys_count_to_generate, send_to_group, BOT_TOKEN, GROUP_ID))
+    main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(keys_count_to_generate, send_to_group, BOT_TOKEN, GROUP_ID, apply_promo))
     loading_thread = threading.Thread(target=loading)
 
     loading_thread.start()
@@ -102,7 +102,7 @@ def main():
             line_after()
 
         elif choice == '6':
-            choice = input(f"Применить коды после получения? Y(да)/N(нет): ")
+            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(apply_promo=True)
             elif str(choice.lower()) == 'n'.lower():
@@ -122,8 +122,8 @@ def main():
 
 
 def test():
-    print(hamster_client.get_promocodes(apply_promo=True))
+    print(hamster_client.get_promocodes())
 
 
 if __name__ == '__main__':
-    test()
+    main()
