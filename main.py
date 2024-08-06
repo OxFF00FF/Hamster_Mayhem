@@ -106,7 +106,7 @@ def main():
 
 
 def test():
-    print(hamster_client.complete_daily_combo())
+    print(hamster_client._get_daily_combo())
 
 
 if __name__ == '__main__':

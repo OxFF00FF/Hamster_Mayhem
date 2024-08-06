@@ -78,10 +78,20 @@ class HamsterKombatClicker:
             date_block = hamster_block.select('span[class="text-center font-light opacity-70 mb-[16px]"]')
 
             date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.datetime.today().year}"
-            combo = [item.text.strip() for item in combo_block]
+            combo_names = [item.text.strip() for item in combo_block]
+            combo_ids = []
 
-            logging.info(f"⚙️  Combo: {combo} · Date: {date}")
-            return {'combo': combo, 'date': date}
+            response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            upgradesForBuy = response.json()['upgradesForBuy']
+            for upgrade in upgradesForBuy:
+                for upgrade_name in combo_names:
+                    if upgrade_name == upgrade['name']:
+                        combo_ids.append(upgrade['id'])
+
+            logging.info(f"⚙️  Combo: {combo_names} · Date: {date}")
+            return {'combo': combo_ids, 'date': date}
 
         except requests.exceptions.HTTPError as http_err:
             logging.error(http_err)
