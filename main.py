@@ -20,6 +20,7 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
+
 # --- CONFIG --- #
 
 
@@ -94,11 +95,16 @@ def main():
             line_after()
 
         elif choice == '7':
-            hamster_client.daily_info()
+            print(hamster_client.daily_info())
             line_after()
 
         elif choice == '8':
             exit(1)
+            line_after()
+
+
+def test():
+    print(hamster_client._get_telegram_user_id())
 
 
 if __name__ == '__main__':
