@@ -26,14 +26,14 @@ hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 def show_menu():
     memu = f"""
     Главное меню
-    👆  {YELLOW}1.{RESET} Выполнить клики
-    🌟  {YELLOW}2.{RESET} Завершить задания
+    👆   {YELLOW}1.{RESET} Выполнить клики
+    🌟   {YELLOW}2.{RESET} Завершить задания
     🗃   {YELLOW}3.{RESET} Получить шифр
-    💰  {YELLOW}4.{RESET} Выполнить комбо
-    🔑  {YELLOW}5.{RESET} Пройти миниигру
-    🎉  {YELLOW}6.{RESET} Получить промокоды
-    ℹ️  {YELLOW}7.{RESET} Информация
-    🚪  {YELLOW}8.{RESET} Выйти
+    💰   {YELLOW}4.{RESET} Выполнить комбо
+    🔑   {YELLOW}5.{RESET} Пройти миниигру
+    🎉   {YELLOW}6.{RESET} Получить промокоды
+    ℹ   {YELLOW}7.{RESET} Информация
+    🔙   {YELLOW}8.{RESET} Выйти
     """
 
     print(memu.strip())
