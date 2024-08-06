@@ -44,7 +44,7 @@ def show_menu():
     return choice
 
 
-def generate_promocodes():
+def generate_promocodes(apply_promo=False):
     keys_count_to_generate = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
     if keys_count_to_generate == '':
         keys_count_to_generate = 1
@@ -84,7 +84,17 @@ def main():
             line_after()
 
         elif choice == '4':
-            hamster_client.complete_daily_combo()
+            upgrades_info = hamster_client._collect_upgrades_info()
+            if all(card['available'] for card in upgrades_info['cards']):
+                hamster_client.complete_daily_combo()
+            else:
+                choice = input(f"Сегодня не все карты доступны! Хотите купить только доступные? Y(да)/N(нет): ")
+                if str(choice.lower()) == 'y'.lower():
+                    hamster_client.complete_daily_combo(buy_anyway=True)
+                elif str(choice.lower()) == 'n'.lower():
+                    line_after()
+                else:
+                    logging.error(f'Такой опции нет!')
             line_after()
 
         elif choice == '5':
@@ -92,7 +102,13 @@ def main():
             line_after()
 
         elif choice == '6':
-            generate_promocodes()
+            choice = input(f"Применить коды после получения? Y(да)/N(нет): ")
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(apply_promo=True)
+            elif str(choice.lower()) == 'n'.lower():
+                line_after()
+            else:
+                logging.error(f'Такой опции нет!')
             line_after()
 
         elif choice == '7':
@@ -106,7 +122,7 @@ def main():
 
 
 def test():
-    print(hamster_client._get_daily_combo())
+    print(hamster_client.get_promocodes(apply_promo=True))
 
 
 if __name__ == '__main__':
