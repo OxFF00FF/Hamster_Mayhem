@@ -4,8 +4,8 @@ import threading
 from dotenv import load_dotenv
 
 from Src.Hamster import HamsterKombatClicker
-from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, \
-                      banner, loading, loading_event, line_after, line_before
+from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, \
+    banner, loading, loading_event, line_after, line_before
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
@@ -21,24 +21,31 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
+
 # --- CONFIG --- #
+
+
+def get_status(status):
+    return f"{GREEN}ДА{RESET}" if status else f"{RED}НЕТ{RESET}"
 
 
 def show_menu():
     memu = f"""
     Главное меню
-    ℹ    {LIGHT_YELLOW}#.{RESET} {YELLOW}Информация{WHITE}
-    👆   {LIGHT_YELLOW}1.{RESET} {YELLOW}Выполнить клики{WHITE}
-    🌟   {LIGHT_YELLOW}2.{RESET} {YELLOW}Завершить задания{WHITE}
-    🗃    {LIGHT_YELLOW}3.{RESET} {YELLOW}Получить шифр{WHITE}
-    💰   {LIGHT_YELLOW}4.{RESET} {YELLOW}Выполнить комбо{WHITE}
-    🔑   {LIGHT_YELLOW}5.{RESET} {YELLOW}Пройти миниигру{WHITE}
-    🚴   {LIGHT_YELLOW}6.{RESET} {YELLOW}Получить промокоды для Bike Ride 3D{WHITE}
-    🎲   {LIGHT_YELLOW}7.{RESET} {YELLOW}Получить промокоды для Chain Cube 2048{WHITE}
-    🕹    {LIGHT_YELLOW}8.{RESET} {YELLOW}Получить промокоды для My Clone Army{WHITE}
-    🚂   {LIGHT_YELLOW}9.{RESET} {YELLOW}Получить промокоды для Train Miner{WHITE}
-    🎉   {LIGHT_YELLOW}*.{RESET} {YELLOW}Пройти сразу все игры{WHITE}
-    🔙   {LIGHT_YELLOW}0.{RESET} {YELLOW}Выйти{WHITE}
+    ⚙️  Отправлять в группу: {get_status(send_to_group)}
+     
+    ❕   {LIGHT_YELLOW}#.{RESET} {YELLOW}Информация{WHITE}
+    👆  {LIGHT_YELLOW}1.{RESET} {YELLOW}Выполнить клики{WHITE}
+    🌟  {LIGHT_YELLOW}2.{RESET} {YELLOW}Завершить задания{WHITE}
+    🗃  {LIGHT_YELLOW}3.{RESET} {YELLOW}Получить шифр{WHITE}
+    💰  {LIGHT_YELLOW}4.{RESET} {YELLOW}Выполнить комбо{WHITE}
+    🔑  {LIGHT_YELLOW}5.{RESET} {YELLOW}Пройти миниигру{WHITE}
+    🚴  {LIGHT_YELLOW}6.{RESET} {YELLOW}Получить промокоды для Bike Ride 3D{WHITE}
+    🎲  {LIGHT_YELLOW}7.{RESET} {YELLOW}Получить промокоды для Chain Cube 2048{WHITE}
+    🕹  {LIGHT_YELLOW}8.{RESET} {YELLOW}Получить промокоды для My Clone Army{WHITE}
+    🚂  {LIGHT_YELLOW}9.{RESET} {YELLOW}Получить промокоды для Train Miner{WHITE}
+    🎉  {LIGHT_YELLOW}*.{RESET} {YELLOW}Пройти сразу все игры{WHITE}
+    🔙  {LIGHT_YELLOW}0.{RESET} {YELLOW}Выйти{WHITE}
     """
 
     print(memu.strip())
@@ -168,4 +175,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    main()
