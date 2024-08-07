@@ -2,7 +2,7 @@
 
 ![Preview](https://github.com/user-attachments/assets/3264960e-cbc8-438d-8f39-6d609a3f954f)
 
-Проект **Хомячий беспредел** был создал чтобы помочь люд
+Проект был создал чтобы помочь людям проходить рекламные игры
 
 
 ## ⚙ [Настройки](https://github.com/OxFF00FF/Hamsters_mayhem/blob/master/.env.example)
