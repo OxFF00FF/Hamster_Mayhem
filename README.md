@@ -79,6 +79,7 @@
 >11. через пару секунд у вас появится запрос. Нажимаем на него. 
     у вас появится дополнительные сведения о запросе.
     Нужно нажать на `Headers` и внизу найти `Request headers`
+![10](https://github.com/user-attachments/assets/e1d1c46b-2814-4d6b-a663-e6f087833a3b)
 
 ![11](https://github.com/user-attachments/assets/aceb418e-87c5-4746-b515-29cfa0bff660)
 
