@@ -574,7 +574,7 @@ class HamsterKombatClicker:
             has_code = False
             with lock:
                 if not progress_logged[0]:
-                    time.sleep(3)
+                    time.sleep(2)
                     print(f'\n{YELLOW}{TEXT}{WHITE}')
                     progress_logged[0] = True
 
@@ -583,7 +583,7 @@ class HamsterKombatClicker:
                 time.sleep(delay / 1000.0)
                 has_code = __emulate_progress(client_token)
 
-                print(f"{CYAN}[{index + 1}/{len(keys_list)}] · Status: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                print(f"{CYAN}Ключ [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
                 if has_code:
                     break
 
