@@ -13,7 +13,8 @@
             "prefix": "BIKE",
             "title": "Bike Ride 3D",
             "eventsCount": 5,
-            "registerEventTimeout": 20000
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)"
         },
         {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
@@ -21,7 +22,8 @@
             "prefix": "CUBE",
             "title": "Chain Cube 2048",
             "eventsCount": 6,
-            "registerEventTimeout": 20000
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDFB2  Гоняем кубы за вас"
         },
         {
             "appToken": "74ee0b5b-775e-4bee-974f-63e7f4d5bacb",
@@ -29,7 +31,8 @@
             "prefix": "CLONE",
             "title": "My Clone Army",
             "eventsCount": 2,
-            "registerEventTimeout": 120000
+            "registerEventTimeout": 120000,
+            "text": "\uD83D\uDD79  Сражаемся на арене клонов за вас"
         },
         {
             "appToken": "82647f43-3f87-402d-88dd-09a90025313f",
@@ -37,7 +40,8 @@
             "prefix": "TRAIN",
             "title": "Train Miner",
             "eventsCount": 1,
-            "registerEventTimeout": 120000
+            "registerEventTimeout": 120000,
+            "text": "\uD83D\uDE82  Проходим поезда, чтобы вам не пришлось)"
         }
     ]
 }

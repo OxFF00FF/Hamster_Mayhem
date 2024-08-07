@@ -530,6 +530,7 @@ class HamsterKombatClicker:
                     EVENTS_DELAY = promo['registerEventTimeout']
                     EVENTS_COUNT = promo['eventsCount']
                     TITLE = promo['title']
+                    TEXT = promo['text']
         else:
             logging.error(f"Префикс игры не узказан")
             exit(1)
@@ -574,14 +575,15 @@ class HamsterKombatClicker:
             with lock:
                 if not progress_logged[0]:
                     time.sleep(3)
-                    print(f'{YELLOW}Emulate progress... {WHITE}')
+                    print(f'\n{YELLOW}{TEXT}{WHITE}')
                     progress_logged[0] = True
 
             for e in range(EVENTS_COUNT):
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
                 has_code = __emulate_progress(client_token)
-                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · Status: {(e + 1) / EVENTS_COUNT * 100}%]{WHITE}")
+
+                print(f"{CYAN}[{index + 1}/{len(keys_list)}] · Status: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
                 if has_code:
                     break
 
@@ -590,7 +592,7 @@ class HamsterKombatClicker:
             keys_list[index] = promoCode
 
         def __start_generate(keys_count):
-            print(f"{LIGHT_YELLOW}Генерируем {keys_count} ключей для `{TITLE}`{WHITE}\n")
+            print(f"{LIGHT_YELLOW}`{TITLE}`. Генерируется ключей: {keys_count}{WHITE}\n")
 
             keys_count = int(keys_count)
             if keys_count > 0:
