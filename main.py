@@ -1,11 +1,12 @@
 import logging
 import os
 import threading
-
-from Src.utils import WHITE, RESET, banner, loading, loading_event, line_after, line_before, YELLOW, CYAN
-from Src.Hamster import HamsterKombatClicker
-
 from dotenv import load_dotenv
+
+from Src.Hamster import HamsterKombatClicker
+from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, \
+                      banner, loading, loading_event, line_after, line_before
+
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
 # logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
@@ -26,22 +27,22 @@ hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 def show_menu():
     memu = f"""
     Главное меню
-    ℹ   {YELLOW}#.{RESET} Информация
-    👆   {YELLOW}1.{RESET} Выполнить клики
-    🌟   {YELLOW}2.{RESET} Завершить задания
-    🗃   {YELLOW}3.{RESET} Получить шифр
-    💰   {YELLOW}4.{RESET} Выполнить комбо
-    🔑   {YELLOW}5.{RESET} Пройти миниигру
-    🚴   {YELLOW}6.{RESET} Получить промокоды для Bike Ride 3D
-    🎲   {YELLOW}7.{RESET} Получить промокоды для Chain Cube 2048
-    🕹   {YELLOW}8.{RESET} Получить промокоды для My Clone Army
-    🚂   {YELLOW}9.{RESET} Получить промокоды для Train Miner
-    🎉   {YELLOW}*.{RESET} Пройти сразу все игры
-    🔙   {YELLOW}0.{RESET} Выйти
+    ℹ   {LIGHT_YELLOW}#.{RESET} {YELLOW}Информация{WHITE}
+    👆   {LIGHT_YELLOW}1.{RESET} {YELLOW}Выполнить клики{WHITE}
+    🌟   {LIGHT_YELLOW}2.{RESET} {YELLOW}Завершить задания{WHITE}
+    🗃   {LIGHT_YELLOW}3.{RESET} {YELLOW}Получить шифр{WHITE}
+    💰   {LIGHT_YELLOW}4.{RESET} {YELLOW}Выполнить комбо{WHITE}
+    🔑   {LIGHT_YELLOW}5.{RESET} {YELLOW}Пройти миниигру{WHITE}
+    🚴   {LIGHT_YELLOW}6.{RESET} {YELLOW}Получить промокоды для Bike Ride 3D{WHITE}
+    🎲   {LIGHT_YELLOW}7.{RESET} {YELLOW}Получить промокоды для Chain Cube 2048{WHITE}
+    🕹   {LIGHT_YELLOW}8.{RESET} {YELLOW}Получить промокоды для My Clone Army{WHITE}
+    🚂   {LIGHT_YELLOW}9.{RESET} {YELLOW}Получить промокоды для Train Miner{WHITE}
+    🎉   {LIGHT_YELLOW}*.{RESET} {YELLOW}Пройти сразу все игры{WHITE}
+    🔙   {LIGHT_YELLOW}0.{RESET} {YELLOW}Выйти{WHITE}
     """
 
     print(memu.strip())
-    choice = input(f"\n{CYAN}Выберите действие (#/1/2/3/4/5/6/7/8/9/0):{RESET} ")
+    choice = input(f"\n{CYAN}Выберите действие (#/1/2/3/4/5/6/7/8/9/0/*):{RESET} ")
     line_before()
     return choice
 
@@ -167,4 +168,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    main()

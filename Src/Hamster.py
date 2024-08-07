@@ -222,7 +222,7 @@ class HamsterKombatClicker:
                       f"🌟  Общая стоимость: {total_price:,}".replace(',', ' ')
 
             print(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
-            return {'cards': cards, 'summary': summary, 'cipher': cipher}
+            return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -242,7 +242,7 @@ class HamsterKombatClicker:
             morse = text_to_morse(cipher)
             combo = '\n'.join(card['description'] for card in upgrades_info['cards'])
 
-            result = {'date': f"📆  {datetime.datetime.today().date()}",
+            result = {'date': f"📆  {datetime.datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']}(дата комбо)",
                       'cipher': f"📇  Шифр:  {cipher} | {morse} |",
                       'summary': f"{upgrades_info['summary']}",
                       'combo': combo}
