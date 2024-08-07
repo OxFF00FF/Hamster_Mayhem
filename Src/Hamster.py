@@ -615,3 +615,18 @@ class HamsterKombatClicker:
         if send_to_group:
             requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes}).raise_for_status()
             print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
+
+
+class PlayGround:
+
+    def __init__(self):
+        pass
+
+    def _open_json(self):
+        pass
+
+
+    def _save_file(self):
+        pass
+
+
