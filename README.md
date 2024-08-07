@@ -1,6 +1,7 @@
 [<img src="https://img.shields.io/badge/python-3.10%20%7C%203.11-blue">](https://www.python.org/downloads/)
 
-![img1](.github/images/Preview.png)
+![Preview](https://github.com/user-attachments/assets/6f8094eb-5e44-4235-8379-406c42cae8bd)
+
 
 ## ⚙ [Настройки](https://github.com/OxFF00FF/Hamsters_mayhem/blob/master/.env.example)
 | Настройка                    | Описание                                                                                      |
