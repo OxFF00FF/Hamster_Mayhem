@@ -242,7 +242,7 @@ class HamsterKombatClicker:
             morse = text_to_morse(cipher)
             combo = '\n'.join(card['description'] for card in upgrades_info['cards'])
 
-            result = {'date': f"📆  {datetime.datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']}(дата комбо)",
+            result = {'date': f"📆  {datetime.datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']} (дата комбо)",
                       'cipher': f"📇  Шифр:  {cipher} | {morse} |",
                       'summary': f"{upgrades_info['summary']}",
                       'combo': combo}
