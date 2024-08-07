@@ -16,8 +16,8 @@ from bs4 import BeautifulSoup as BS
 from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
-from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, \
-                      text_to_morse, remain_time, line_after
+from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_RED, LIGHT_MAGENTA, LIGHT_CYAN, \
+    text_to_morse, remain_time, line_after
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
@@ -518,7 +518,7 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=False, bot_token=None, group_id=None, apply_promo=False, prefix=None):
+    def get_promocodes(self, count=1, send_to_group=True, bot_token=None, group_id=None, apply_promo=None, prefix=None):
         """
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
@@ -571,24 +571,33 @@ class HamsterKombatClicker:
 
         def __key_generation(keys_list, index, lock, progress_logged) -> None:
             client_id = __generate_client_id()
-            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] Getting clientId successful{WHITE}')
+            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] `{TITLE}` Getting clientId successful{WHITE}')
 
             client_token = __get_client_token(client_id)
-            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] Login successful{WHITE}')
+            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] `{TITLE}` Login successful{WHITE}')
 
             has_code = False
             with lock:
                 if not progress_logged[0]:
                     time.sleep(2)
-                    print(f'\n{YELLOW}{TEXT}{WHITE}')
+                    print(f'{YELLOW}{TEXT}{WHITE}')
                     progress_logged[0] = True
 
             for e in range(EVENTS_COUNT):
+                color_title = ''
+                if prefix == "BIKE":
+                    color_title = f"{LIGHT_RED}{prefix}{WHITE}"
+                elif prefix == "CUBE":
+                    color_title = f"{LIGHT_YELLOW}{prefix}{WHITE}"
+                elif prefix == "CLONE":
+                    color_title = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
+                elif prefix == "TRAIN":
+                    color_title = f"{LIGHT_CYAN}{prefix}{WHITE}"
+                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
                 has_code = __emulate_progress(client_token)
-
-                print(f"{WHITE}Ключ [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
                 if has_code:
                     break
 
@@ -637,5 +646,8 @@ class HamsterKombatClicker:
                 self.apply_promocode(promocode, PROMO_ID)
 
         if send_to_group:
-            requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes}).raise_for_status()
+            response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes})
+            print(response)
+            print(response.json())
+            response.raise_for_status()
             print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")

@@ -1,6 +1,8 @@
+import json
 import logging
 import os
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 
 from Src.Hamster import HamsterKombatClicker
@@ -162,16 +164,30 @@ def main():
             line_after()
 
         elif choice == '*':
-            print(f"В разработке")
-            line_after()
+            with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
+                data = json.loads(f.read())
 
-        elif choice == '0':
-            exit(1)
+            count = input(f"Количество ключей для всех игр (enter значение по умолчанию): ")
+            if count == '':
+                count = 1
+                print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
+
+            if int(count) <= 0:
+                logging.error(f"Количество должно быть числом больше 0")
+                exit(1)
+
+            def get_promocodes(promo):
+                prefix = promo['prefix']
+                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group)
+
+            with ThreadPoolExecutor() as executor:
+                executor.map(get_promocodes, data['apps'])
+
             line_after()
 
 
 def test():
-    hamster_client.daily_info()
+    pass
 
 
 if __name__ == '__main__':
