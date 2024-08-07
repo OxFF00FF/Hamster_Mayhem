@@ -1,3 +1,7 @@
 @echo off
 echo Activating virtual environment...
-cmd /K "call venv\Scripts\activate"
+call venv\Scripts\activate
+
+echo Starting...
+python main.py
+pause

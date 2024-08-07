@@ -27,15 +27,15 @@ hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 def show_menu():
     memu = f"""
     Главное меню
-    ℹ   {LIGHT_YELLOW}#.{RESET} {YELLOW}Информация{WHITE}
+    ℹ    {LIGHT_YELLOW}#.{RESET} {YELLOW}Информация{WHITE}
     👆   {LIGHT_YELLOW}1.{RESET} {YELLOW}Выполнить клики{WHITE}
     🌟   {LIGHT_YELLOW}2.{RESET} {YELLOW}Завершить задания{WHITE}
-    🗃   {LIGHT_YELLOW}3.{RESET} {YELLOW}Получить шифр{WHITE}
+    🗃    {LIGHT_YELLOW}3.{RESET} {YELLOW}Получить шифр{WHITE}
     💰   {LIGHT_YELLOW}4.{RESET} {YELLOW}Выполнить комбо{WHITE}
     🔑   {LIGHT_YELLOW}5.{RESET} {YELLOW}Пройти миниигру{WHITE}
     🚴   {LIGHT_YELLOW}6.{RESET} {YELLOW}Получить промокоды для Bike Ride 3D{WHITE}
     🎲   {LIGHT_YELLOW}7.{RESET} {YELLOW}Получить промокоды для Chain Cube 2048{WHITE}
-    🕹   {LIGHT_YELLOW}8.{RESET} {YELLOW}Получить промокоды для My Clone Army{WHITE}
+    🕹    {LIGHT_YELLOW}8.{RESET} {YELLOW}Получить промокоды для My Clone Army{WHITE}
     🚂   {LIGHT_YELLOW}9.{RESET} {YELLOW}Получить промокоды для Train Miner{WHITE}
     🎉   {LIGHT_YELLOW}*.{RESET} {YELLOW}Пройти сразу все игры{WHITE}
     🔙   {LIGHT_YELLOW}0.{RESET} {YELLOW}Выйти{WHITE}
