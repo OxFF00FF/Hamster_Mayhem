@@ -6,8 +6,8 @@ from Src.utils import WHITE, RESET, banner, loading, loading_event, line_after, 
 from Src.Hamster import HamsterKombatClicker
 
 from dotenv import load_dotenv
-
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
+
 # logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
 logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s{WHITE}", level=logging.INFO)
 
@@ -20,55 +20,68 @@ HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
-
 # --- CONFIG --- #
 
 
 def show_menu():
     memu = f"""
     Главное меню
+    ℹ   {YELLOW}#.{RESET} Информация
     👆   {YELLOW}1.{RESET} Выполнить клики
     🌟   {YELLOW}2.{RESET} Завершить задания
     🗃   {YELLOW}3.{RESET} Получить шифр
     💰   {YELLOW}4.{RESET} Выполнить комбо
     🔑   {YELLOW}5.{RESET} Пройти миниигру
-    🎉   {YELLOW}6.{RESET} Получить промокоды
-    ℹ   {YELLOW}7.{RESET} Информация
-    🔙   {YELLOW}8.{RESET} Выйти
+    🚴   {YELLOW}6.{RESET} Получить промокоды для Bike Ride 3D
+    🎲   {YELLOW}7.{RESET} Получить промокоды для Chain Cube 2048
+    🕹   {YELLOW}8.{RESET} Получить промокоды для My Clone Army
+    🚂   {YELLOW}9.{RESET} Получить промокоды для Train Miner
+    🎉   {YELLOW}*.{RESET} Пройти сразу все игры
+    🔙   {YELLOW}0.{RESET} Выйти
     """
 
     print(memu.strip())
-    choice = input(f"\n{CYAN}Выберите действие (1/2/3/4/5/6/7/8):{RESET} ")
+    choice = input(f"\n{CYAN}Выберите действие (#/1/2/3/4/5/6/7/8/9/0):{RESET} ")
     line_before()
     return choice
 
 
-def generate_promocodes(apply_promo=None):
-    keys_count_to_generate = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
-    if keys_count_to_generate == '':
-        keys_count_to_generate = 1
-        logging.info("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
+def generate_promocodes(apply_promo=False, prefix=None):
+    if prefix:
+        count = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
+        if count == '':
+            keys_count_to_generate = 1
+            print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
 
-    if int(keys_count_to_generate) <= 0:
-        logging.error(f"Количество должно быть числом больше 0")
+        if int(keys_count_to_generate) <= 0:
+            logging.error(f"Количество должно быть числом больше 0")
+            exit(1)
+
+        main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, BOT_TOKEN, GROUP_ID, apply_promo, prefix))
+        loading_thread = threading.Thread(target=loading)
+
+        loading_thread.start()
+        main_thread.start()
+
+        main_thread.join()
+
+        loading_event.set()
+        loading_thread.join()
+
+    else:
+        logging.error(f"Префикс игры не узказан")
         exit(1)
-
-    main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(keys_count_to_generate, send_to_group, BOT_TOKEN, GROUP_ID, apply_promo))
-    loading_thread = threading.Thread(target=loading)
-
-    loading_thread.start()
-    main_thread.start()
-
-    main_thread.join()
-
-    loading_event.set()
-    loading_thread.join()
 
 
 def main():
     banner()
     while True:
         choice = show_menu()
+
+        if choice == '#':
+            info = hamster_client.daily_info()
+            print(info)
+            line_after()
 
         if choice == '1':
             hamster_client.complete_taps()
@@ -103,19 +116,52 @@ def main():
         elif choice == '6':
             choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
             if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(apply_promo=True)
+                generate_promocodes(prefix='BIKE', apply_promo=True)
             elif str(choice.lower()) == 'n'.lower():
+                generate_promocodes(prefix='BIKE')
                 line_after()
             else:
                 logging.error(f'Такой опции нет!')
             line_after()
 
         elif choice == '7':
-            info = hamster_client.daily_info()
-            print(info)
+            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='CUBE', apply_promo=True)
+            elif str(choice.lower()) == 'n'.lower():
+                generate_promocodes(prefix='CUBE')
+                line_after()
+            else:
+                logging.error(f'Такой опции нет!')
             line_after()
 
         elif choice == '8':
+            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='CLONE', apply_promo=True)
+            elif str(choice.lower()) == 'n'.lower():
+                generate_promocodes(prefix='CLONE')
+                line_after()
+            else:
+                logging.error(f'Такой опции нет!')
+            line_after()
+
+        elif choice == '9':
+            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='TRAIN', apply_promo=True)
+            elif str(choice.lower()) == 'n'.lower():
+                generate_promocodes(prefix='TRAIN')
+                line_after()
+            else:
+                logging.error(f'Такой опции нет!')
+            line_after()
+
+        elif choice == '*':
+            print(f"В разработке")
+            line_after()
+
+        elif choice == '0':
             exit(1)
             line_after()
 

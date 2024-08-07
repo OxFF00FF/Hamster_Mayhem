@@ -11,7 +11,7 @@ import uuid
 from random import randint
 import requests
 from fake_useragent import UserAgent
-from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, text_to_morse, remain_time, CYAN, line_after, LIGHT_YELLOW
+from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, text_to_morse, remain_time, CYAN, line_after, LIGHT_YELLOW, LIGHT_GREEN
 from bs4 import BeautifulSoup as BS
 from dotenv import load_dotenv
 
@@ -519,21 +519,18 @@ class HamsterKombatClicker:
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
         :param prefix: префикс игры (BIKE, CUBE, CLONE, TRAIN)
         """
-        if prefix:
-            with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-                data = json.loads(f.read())
 
-            for promo in data['apps']:
-                if promo['prefix'] == prefix:
-                    APP_TOKEN = promo['appToken']
-                    PROMO_ID = promo['promoId']
-                    EVENTS_DELAY = promo['registerEventTimeout']
-                    EVENTS_COUNT = promo['eventsCount']
-                    TITLE = promo['title']
-                    TEXT = promo['text']
-        else:
-            logging.error(f"Префикс игры не узказан")
-            exit(1)
+        with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
+            data = json.loads(f.read())
+
+        for promo in data['apps']:
+            if promo['prefix'] == prefix:
+                APP_TOKEN = promo['appToken']
+                PROMO_ID = promo['promoId']
+                EVENTS_DELAY = promo['registerEventTimeout']
+                EVENTS_COUNT = promo['eventsCount']
+                TITLE = promo['title']
+                TEXT = promo['text']
 
         def __generate_client_id() -> str:
             timestamp = int(time.time() * 1000)
@@ -566,10 +563,10 @@ class HamsterKombatClicker:
 
         def __key_generation(keys_list, index, lock, progress_logged) -> None:
             client_id = __generate_client_id()
-            print(f'{GREEN}[{index + 1}/{len(keys_list)}] Getting clientId successful{WHITE}')
+            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] Getting clientId successful{WHITE}')
 
             client_token = __get_client_token(client_id)
-            print(f'{GREEN}[{index + 1}/{len(keys_list)}] Login successful{WHITE}')
+            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] Login successful{WHITE}')
 
             has_code = False
             with lock:
@@ -588,7 +585,7 @@ class HamsterKombatClicker:
                     break
 
             promoCode = __get_promocode(client_token)
-            print(f'[{has_code}] Generated key: {GREEN}`{promoCode}`{WHITE}')
+            print(f'Сгенерированный промокод: {LIGHT_GREEN}`{promoCode}`{WHITE}')
             keys_list[index] = promoCode
 
         def __start_generate(keys_count):
