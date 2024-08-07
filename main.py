@@ -50,10 +50,10 @@ def generate_promocodes(apply_promo=False, prefix=None):
     if prefix:
         count = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
         if count == '':
-            keys_count_to_generate = 1
+            count = 1
             print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
 
-        if int(keys_count_to_generate) <= 0:
+        if int(count) <= 0:
             logging.error(f"Количество должно быть числом больше 0")
             exit(1)
 
@@ -119,7 +119,6 @@ def main():
                 generate_promocodes(prefix='BIKE', apply_promo=True)
             elif str(choice.lower()) == 'n'.lower():
                 generate_promocodes(prefix='BIKE')
-                line_after()
             else:
                 logging.error(f'Такой опции нет!')
             line_after()
@@ -130,7 +129,6 @@ def main():
                 generate_promocodes(prefix='CUBE', apply_promo=True)
             elif str(choice.lower()) == 'n'.lower():
                 generate_promocodes(prefix='CUBE')
-                line_after()
             else:
                 logging.error(f'Такой опции нет!')
             line_after()
@@ -141,7 +139,6 @@ def main():
                 generate_promocodes(prefix='CLONE', apply_promo=True)
             elif str(choice.lower()) == 'n'.lower():
                 generate_promocodes(prefix='CLONE')
-                line_after()
             else:
                 logging.error(f'Такой опции нет!')
             line_after()
@@ -152,7 +149,6 @@ def main():
                 generate_promocodes(prefix='TRAIN', apply_promo=True)
             elif str(choice.lower()) == 'n'.lower():
                 generate_promocodes(prefix='TRAIN')
-                line_after()
             else:
                 logging.error(f'Такой опции нет!')
             line_after()
@@ -171,4 +167,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    main()

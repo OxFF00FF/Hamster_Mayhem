@@ -580,7 +580,7 @@ class HamsterKombatClicker:
                 time.sleep(delay / 1000.0)
                 has_code = __emulate_progress(client_token)
 
-                print(f"{CYAN}Ключ [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                print(f"{WHITE}Ключ [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
                 if has_code:
                     break
 

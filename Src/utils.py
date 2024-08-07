@@ -114,7 +114,7 @@ def loading():
         for frame in spinner:
             if loading_event.is_set():
                 break
-            print(f"\r{CYAN}{frame} | {WHITE}", end='', flush=True)
+            print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
             time.sleep(0.3)
 
 
