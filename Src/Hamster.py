@@ -584,7 +584,7 @@ class HamsterKombatClicker:
                     progress_logged[0] = True
 
             for e in range(EVENTS_COUNT):
-                color_title = ''
+                color_title = prefix
                 if prefix == "BIKE":
                     color_title = f"{LIGHT_YELLOW}{prefix}{WHITE}"
                 elif prefix == "CUBE":
