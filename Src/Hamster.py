@@ -1,5 +1,6 @@
 import base64
 import datetime
+import json
 import logging
 import os
 import random
@@ -10,7 +11,7 @@ import uuid
 from random import randint
 import requests
 from fake_useragent import UserAgent
-from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, RESET, text_to_morse, remain_time, CYAN, line_after
+from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, text_to_morse, remain_time, CYAN, line_after, LIGHT_YELLOW
 from bs4 import BeautifulSoup as BS
 from dotenv import load_dotenv
 
@@ -18,17 +19,14 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 
 
 class HamsterKombatClicker:
-    """
-
-    """
 
     def __init__(self, hamster_token):
-        self.HAMSTER_TOKEN = hamster_token
-        self.APP_TOKEN = os.getenv('APP_TOKEN')
-        self.PROMO_ID = os.getenv('PROMO_ID')
-        self.GROUP_URL = os.getenv('GROUP_URL')
-        self.EVENTS_DELAY = 20000
+        """
+        :param hamster_token: Ваш токен хомяка из браузерной версии игры
+        """
 
+        self.HAMSTER_TOKEN = hamster_token
+        self.GROUP_URL = os.getenv('GROUP_URL')
         self.base_url = 'https://api.hamsterkombatgame.io'
 
     def _get_headers(self, hamster_token):
@@ -191,17 +189,17 @@ class HamsterKombatClicker:
                     if upgradeId == upgrade['id']:
                         available = upgrade['isAvailable']
                         if available:
-                            available = f"✅  {GREEN}Карта доступна для улучшения{RESET}"
+                            available = f"✅  {GREEN}Карта доступна для улучшения{WHITE}"
                             total_price += upgrade['price']
                             total_profit += upgrade['profitPerHourDelta']
                         else:
                             error = self._buy_upgrade(upgrade['id'])
-                            available = f"🚫  {RED}Карта недоступна для улучшения ({error}){RESET}"
+                            available = f"🚫  {RED}Карта недоступна для улучшения ({error}){WHITE}"
 
                         cards.append({'description': f"{available} \n"
-                                                     f"🏷  {CYAN}{upgrade['name']} • {upgrade['section']}{RESET} \n"
-                                                     f"💰  {YELLOW}{upgrade['price']:,}{RESET} \n"
-                                                     f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} в час{RESET} \n"
+                                                     f"🏷  {CYAN}{upgrade['name']} • {upgrade['section']}{WHITE} \n"
+                                                     f"💰  {YELLOW}{upgrade['price']:,}{WHITE} \n"
+                                                     f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} в час{WHITE} \n"
                                                      f"⭐️  {upgrade['level']} уровень \n".replace(',', ' '),
                                       'id': upgrade['id'],
                                       'available': upgrade['isAvailable']})
@@ -215,7 +213,7 @@ class HamsterKombatClicker:
             summary = f"📊  Общая прыбыль:  +{total_profit:,} в час \n" \
                       f"🌟  Общая стоимость: {total_price:,}".replace(',', ' ')
 
-            print(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{RESET} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
+            print(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
             return {'cards': cards, 'summary': summary, 'cipher': cipher}
 
         except requests.exceptions.HTTPError as http_err:
@@ -473,21 +471,21 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def apply_promocode(self, promoCode):
+    def apply_promocode(self, promoCode, promo_id):
         try:
             response = requests.post(f'{self.base_url}/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
             states = response.json()['states']
             for state in states:
-                if state['promoId'] == self.PROMO_ID:
+                if state['promoId'] == promo_id:
                     keys_today = state['receiveKeysToday']
                     remain = remain_time(state['receiveKeysRefreshSec'])
                     next_keys = f"Следующие ключи будут доступны через: {remain}"
 
             promos = response.json()['promos']
             for promo in promos:
-                if promo['promoId'] == self.PROMO_ID:
+                if promo['promoId'] == promo_id:
                     keys_limit = promo['keysPerDay']
                     promo_title = promo['title']['en']
 
@@ -496,10 +494,10 @@ class HamsterKombatClicker:
 
             else:
                 print("⚠️  Активация промокода...")
-                time.sleep(2)
                 json_data = {'promoCode': promoCode}
                 response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
+                time.sleep(2)
                 print(f"✅  Промокод `{promoCode}` успешно активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}\n")
 
         except requests.exceptions.HTTPError as http_err:
@@ -512,7 +510,30 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=False, bot_token=None, group_id=None, apply_promo=False):
+    def get_promocodes(self, count=1, send_to_group=False, bot_token=None, group_id=None, apply_promo=False, prefix=None):
+        """
+        :param count:  Количество ключей для генерации
+        :param send_to_group: отправлять ли результат в вашу группу (необязательно)
+        :param bot_token: токен вашего телеграм бота (необязательно)
+        :param group_id: id вашей группы (необязательно)
+        :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
+        :param prefix: префикс игры (BIKE, CUBE, CLONE, TRAIN)
+        """
+        if prefix:
+            with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
+                data = json.loads(f.read())
+
+            for promo in data['apps']:
+                if promo['prefix'] == prefix:
+                    APP_TOKEN = promo['appToken']
+                    PROMO_ID = promo['promoId']
+                    EVENTS_DELAY = promo['registerEventTimeout']
+                    EVENTS_COUNT = promo['eventsCount']
+                    TITLE = promo['title']
+        else:
+            logging.error(f"Префикс игры не узказан")
+            exit(1)
+
         def __generate_client_id() -> str:
             timestamp = int(time.time() * 1000)
             random_numbers = ''.join([str(random.randint(0, 9)) for _ in range(19)])
@@ -520,7 +541,7 @@ class HamsterKombatClicker:
 
         def __get_client_token(client_id) -> str:
             headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io'}
-            json_data = {'appToken': self.APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
+            json_data = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
 
             response = requests.post(f'https://api.gamepromo.io/promo/login-client', headers=headers, json=json_data)
             response.raise_for_status()
@@ -528,7 +549,7 @@ class HamsterKombatClicker:
 
         def __emulate_progress(token) -> str:
             headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io', 'Authorization': f'Bearer {token}'}
-            json_data = {'promoId': self.PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
+            json_data = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
 
             response = requests.post(f'https://api.gamepromo.io/promo/register-event', headers=headers, json=json_data)
             response.raise_for_status()
@@ -536,7 +557,7 @@ class HamsterKombatClicker:
 
         def __get_promocode(token) -> str:
             headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io', 'Authorization': f'Bearer {token}'}
-            json_data = {'promoId': self.PROMO_ID}
+            json_data = {'promoId': PROMO_ID}
 
             response = requests.post(f'https://api.gamepromo.io/promo/create-code', headers=headers, json=json_data)
             response.raise_for_status()
@@ -544,49 +565,49 @@ class HamsterKombatClicker:
 
         def __key_generation(keys_list, index, lock, progress_logged) -> None:
             client_id = __generate_client_id()
-            print(f'{GREEN}[{index + 1}] Getting clientId successful{WHITE}')
+            print(f'{GREEN}[{index + 1}/{len(keys_list)}] Getting clientId successful{WHITE}')
 
             client_token = __get_client_token(client_id)
-            print(f'{GREEN}[{index + 1}] Login successful{WHITE}')
+            print(f'{GREEN}[{index + 1}/{len(keys_list)}] Login successful{WHITE}')
 
             has_code = False
-            time.sleep(3)
             with lock:
                 if not progress_logged[0]:
+                    time.sleep(3)
                     print(f'{YELLOW}Emulate progress... {WHITE}')
                     progress_logged[0] = True
 
-            progress = 20
-            for _ in range(7):
-                delay = self.EVENTS_DELAY * (random.random() / 3 + 1)
+            progress = EVENTS_COUNT / 100
+            for _ in range(EVENTS_COUNT):
+                delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
 
                 has_code = __emulate_progress(client_token)
-                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · Status: {progress}%]{WHITE}")
-                progress += 20
+                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · Status: {progress:.1f}%]{WHITE}")
+                progress += EVENTS_COUNT / 100
                 if has_code:
                     break
 
             promoCode = __get_promocode(client_token)
-            print(f'Generated key: {GREEN}`{promoCode}`{WHITE}')
+            print(f'[{has_code}] Generated key: {GREEN}`{promoCode}`{WHITE}')
             keys_list[index] = promoCode
 
-        def _start_generate(keys_count):
-            keys_count = int(keys_count)
-            print(f"Генерируем {keys_count} ключей\n")
+        def __start_generate(keys_count):
+            print(f"{LIGHT_YELLOW}Генерируем {keys_count} ключей для `{TITLE}`{WHITE}\n")
 
+            keys_count = int(keys_count)
             if keys_count > 0:
-                file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'generated_keys.txt')
+                if not os.path.exists('data'):
+                    os.makedirs('data')
+                    
+                file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
                 keys = [None] * keys_count
                 threads = []
                 lock_ = threading.Lock()
                 logged = [False]
                 generated_promocodes_text = ''
 
-                with open(file_path, 'w') as _:
-                    pass
-
-                with open(file_path, 'a') as file:
+                with open(file_path, 'w') as file:
                     for e in range(keys_count):
                         thread = threading.Thread(target=__key_generation, args=(keys, e, lock_, logged))
                         threads.append(thread)
@@ -597,36 +618,20 @@ class HamsterKombatClicker:
 
                     for key in keys:
                         generated_promocodes_text += f"{key}\n"
-                        file.write(f'{key}\n')
-                print(f"Все ключи сохранены в файл `{file_path}`")
+                    file.write(generated_promocodes_text)
+                    print(f"Все ключи сохранены в файл `{file_path}`")
                 return generated_promocodes_text
 
             else:
                 logging.error('Количество ключей должно быть больше 0')
                 exit(1)
 
-        promocodes = _start_generate(count)
-
+        promocodes = __start_generate(count)
         if apply_promo:
             send_to_group = False
             for promocode in promocodes.split():
-                self.apply_promocode(promocode)
+                self.apply_promocode(promocode, PROMO_ID)
 
         if send_to_group:
             requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes}).raise_for_status()
             print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
-
-
-class PlayGround:
-
-    def __init__(self):
-        pass
-
-    def _open_json(self):
-        pass
-
-
-    def _save_file(self):
-        pass
-
-

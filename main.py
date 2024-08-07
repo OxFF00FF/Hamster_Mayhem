@@ -1,7 +1,6 @@
 import logging
 import os
 import threading
-import time
 
 from Src.utils import WHITE, RESET, banner, loading, loading_event, line_after, line_before, YELLOW, CYAN
 from Src.Hamster import HamsterKombatClicker
@@ -122,8 +121,8 @@ def main():
 
 
 def test():
-    print(hamster_client.get_promocodes())
+    hamster_client.get_promocodes(prefix='CUBE')
 
 
 if __name__ == '__main__':
-    main()
+    test()
