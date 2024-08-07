@@ -581,8 +581,7 @@ class HamsterKombatClicker:
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
                 has_code = __emulate_progress(client_token)
-                progress = f"Status: {(e + 1) / EVENTS_COUNT * 100}%"
-                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · {progress}]{WHITE}")
+                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · Status: {(e + 1) / EVENTS_COUNT * 100}%]{WHITE}")
                 if has_code:
                     break
 
