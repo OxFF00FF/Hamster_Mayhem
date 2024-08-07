@@ -83,7 +83,7 @@ def main():
             print(info)
             line_after()
 
-        if choice == '1':
+        elif choice == '1':
             hamster_client.complete_taps()
             line_after()
 
