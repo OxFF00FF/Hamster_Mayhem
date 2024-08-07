@@ -577,14 +577,12 @@ class HamsterKombatClicker:
                     print(f'{YELLOW}Emulate progress... {WHITE}')
                     progress_logged[0] = True
 
-            progress = EVENTS_COUNT / 100
-            for _ in range(EVENTS_COUNT):
+            for e in range(EVENTS_COUNT):
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
-
                 has_code = __emulate_progress(client_token)
-                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · Status: {progress:.1f}%]{WHITE}")
-                progress += EVENTS_COUNT / 100
+                progress = f"Status: {(e + 1) / EVENTS_COUNT * 100}%"
+                print(f"{CYAN}[{index + 1}/{len(keys_list)}] key · {progress}]{WHITE}")
                 if has_code:
                     break
 
@@ -599,7 +597,7 @@ class HamsterKombatClicker:
             if keys_count > 0:
                 if not os.path.exists('data'):
                     os.makedirs('data')
-                    
+
                 file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
                 keys = [None] * keys_count
                 threads = []

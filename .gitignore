@@ -5,4 +5,4 @@ __pycache__
 venv
 /.cache
 tests
-generated_keys.txt
+data
