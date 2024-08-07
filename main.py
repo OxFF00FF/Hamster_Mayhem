@@ -165,7 +165,7 @@ def main():
 
         elif choice == '*':
             with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-                data = json.loads(f.read())
+                apps = json.loads(f.read())['apps']
 
             count = input(f"Количество ключей для всех игр (enter значение по умолчанию): ")
             if count == '':
@@ -176,12 +176,12 @@ def main():
                 logging.error(f"Количество должно быть числом больше 0")
                 exit(1)
 
-            def get_promocodes(promo):
+            def generate_for_all_games(promo):
                 prefix = promo['prefix']
-                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group)
+                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, bot_token=BOT_TOKEN, group_id=GROUP_ID)
 
             with ThreadPoolExecutor() as executor:
-                executor.map(get_promocodes, data['apps'])
+                executor.map(generate_for_all_games, apps)
 
             line_after()
 

@@ -17,7 +17,7 @@ from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
 from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_RED, LIGHT_MAGENTA, LIGHT_CYAN, \
-    text_to_morse, remain_time, line_after
+    text_to_morse, remain_time, line_after, LIGHT_BLUE
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
@@ -586,14 +586,14 @@ class HamsterKombatClicker:
             for e in range(EVENTS_COUNT):
                 color_title = ''
                 if prefix == "BIKE":
-                    color_title = f"{LIGHT_RED}{prefix}{WHITE}"
-                elif prefix == "CUBE":
                     color_title = f"{LIGHT_YELLOW}{prefix}{WHITE}"
+                elif prefix == "CUBE":
+                    color_title = f"{LIGHT_BLUE}{prefix}{WHITE}"
                 elif prefix == "CLONE":
                     color_title = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
                 elif prefix == "TRAIN":
                     color_title = f"{LIGHT_CYAN}{prefix}{WHITE}"
-                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}\n")
 
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
@@ -646,6 +646,9 @@ class HamsterKombatClicker:
                 self.apply_promocode(promocode, PROMO_ID)
 
         if send_to_group:
+            print(bot_token)
+            print(group_id)
+            print(promocodes)
             response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes})
             print(response)
             print(response.json())
