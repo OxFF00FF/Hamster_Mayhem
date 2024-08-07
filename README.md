@@ -41,4 +41,5 @@
 ![12](https://github.com/user-attachments/assets/a68c821c-ebe1-4829-8897-29ca5908fdff)
 
 14. этот токен нужно будет поставить в .env файле в HAMSTER_TOKEN между кавычек
-   HAMSTER_TOKEN="ваш токен из 13 пункта"
+    
+   `HAMSTER_TOKEN="ваш токен из 13 пункта"`
