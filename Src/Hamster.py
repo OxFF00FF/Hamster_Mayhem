@@ -646,11 +646,6 @@ class HamsterKombatClicker:
                 self.apply_promocode(promocode, PROMO_ID)
 
         if send_to_group:
-            print(bot_token)
-            print(group_id)
-            print(promocodes)
             response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes})
-            print(response)
-            print(response.json())
             response.raise_for_status()
             print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
