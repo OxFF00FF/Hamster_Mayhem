@@ -94,14 +94,18 @@
 `HAMSTER_TOKEN="ваш токен из 13 пункта"`
 
 
-## Как запустить код на android
+# Как запустить код на android
 
-1. Скачайте zip архив с проектом и распакуйте в удобном месте в памяти телефона. (не на флешку)
-2. Поставьте токен в `.env` файле в `HAMSTER_TOKEN` между кавычек.
-3. Скачайте приложение [Pydroid 3](https://play.google.com/store/apps/details?id=ru.iiec.pydroid3&hl=ru)
-4. Слева в меню нажмите `terminal` и напишите команду чтобы проверить в какой вы папке `ls`
-5. Перейдите в папку куда вы распаковали архив. Напрмиер `cd Download/Hamster` (Hamster это название папки куда вы распаковали архив)
-6. Напишите команду для установки зависимостей `pip install -r requirements.txt`
-7. Чтобы запустить программу нажмите на значок папки в программе 
-8. Далее `open` -> `Internal storage` найдите папку куда вы распаковали архив и выберите файл `main.py`
-9. Нажмите кнопку со значком play
+1. Скачать [Termux](https://trashbox.ru/files30/1963775/termux-app_v0.118.1github-debug_universal.apk/) и ввести команды
+2. `pkg update && pkg install git` Соглашаемся с установкой (y)
+3. `pkg install python` Соглашаемся с установкой (y)
+4. `git clone https://github.com/OxFF00FF/Hamsters_mayhem.git`
+5. `cd Hamsters_mayhem`
+6. `cp .env.example .env`
+7. `nano .env`. Поставить ваш токен в HAMSTER_TOKEN и другие, если необходимо
+8. Нажать кнопку `CTRL` и на клавиатуре английскую `X` потом `Y` и `enter` чтобы сохранить файл
+9. Проверить что данные записались `cat .env`
+10. `pip install -r requirements.txt` установка зависимостей
+11. Если будут ошибки то `pip install python-dotenv requests beautifulsoup4 fuzzywuzzy fake-useragent spinners`
+12. Запускаем `python main.py`
+13. Чтобы обновить код `git pull` и `python main.py`
