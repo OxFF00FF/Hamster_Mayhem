@@ -163,8 +163,8 @@ def main():
 
 
 def test():
-    hamster_client.get_promocodes(prefix='CUBE')
+    hamster_client.daily_info()
 
 
 if __name__ == '__main__':
-    main()
+    test()

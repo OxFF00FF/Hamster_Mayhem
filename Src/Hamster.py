@@ -9,11 +9,15 @@ import time
 import traceback
 import uuid
 from random import randint
+
 import requests
 from fake_useragent import UserAgent
-from Src.utils import WHITE, MAGENTA, RED, GREEN, YELLOW, text_to_morse, remain_time, CYAN, line_after, LIGHT_YELLOW, LIGHT_GREEN
 from bs4 import BeautifulSoup as BS
+from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
+
+from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, \
+                      text_to_morse, remain_time, line_after
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
@@ -77,7 +81,7 @@ class HamsterKombatClicker:
             date_block = hamster_block.select('span[class="text-center font-light opacity-70 mb-[16px]"]')
 
             date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.datetime.today().year}"
-            combo_names = [item.text.strip() for item in combo_block]
+            combo_from_site = [item.text.strip() for item in combo_block]
             combo_ids = []
 
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
@@ -85,11 +89,15 @@ class HamsterKombatClicker:
 
             upgradesForBuy = response.json()['upgradesForBuy']
             for upgrade in upgradesForBuy:
-                for upgrade_name in combo_names:
-                    if upgrade_name == upgrade['name']:
+                for upgrade_name in combo_from_site:
+                    name_from_site = str(upgrade_name.strip().lower())
+                    name_from_hamster = str(upgrade['name'].strip().lower())
+
+                    match = fuzz.partial_ratio(name_from_site, name_from_hamster)
+                    if match > 90:
                         combo_ids.append(upgrade['id'])
 
-            print(f"⚙️  Combo: {combo_names} · Date: {date}")
+            print(f"⚙️  Combo: {combo_from_site} · Date: {date}")
             return {'combo': combo_ids, 'date': date}
 
         except requests.exceptions.HTTPError as http_err:
