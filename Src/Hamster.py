@@ -576,7 +576,7 @@ class HamsterKombatClicker:
             states = response.json()['states']
             for state in states:
                 if state['promoId'] == promo_id:
-                    keys_today = state['receiveKeysToday']
+                    keys_today = state.get('receiveKeysToday', 0)
                     remain = remain_time(state['receiveKeysRefreshSec'])
                     next_keys = f"Следующие ключи будут доступны через: {remain}"
 
