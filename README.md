@@ -2,8 +2,8 @@
 
 ![Preview](https://github.com/user-attachments/assets/3264960e-cbc8-438d-8f39-6d609a3f954f)
 
-Проект был создал чтобы помочь людям проходить рекламные игры в hamster kombat
-есть поддержка генерации промокодов для всех игр + возможность генерировать сразу для всех игр одновременно
+Проект был создал чтобы помочь людям проходить рекламные игры в hamster kombat.
+Есть поддержка генерации промокодов для всех игр + возможность генерировать сразу для всех игр одновременно.
 
 
 ## ⚙ [Настройки](https://github.com/OxFF00FF/Hamsters_mayhem/blob/master/.env.example)
@@ -23,11 +23,11 @@
 ## Быстрый старт windows
 1. Скачайте zip архив и распакуйте в удобное место
 2. либо если у вас установлен `git` откройте удобную для вас папку, нажмите `CTRL + L`, напишите `cmd` и нажмите `enter`
-    у вас откроется консоль, встввьте команду `git clone https://github.com/OxFF00FF/Hamsters_mayhem.git` и нажмите enter.
-    в эту папку скачается репозиторий.
-3. Чтобы установить библиотеки, запустите файл `INSTALL.bat`.
-4. Для запуска используйте файл `START.bat` (или в консоли: `python main.py`).
+    у вас откроется консоль, встввьте команду и нажмите enter. В эту папку скачается репозиторий.
+>`git clone https://github.com/OxFF00FF/Hamsters_mayhem.git`
 
+3. Чтобы установить зависимосся, запустите файл `INSTALL.bat`.
+4. Для запуска используйте файл `START.bat` (или в консоли: `python main.py`)
 
 
 
@@ -40,13 +40,13 @@
 
 >2. Зайдите в бота [hamster kombat bot](https://t.me/hamster_kombat_bot).
     Нажмите старт и кнопку `играть в 1 клик` или `play`.
-    У вас попросят разрешение открыть сайт, соглашаемся нажав на `congirm`
+    У вас попросят разрешение открыть сайт, соглашаемся нажав на `confirm`
 
 ![2](https://github.com/user-attachments/assets/b95141ed-c44e-4853-ad2e-de47e463c18e)
 ![3](https://github.com/user-attachments/assets/5975d491-2b28-4b70-bf8f-1558ab3c8683)
 
->4. у вас откроется игра с предложением открыть ее на телефоне.
-    но нас это не нужно. Открываем инструменты разработчика.
+>4. У вас откроется игра с предложением открыть ее на телефоне.
+    но нам это не нужно. Открываем инструменты разработчика.
     Для Chrome нажимаем `F12` или `CTRL + SHIFT + I`
     либо нажмите на `три точки -> дополнительные инструменты -> инструменты разработчика`
 
@@ -57,7 +57,7 @@
 
 ![123123123](https://github.com/user-attachments/assets/b01121d8-11f5-42a5-9ffd-2596bc855d2e)
 
->6. У вас выберутся элементы и справа нужно найти элемент `iframe` 
+>6. У вас откроются элементы и справа нужно найти элемент `iframe` 
 
 ![5](https://github.com/user-attachments/assets/b99f849a-568d-42c0-8de8-edf28adb4fa1)
 
@@ -66,7 +66,7 @@
 
 ![6](https://github.com/user-attachments/assets/7536093e-b1cf-4183-93e3-e31cba21e73b)
 
->8. Нужно именить `tgWebAppPlatform=weba` на `tgWebAppPlatform=android` и нажать emter. 
+>8. Нужно изменить `tgWebAppPlatform=weba` на `tgWebAppPlatform=android` и нажать emter. 
     У вас откроется игра в браузере
 
 ![7](https://github.com/user-attachments/assets/c463489e-bd83-4ea9-8daa-6a81e960514e)
@@ -79,8 +79,8 @@
 
 ![9](https://github.com/user-attachments/assets/3592748b-5629-4e64-83e4-7cf88ef5d5b1)
 
->11. через пару секунд у вас появится запрос. Нажимаем на него. 
-    у вас появится дополнительные сведения о запросе.
+>11. Через пару секунд у вас появится запрос. Нажимаем на него. 
+    Появятся дополнительные сведения о запросе.
     Нужно нажать на `Headers` и внизу найти `Request headers`
 
 ![11](https://github.com/user-attachments/assets/aceb418e-87c5-4746-b515-29cfa0bff660)
@@ -90,8 +90,12 @@
 
 ![12](https://github.com/user-attachments/assets/a68c821c-ebe1-4829-8897-29ca5908fdff)
 
->14. этот токен нужно будет поставить в .env файле в HAMSTER_TOKEN между кавычек
-`HAMSTER_TOKEN="ваш токен из 13 пункта"`
+>14. Этот токен нужно будет поставить в .env файле в HAMSTER_TOKEN между кавычек.
+>
+Например:
+>`HAMSTER_TOKEN="Bearer 2367343478565fuiGOLjkhegyWEkjeruGFjEkjueowhefiwehggergerUTquvnmpoifehkFwugnjle6732593756"`
+
+
 
 
 # Как запустить код на android
