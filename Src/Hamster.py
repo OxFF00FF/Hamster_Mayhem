@@ -745,3 +745,21 @@ class HamsterKombatClicker:
                 requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
                 time.sleep(2)
                 print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
+
+    def evaluate_cards(self):
+        response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+        response.raise_for_status()
+
+        evaluated_cards = []
+        upgrades = response.json()['upgradesForBuy']
+        for card in upgrades:
+            if card["profitPerHourDelta"] != 0:
+                card["payback_period"] = card["price"] / card["profitPerHourDelta"]
+                card["profitability_ratio"] = card["profitPerHourDelta"] / card["price"]
+            else:
+                card["payback_period"] = float('inf')  # Окупаемость — бесконечность, так как нет прироста прибыли
+                card["profitability_ratio"] = 0  # Коэффициент рентабельности — 0, так как нет прироста прибыли
+
+            evaluated_cards.append(card)
+        sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
+        return sorted_cards[:10]

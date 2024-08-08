@@ -84,8 +84,8 @@ def show_menu():
         f"Главное меню \n"
         f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)} \n\n"
         f"  Какую активность хотите выполнить? \n"
-        f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE:<15} \n"
-        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15}                           {taps_status} · Осталось: {taps_cooldown }\n"
+        f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
+        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15}                           {taps_status} · Осталось: {taps_cooldown}\n"
         f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE:<15}                         {task_status} · Осталось: {task_cooldown} \n"
         f"  {LIGHT_YELLOW}3 |  {RESET}🗃 {YELLOW}Шифр {WHITE:<15}                            {cipher_status} · Осталось: {cipher_cooldown} \n"
         f"  {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE:<15}                           {combo_status} · Осталось: {combo_cooldown} \n"
@@ -95,7 +95,8 @@ def show_menu():
         f"  {LIGHT_YELLOW}8 |  {RESET}🕹 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon:<{max_width}} {WHITE}  {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown} \n"
         f"  {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{trin:<{max_width}} {WHITE}  {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown} \n"
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE:<20}"
+        f"  {LIGHT_YELLOW}$ |  {RESET}⚡️ {YELLOW}Список самых выгодных карт {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}"
     )
 
     print(memu.strip())
@@ -241,9 +242,22 @@ def main():
 
             line_after()
 
+        elif choice == '$':
+            top_10_cards = hamster_client.evaluate_cards()
+
+            print(f"Топ 10 самых выгодных карты для покупки: \n")
+            for card in top_10_cards:
+                print(
+                    f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} \n"
+                    f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']:.1f}{WHITE} \n"
+                    f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.3f}{WHITE}"
+                )
+                print("-" * 30)
+            line_after()
+
 
 def test():
-    hamster_client._activity_cooldowns()
+    hamster_client.evaluate_cards()
     pass
 
 
