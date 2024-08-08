@@ -82,8 +82,8 @@ def show_menu():
 
     max_width = max(len(bike), len(cube), len(clon), len(trin))
     memu = (
+        f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)}\n\n"
         f"Главное меню \n"
-        f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)} \n\n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
         f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15}                           {taps_status} · Осталось: {taps_cooldown}\n"

@@ -616,10 +616,7 @@ class HamsterKombatClicker:
         """
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
-        :param bot_token: токен вашего телеграм бота (необязательно)
-        :param group_id: id вашей группы (необязательно)
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
-        :param prefix: префикс игры (BIKE, CUBE, CLONE, TRAIN)
         """
 
         with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
@@ -687,10 +684,11 @@ class HamsterKombatClicker:
                     color_title = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
                 elif prefix == "TRAIN":
                     color_title = f"{LIGHT_CYAN}{prefix}{WHITE}"
-                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
 
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
+                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+
                 has_code = __emulate_progress(client_token)
                 if has_code:
                     break
@@ -741,10 +739,10 @@ class HamsterKombatClicker:
                 time.sleep(1)
 
         if send_to_group:
-            for promocode in promocodes:
+            for promocode in promocodes.split():
                 requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
                 time.sleep(2)
-                print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
+                print(f"Ключи были отправлены в группу `{self.GROUP_URL}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
@@ -753,13 +751,14 @@ class HamsterKombatClicker:
         evaluated_cards = []
         upgrades = response.json()['upgradesForBuy']
         for card in upgrades:
-            if card["profitPerHourDelta"] != 0:
-                card["payback_period"] = card["price"] / card["profitPerHourDelta"]
-                card["profitability_ratio"] = card["profitPerHourDelta"] / card["price"]
-            else:
-                card["payback_period"] = float('inf')  # Окупаемость — бесконечность, так как нет прироста прибыли
-                card["profitability_ratio"] = 0  # Коэффициент рентабельности — 0, так как нет прироста прибыли
+            if card['isAvailable'] and not card['isExpired']:
+                if card["profitPerHourDelta"] != 0:
+                    card["payback_period"] = card["price"] / card["profitPerHourDelta"]
+                    card["profitability_ratio"] = card["profitPerHourDelta"] / card["price"]
+                else:
+                    card["payback_period"] = float('inf')  # Окупаемость — бесконечность, так как нет прироста прибыли
+                    card["profitability_ratio"] = 0  # Коэффициент рентабельности — 0, так как нет прироста прибыли
 
-            evaluated_cards.append(card)
+                evaluated_cards.append(card)
         sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
         return sorted_cards[:20]
