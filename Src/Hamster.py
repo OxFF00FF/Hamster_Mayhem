@@ -207,6 +207,19 @@ class HamsterKombatClicker:
                     remain_task = remain_time(task.get('remainSeconds', 0))
             result.append({'tasks': {'remain': remain_task, 'isClaimed': all(task.get('isCompleted', False) for task in tasks)}})
 
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            clickerUser = response.json().get('clickerUser')
+            availableTaps = int(clickerUser.get('availableTaps'))
+            maxTaps = int(clickerUser.get('maxTaps'))
+            tapsRecoverPerSec = int(clickerUser.get('tapsRecoverPerSec'))
+            current_remain_time = remain_time(availableTaps / tapsRecoverPerSec)
+            if availableTaps == maxTaps:
+                result.append({'taps': {'remain': 'n/a', 'isClaimed': True}})
+            else:
+                result.append({'taps': {'remain': current_remain_time, 'isClaimed': False}})
+
             return result
 
         except requests.exceptions.HTTPError as http_err:

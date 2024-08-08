@@ -33,6 +33,9 @@ def show_menu():
     activities = hamster_client._activity_cooldowns()
     keys_per_day = 4
     for activity in activities:
+        if 'taps' in activity:
+            taps_status = get_status(activity['taps']['isClaimed'])
+            taps_cooldown = activity['taps']['remain']
         if 'tasks' in activity:
             task_status = get_status(activity['tasks']['isClaimed'])
             task_cooldown = activity['tasks']['remain']
@@ -82,7 +85,7 @@ def show_menu():
         f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)} \n\n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE:<15} \n"
-        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15} \n"
+        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15}                           {taps_status} · Осталось: {taps_cooldown }\n"
         f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE:<15}                         {task_status} · Осталось: {task_cooldown} \n"
         f"  {LIGHT_YELLOW}3 |  {RESET}🗃 {YELLOW}Шифр {WHITE:<15}                            {cipher_status} · Осталось: {cipher_cooldown} \n"
         f"  {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE:<15}                           {combo_status} · Осталось: {combo_cooldown} \n"
