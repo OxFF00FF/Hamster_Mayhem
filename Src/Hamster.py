@@ -166,11 +166,53 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def _get_activity_cooldonws(self):
-        combo = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy')
-        cipher_minigame = requests.post('https://api.hamsterkombatgame.io/clicker/config')
-        promos = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos')
-        tasks = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks')
+    def _activity_cooldonws(self):
+        result = {}
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            combo = response.json()['dailyCombo']
+            remain_combo = remain_time(combo['remainSeconds'])
+            result['combo'] = {'remain': remain_combo, 'isClaimed': combo['isClaimed']}
+            ##########
+
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            cipher = response.json()['dailyCipher']
+            remain_cipher = remain_time(cipher['remainSeconds'])
+            result['cipher'] = {'remain': remain_cipher, 'isClaimed': cipher['isClaimed']}
+
+            daily_minigame = response.json()['dailyKeysMiniGame']
+            remain_minigame = remain_time(daily_minigame['remainSeconds'])
+            result['minigame'] = {'remain': remain_minigame, 'isClaimed': daily_minigame['isClaimed']}
+            ##########
+
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            promo = response.json()['states'][0]
+            remain_promo = remain_time(promo['receiveKeysRefreshSec'])
+            result['promo'] = {'remain': remain_promo}
+            ##########
+
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            tasks = response.json()['tasks']
+            if all(task['isCompleted'] for task in tasks):
+                result['tasks'] = {'isClaimed': True}
+            else:
+                result['tasks'] = {'isClaimed': False}
+
+            return result
+
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f"🚫  HTTP ошибка: {http_err}")
+
+        except Exception as e:
+            logging.error(f"🚫  Произошла ошибка: {e}")
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:

@@ -183,8 +183,8 @@ def main():
 
 
 def test():
-    pass
+    hamster_client._activity_cooldonws()
 
 
 if __name__ == '__main__':
-    main()
+    test()
