@@ -3,11 +3,13 @@ import logging
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from pprint import pprint
+
 from dotenv import load_dotenv
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, \
-    banner, loading, loading_event, line_after, line_before
+    banner, loading, loading_event, line_after, line_before, LIGHT_BLUE, LIGHT_MAGENTA, LIGHT_CYAN
 
 load_dotenv()
 
@@ -20,30 +22,78 @@ send_to_group = True
 HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
+
 # --- CONFIG --- #
 
 
 def get_status(status):
-    return f"{GREEN}ДА{RESET}" if status else f"{RED}НЕТ{RESET}"
+    return f"{GREEN}✅{RESET}" if status else f"{RED}❌{RESET}"
 
 
 def show_menu():
+    activities = hamster_client._activity_cooldowns()
+    keys_per_day = 4
+    for activity in activities:
+        if 'tasks' in activity:
+            task_status = get_status(activity['tasks']['isClaimed'])
+            task_cooldown = activity['tasks']['remain']
+        if 'cipher' in activity:
+            cipher_status = get_status(activity['cipher']['isClaimed'])
+            cipher_cooldown = activity['cipher']['remain']
+        if 'combo' in activity:
+            combo_status = get_status(activity['combo']['isClaimed'])
+            combo_cooldown = activity['combo']['remain']
+        if 'minigame' in activity:
+            minigame_status = get_status(activity['minigame']['isClaimed'])
+            minigame_cooldown = activity['minigame']['remain']
+        if 'promo' in activity:
+            bike = cube = clon = mine = ""
+            bike_keys = cube_keys = clon_keys = mine_keys = 0
+            bike_cooldown = cube_cooldown = clon_cooldown = mine_cooldown = "n/a"
+            bike_status = cube_status = clon_status = mine_status = "n/a"
+
+            for promo in activity['promo']:
+                if promo['name'] == 'Bike Ride 3D':
+                    bike = promo['name']
+                    bike_keys = promo['keys']
+                    bike_cooldown = promo['remain']
+                    bike_status = get_status(promo['isClaimed'])
+
+                if promo['name'] == 'Chain Cube 2048':
+                    cube = promo['name']
+                    cube_keys = promo['keys']
+                    cube_cooldown = promo['remain']
+                    cube_status = get_status(promo['isClaimed'])
+
+                if promo['name'] == 'My Clone Army':
+                    clon = promo['name']
+                    clon_keys = promo['keys']
+                    clon_cooldown = promo['remain']
+                    clon_status = get_status(promo['isClaimed'])
+
+                if promo['name'] == 'Train Miner':
+                    mine = promo['name']
+                    mine_keys = promo['keys']
+                    mine_cooldown = promo['remain']
+                    mine_status = get_status(promo['isClaimed'])
+
     memu = f"""
     Главное меню
     ⚙️  Отправлять в группу: {get_status(send_to_group)}
-     
-    ❕   {LIGHT_YELLOW}#.{RESET} {YELLOW}Информация{WHITE}
-    👆  {LIGHT_YELLOW}1.{RESET} {YELLOW}Выполнить клики{WHITE}
-    🌟  {LIGHT_YELLOW}2.{RESET} {YELLOW}Завершить задания{WHITE}
-    🗃  {LIGHT_YELLOW}3.{RESET} {YELLOW}Получить шифр{WHITE}
-    💰  {LIGHT_YELLOW}4.{RESET} {YELLOW}Выполнить комбо{WHITE}
-    🔑  {LIGHT_YELLOW}5.{RESET} {YELLOW}Пройти миниигру{WHITE}
-    🚴  {LIGHT_YELLOW}6.{RESET} {YELLOW}Получить промокоды для Bike Ride 3D{WHITE}
-    🎲  {LIGHT_YELLOW}7.{RESET} {YELLOW}Получить промокоды для Chain Cube 2048{WHITE}
-    🕹  {LIGHT_YELLOW}8.{RESET} {YELLOW}Получить промокоды для My Clone Army{WHITE}
-    🚂  {LIGHT_YELLOW}9.{RESET} {YELLOW}Получить промокоды для Train Miner{WHITE}
-    🎉  {LIGHT_YELLOW}*.{RESET} {YELLOW}Пройти сразу все игры{WHITE}
-    🔙  {LIGHT_YELLOW}0.{RESET} {YELLOW}Выйти{WHITE}
+
+    Какую активность хотите выполнить?
+    {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE}
+    {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}
+    {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}                         {task_status} · Осталось: {task_cooldown}
+    {LIGHT_YELLOW}3 |  {RESET}🗃 {YELLOW}Шифр {WHITE}                            {cipher_status} · Осталось: {cipher_cooldown}
+    {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE}                           {combo_status} · Осталось: {combo_cooldown}
+    {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}                        {minigame_status} · Осталось: {minigame_cooldown}
+    {LIGHT_YELLOW}6 |  {RESET}🚴 {YELLOW}Промокоды {LIGHT_YELLOW}{bike} {WHITE}     {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown}
+    {LIGHT_YELLOW}7 |  {RESET}🎲 {YELLOW}Промокоды {LIGHT_BLUE}{cube} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown}
+    {LIGHT_YELLOW}8 |  {RESET}🕹 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon} {WHITE}    {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown}
+    {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{mine} {WHITE}      {mine_keys}/{keys_per_day}  {mine_status} · Осталось: {mine_cooldown}
+    {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE}
+    {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}
     """
 
     print(memu.strip())
@@ -172,9 +222,17 @@ def main():
                 logging.error(f"Количество должно быть числом больше 0")
                 exit(1)
 
+            apply = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            if str(apply.lower()) == 'y'.lower():
+                apply = True
+            elif str(apply.lower()) == 'n'.lower():
+                apply = False
+            else:
+                logging.error(f'Такой опции нет!')
+
             def generate_for_all_games(promo):
                 prefix = promo['prefix']
-                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group)
+                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=apply)
 
             with ThreadPoolExecutor() as executor:
                 executor.map(generate_for_all_games, apps)
@@ -183,8 +241,8 @@ def main():
 
 
 def test():
-    hamster_client._activity_cooldonws()
+    pass
 
 
 if __name__ == '__main__':
-    test()
+    main()

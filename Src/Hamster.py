@@ -44,7 +44,6 @@ class HamsterKombatClicker:
             settings = ['BOT_TOKEN', 'GROUP_ID', 'GROUP_URL']
             missing_values = [value for value in settings if os.getenv(value) == 'XXX']
             if len(missing_values) > 0:
-                time.sleep(1)
                 logging.warning(f'{YELLOW}Следующие значения среды отсутствуют в вашем .env файле: {", ".join(missing_values)}{WHITE}')
 
     def _get_headers(self, hamster_token):
@@ -166,45 +165,52 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def _activity_cooldonws(self):
-        result = {}
+    def _activity_cooldowns(self):
+        result = []
         try:
             response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
-
-            combo = response.json()['dailyCombo']
-            remain_combo = remain_time(combo['remainSeconds'])
-            result['combo'] = {'remain': remain_combo, 'isClaimed': combo['isClaimed']}
-            ##########
+            combo = response.json().get('dailyCombo', {})
+            remain_combo = remain_time(combo.get('remainSeconds', 0))
+            result.append({'combo': {'remain': remain_combo, 'isClaimed': combo.get('isClaimed', False)}})
 
             response = requests.post('https://api.hamsterkombatgame.io/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
-
-            cipher = response.json()['dailyCipher']
-            remain_cipher = remain_time(cipher['remainSeconds'])
-            result['cipher'] = {'remain': remain_cipher, 'isClaimed': cipher['isClaimed']}
-
-            daily_minigame = response.json()['dailyKeysMiniGame']
-            remain_minigame = remain_time(daily_minigame['remainSeconds'])
-            result['minigame'] = {'remain': remain_minigame, 'isClaimed': daily_minigame['isClaimed']}
-            ##########
+            config_data = response.json()
+            cipher = config_data.get('dailyCipher', {})
+            remain_cipher = remain_time(cipher.get('remainSeconds', 0))
+            result.append({'cipher': {'remain': remain_cipher, 'isClaimed': cipher.get('isClaimed', False)}})
+            daily_minigame = config_data.get('dailyKeysMiniGame', {})
+            remain_minigame = remain_time(daily_minigame.get('remainSeconds', 0))
+            result.append({'minigame': {'remain': remain_minigame, 'isClaimed': daily_minigame.get('isClaimed', False)}})
 
             response = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+            promos = response.json().get('promos', [{}])
+            states = response.json().get('states', [{}])
+            promo_results = []
+            for promo in promos:
+                for state in states:
+                    if promo['promoId'] == state['promoId']:
+                        promo_name = promo['title']['en']
+                        keys_today = state['receiveKeysToday']
+                        remain_promo = remain_time(state['receiveKeysRefreshSec'])
 
-            promo = response.json()['states'][0]
-            remain_promo = remain_time(promo['receiveKeysRefreshSec'])
-            result['promo'] = {'remain': remain_promo}
-            ##########
+                        if keys_today == 4:
+                            is_claimed = False
+                        else:
+                            is_claimed = True
+
+                        promo_results.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
+            result.append({'promo': promo_results})
 
             response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
-
-            tasks = response.json()['tasks']
-            if all(task['isCompleted'] for task in tasks):
-                result['tasks'] = {'isClaimed': True}
-            else:
-                result['tasks'] = {'isClaimed': False}
+            tasks = response.json().get('tasks', [])
+            for task in tasks:
+                if task.get('id') == 'streak_days':
+                    remain_task = remain_time(task.get('remainSeconds', 0))
+            result.append({'tasks': {'remain': remain_task, 'isClaimed': all(task.get('isCompleted', False) for task in tasks)}})
 
             return result
 
