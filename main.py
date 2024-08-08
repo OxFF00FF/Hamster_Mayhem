@@ -102,7 +102,7 @@ def show_menu():
     )
 
     print(memu.strip())
-    choice = input(f"\nВыберите действие:\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/0):{RESET} ")
+    choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/0):{RESET} ")
     line_before()
     return choice
 
