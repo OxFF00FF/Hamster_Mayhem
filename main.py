@@ -161,13 +161,9 @@ def main():
             if all(card['available'] for card in upgrades_info['cards']):
                 hamster_client.complete_daily_combo()
             else:
-                choice = input(f"Сегодня не все карты доступны! Хотите купить только доступные? Y(да)/N(нет): ")
+                choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
                 if str(choice.lower()) == 'y'.lower():
                     hamster_client.complete_daily_combo(buy_anyway=True)
-                elif str(choice.lower()) == 'n'.lower():
-                    line_after()
-                else:
-                    logging.error(f'Такой опции нет!')
             line_after()
 
         elif choice == '5':
@@ -175,43 +171,35 @@ def main():
             line_after()
 
         elif choice == '6':
-            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='BIKE', apply_promo=True)
-            elif str(choice.lower()) == 'n'.lower():
-                generate_promocodes(prefix='BIKE')
-            else:
-                logging.error(f'Такой опции нет!')
+
+            generate_promocodes(prefix='BIKE')
             line_after()
 
         elif choice == '7':
-            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='CUBE', apply_promo=True)
-            elif str(choice.lower()) == 'n'.lower():
-                generate_promocodes(prefix='CUBE')
-            else:
-                logging.error(f'Такой опции нет!')
+
+            generate_promocodes(prefix='CUBE')
             line_after()
 
         elif choice == '8':
-            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='CLONE', apply_promo=True)
-            elif str(choice.lower()) == 'n'.lower():
-                generate_promocodes(prefix='CLONE')
-            else:
-                logging.error(f'Такой опции нет!')
+
+            generate_promocodes(prefix='CLONE')
             line_after()
 
         elif choice == '9':
-            choice = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
+            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='TRAIN', apply_promo=True)
-            elif str(choice.lower()) == 'n'.lower():
-                generate_promocodes(prefix='TRAIN')
-            else:
-                logging.error(f'Такой опции нет!')
+
+            generate_promocodes(prefix='TRAIN')
             line_after()
 
         elif choice == '*':
@@ -227,17 +215,15 @@ def main():
                 logging.error(f"Количество должно быть числом больше 0")
                 exit(1)
 
-            apply = input(f"Применить промокоды после получения? Y(да)/N(нет): ")
-            if str(apply.lower()) == 'y'.lower():
-                apply = True
-            elif str(apply.lower()) == 'n'.lower():
-                apply = False
+            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
+            if str(choice.lower()) == 'y'.lower():
+                choice = True
             else:
-                logging.error(f'Такой опции нет!')
+                choice = False
 
             def generate_for_all_games(promo):
                 prefix = promo['prefix']
-                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=apply)
+                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=choice)
 
             with ThreadPoolExecutor() as executor:
                 executor.map(generate_for_all_games, apps)
