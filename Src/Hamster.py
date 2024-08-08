@@ -16,22 +16,36 @@ from bs4 import BeautifulSoup as BS
 from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
-from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_RED, LIGHT_MAGENTA, LIGHT_CYAN, \
-    text_to_morse, remain_time, line_after, LIGHT_BLUE
+from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_MAGENTA, LIGHT_CYAN, LIGHT_BLUE, DARK_GRAY, \
+    text_to_morse, remain_time, line_after
 
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
+load_dotenv()
 
 
 class HamsterKombatClicker:
 
-    def __init__(self, hamster_token):
+    def __init__(self, hamster_token, show_warning=False):
         """
         :param hamster_token: Ваш токен хомяка из браузерной версии игры
         """
 
         self.HAMSTER_TOKEN = hamster_token
+        self.BOT_TOKEN = os.getenv('BOT_TOKEN')
+        self.GROUP_ID = os.getenv('GROUP_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
+
         self.base_url = 'https://api.hamsterkombatgame.io'
+
+        if self.HAMSTER_TOKEN == 'XXX':
+            logging.error(f'Отсутствует значение HAMSTER_TOKEN в вашем .env')
+            exit(1)
+
+        if show_warning:
+            settings = ['BOT_TOKEN', 'GROUP_ID', 'GROUP_URL']
+            missing_values = [value for value in settings if os.getenv(value) == 'XXX']
+            if len(missing_values) > 0:
+                time.sleep(1)
+                logging.warning(f'{YELLOW}Следующие значения среды отсутствуют в вашем .env файле: {", ".join(missing_values)}{WHITE}')
 
     def _get_headers(self, hamster_token):
         ua = UserAgent()
@@ -97,7 +111,7 @@ class HamsterKombatClicker:
                     if match > 90:
                         combo_ids.append(upgrade['id'])
 
-            print(f"⚙️  Combo: {combo_from_site} · Date: {date}")
+            print(f"⚙️  Combo: {combo_ids} · Date: {date}")
             return {'combo': combo_ids, 'date': date}
 
         except requests.exceptions.HTTPError as http_err:
@@ -133,10 +147,13 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             clicker = response.json()['clickerUser']
-            return {'balanceCoins': int(clicker['balanceCoins']),
-                    'total': int(clicker['totalCoins']),
-                    'keys': int(clicker['balanceKeys']),
-                    'date': int(clicker['lastSyncUpdate'])}
+            return {
+                'balanceCoins': int(clicker['balanceCoins']),
+                'total': int(clicker['totalCoins']),
+                'keys': int(clicker['balanceKeys']),
+                'date': int(clicker['lastSyncUpdate']),
+                'tickets': int(clicker['balanceTickets'])
+            }
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -148,6 +165,12 @@ class HamsterKombatClicker:
 
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
+
+    def _get_activity_cooldonws(self):
+        combo = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy')
+        cipher_minigame = requests.post('https://api.hamsterkombatgame.io/clicker/config')
+        promos = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos')
+        tasks = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks')
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:
@@ -208,7 +231,7 @@ class HamsterKombatClicker:
                                                      f"🏷  {CYAN}{upgrade['name']} • {upgrade['section']}{WHITE} \n"
                                                      f"💰  {YELLOW}{upgrade['price']:,}{WHITE} \n"
                                                      f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} в час{WHITE} \n"
-                                                     f"⭐️  {upgrade['level']} уровень \n".replace(',', ' '),
+                                                     f"⭐️  {DARK_GRAY}{upgrade['level']} уровень{WHITE} \n".replace(',', ' '),
                                       'id': upgrade['id'],
                                       'available': upgrade['isAvailable']})
 
@@ -218,8 +241,8 @@ class HamsterKombatClicker:
                             available = f"{RED}{upgrade['isAvailable']}{WHITE}"
                         cards_info += f"{upgrade['name']} · {available} | "
 
-            summary = f"📊  Общая прыбыль:  +{total_profit:,} в час \n" \
-                      f"🌟  Общая стоимость: {total_price:,}".replace(',', ' ')
+            summary = f"📊  {LIGHT_YELLOW}Общая прыбыль:{WHITE}  {MAGENTA}+{total_profit:,} в час {WHITE}\n" \
+                      f"🌟  {LIGHT_YELLOW}Общая стоимость:{WHITE} {YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
 
             print(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
             return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
@@ -238,24 +261,28 @@ class HamsterKombatClicker:
     def daily_info(self):
         try:
             upgrades_info = self._collect_upgrades_info()
+            balance = self._get_balance()
             cipher = upgrades_info['cipher']
             morse = text_to_morse(cipher)
             combo = '\n'.join(card['description'] for card in upgrades_info['cards'])
 
             result = {'date': f"📆  {datetime.datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']} (дата комбо)",
-                      'cipher': f"📇  Шифр:  {cipher} | {morse} |",
+                      'cipher': f"📇  {LIGHT_YELLOW}Шифр:{WHITE}  {cipher} | {morse} |",
                       'summary': f"{upgrades_info['summary']}",
                       'combo': combo}
 
             info = f"{result['date']} \n\n"
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
-            info += f"{result['summary']}"
+            info += f"{result['summary']} \n\n"
+            info += f"💰  {LIGHT_YELLOW}Баланс:{WHITE} {balance['balanceCoins']:,} \n"
+            info += f"⭐️  {LIGHT_YELLOW}Всего:{WHITE} {balance['total']:,} \n"
+            info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,} \n"
             if '🚫' in result['combo']:
                 info += "⚠️Сегодня вам не все карты доступны"
             time.sleep(1)
             line_after()
-            return info
+            return info.replace(',', ' ')
 
         except Exception as e:
             logging.error(e)
@@ -450,7 +477,7 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def send_balance_to_group(self, bot_token, group_id, update_time_sec=7200):
+    def send_balance_to_group(self, bot_token, update_time_sec=7200):
         try:
             while True:
                 info = self._get_balance()
@@ -463,7 +490,7 @@ class HamsterKombatClicker:
                          f"🔄  Обновление: {update_date}"
                 balance = result.replace(',', ' ')
 
-                response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": balance})
+                response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": balance})
                 response.raise_for_status()
 
                 print(f"✅  {update_date} · Баланс успешно отправлен в группу")
@@ -501,12 +528,12 @@ class HamsterKombatClicker:
                 print(f"ℹ️  Все ключи в игре `{promo_title}` сегодня уже получены. {next_keys}")
 
             else:
-                print("⚠️  Активация промокода...")
+                print(f"⚠️  Активация промокода `{promoCode}`...")
                 json_data = {'promoCode': promoCode}
                 response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
                 time.sleep(2)
-                print(f"✅  Промокод `{promoCode}` успешно активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}\n")
+                print(f"🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}\n")
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -518,7 +545,7 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=True, bot_token=None, group_id=None, apply_promo=None, prefix=None):
+    def get_promocodes(self, count=1, send_to_group=None, bot_token=None, apply_promo=None, prefix=None):
         """
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
@@ -644,8 +671,10 @@ class HamsterKombatClicker:
             send_to_group = False
             for promocode in promocodes.split():
                 self.apply_promocode(promocode, PROMO_ID)
+                time.sleep(1)
 
         if send_to_group:
-            response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": group_id, "text": promocodes})
-            response.raise_for_status()
-            print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
+            for promocode in promocodes:
+                requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
+                time.sleep(2)
+                print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
