@@ -611,6 +611,7 @@ class HamsterKombatClicker:
 
     def get_promocodes(self, count=1, send_to_group=True, apply_promo=None, prefix=None):
         """
+        :param prefix:
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
