@@ -46,10 +46,10 @@ def show_menu():
             minigame_status = get_status(activity['minigame']['isClaimed'])
             minigame_cooldown = activity['minigame']['remain']
         if 'promo' in activity:
-            bike = cube = clon = mine = ""
-            bike_keys = cube_keys = clon_keys = mine_keys = 0
-            bike_cooldown = cube_cooldown = clon_cooldown = mine_cooldown = "n/a"
-            bike_status = cube_status = clon_status = mine_status = "n/a"
+            bike = cube = clon = trin = ""
+            bike_keys = cube_keys = clon_keys = trin_keys = 0
+            bike_cooldown = cube_cooldown = clon_cooldown = trin_cooldown = "n/a"
+            bike_status = cube_status = clon_status = trin_status = "n/a"
 
             for promo in activity['promo']:
                 if promo['name'] == 'Bike Ride 3D':
@@ -76,24 +76,24 @@ def show_menu():
                     trin_cooldown = promo['remain']
                     trin_status = get_status(promo['isClaimed'])
 
-    memu = f"""
-    Главное меню
-    ⚙️  Отправлять в группу: {get_status(send_to_group)}
-
-    Какую активность хотите выполнить?
-    {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE}
-    {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}
-    {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}                         {task_status} · Осталось: {task_cooldown}
-    {LIGHT_YELLOW}3 |  {RESET}🗃 {YELLOW}Шифр {WHITE}                            {cipher_status} · Осталось: {cipher_cooldown}
-    {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE}                           {combo_status} · Осталось: {combo_cooldown}
-    {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}                        {minigame_status} · Осталось: {minigame_cooldown}
-    {LIGHT_YELLOW}6 |  {RESET}🚴 {YELLOW}Промокоды {LIGHT_YELLOW}{bike} {WHITE}     {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown}
-    {LIGHT_YELLOW}7 |  {RESET}🎲 {YELLOW}Промокоды {LIGHT_BLUE}{cube} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown}
-    {LIGHT_YELLOW}8 |  {RESET}🕹 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon} {WHITE}    {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown}
-    {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{trin} {WHITE}      {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown}
-    {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE}
-    {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}
-    """
+    max_width = max(len(bike), len(cube), len(clon), len(trin))
+    memu = (
+        f"Главное меню \n"
+        f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)} \n\n"
+        f"  Какую активность хотите выполнить? \n"
+        f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE:<15} \n"
+        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15} \n"
+        f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE:<15}                         {task_status} · Осталось: {task_cooldown} \n"
+        f"  {LIGHT_YELLOW}3 |  {RESET}🗃 {YELLOW}Шифр {WHITE:<15}                            {cipher_status} · Осталось: {cipher_cooldown} \n"
+        f"  {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE:<15}                           {combo_status} · Осталось: {combo_cooldown} \n"
+        f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}Миниигра {WHITE:<15}                        {minigame_status} · Осталось: {minigame_cooldown} \n"
+        f"  {LIGHT_YELLOW}6 |  {RESET}🚴 {YELLOW}Промокоды {LIGHT_YELLOW}{bike:<{max_width}} {WHITE}  {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown} \n"
+        f"  {LIGHT_YELLOW}7 |  {RESET}🎲 {YELLOW}Промокоды {LIGHT_BLUE}{cube:<{max_width}} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown} \n"
+        f"  {LIGHT_YELLOW}8 |  {RESET}🕹 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon:<{max_width}} {WHITE}  {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown} \n"
+        f"  {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{trin:<{max_width}} {WHITE}  {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown} \n"
+        f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE:<20}"
+    )
 
     print(memu.strip())
     choice = input(f"\n{CYAN}Выберите действие (#/1/2/3/4/5/6/7/8/9/0/*):{RESET} ")
