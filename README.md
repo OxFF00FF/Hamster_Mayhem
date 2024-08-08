@@ -2,7 +2,7 @@
 
 ![Preview](https://github.com/user-attachments/assets/3264960e-cbc8-438d-8f39-6d609a3f954f)
 
-Проект был создал чтобы помочь людям проходить рекламные игры в hamster kombat.
+Проект был создал чтобы помочь людям проходить рекламные игры в [hamster kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
 Есть поддержка генерации промокодов для всех игр + возможность генерировать сразу для всех игр одновременно.
 
 
@@ -41,7 +41,7 @@
 
 ![1](https://github.com/user-attachments/assets/0f307b70-b5fa-4479-9ffa-fe0cad537a9e)
 
->2. Зайдите в бота [hamster kombat bot](https://t.me/hamster_kombat_bot).
+>2. Зайдите в бота [hamster kombat bot](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
     Нажмите старт и кнопку `играть в 1 клик` или `play`.
     У вас попросят разрешение открыть сайт, соглашаемся нажав на `confirm`
 
