@@ -612,7 +612,7 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=True, apply_promo=None, prefix=None, bot_token=None):
+    def get_promocodes(self, count=1, send_to_group=True, apply_promo=None, prefix=None):
         """
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
@@ -742,7 +742,7 @@ class HamsterKombatClicker:
 
         if send_to_group:
             for promocode in promocodes:
-                requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
+                requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
                 time.sleep(2)
                 print(f"Ключи был отправлены в группу `{self.GROUP_URL}`")
 
