@@ -604,7 +604,7 @@ class HamsterKombatClicker:
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}")
 
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
