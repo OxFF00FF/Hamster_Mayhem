@@ -109,10 +109,10 @@ def show_menu():
 
 def generate_promocodes(apply_promo=False, prefix=None):
     if prefix:
-        count = input(f"Количество ключей для генерации (enter значение по умолчанию): ")
+        count = input(f"Количество ключей для генерации Enter(по умолчанию 1): ")
         if count == '':
             count = 1
-            print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
+            print("Количество ключей не указано. Генерируется 1 ключ по умолчанию")
 
         if int(count) <= 0:
             logging.error(f"Количество должно быть числом больше 0")

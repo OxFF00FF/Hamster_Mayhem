@@ -742,7 +742,7 @@ class HamsterKombatClicker:
             for promocode in promocodes.split():
                 requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
                 time.sleep(2)
-                print(f"Ключи были отправлены в группу `{self.GROUP_URL}`")
+            print(f"Ключи были отправлены в группу `{self.GROUP_URL}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
