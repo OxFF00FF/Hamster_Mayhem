@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
@@ -95,12 +96,13 @@ def show_menu():
         f"  {LIGHT_YELLOW}8 |  {RESET}🕹 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon:<{max_width}} {WHITE}  {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown} \n"
         f"  {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{trin:<{max_width}} {WHITE}  {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown} \n"
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE} \n"
-        f"  {LIGHT_YELLOW}$ |  {RESET}⚡️ {YELLOW}Список самых выгодных карт {WHITE} \n"
+        f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
+        f"  {LIGHT_YELLOW}+ |  {RESET}⚡️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}"
     )
 
     print(memu.strip())
-    choice = input(f"\n{CYAN}Выберите действие (#/1/2/3/4/5/6/7/8/9/0/*):{RESET} ")
+    choice = input(f"\nВыберите действие:\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/0):{RESET} ")
     line_before()
     return choice
 
@@ -248,12 +250,21 @@ def main():
             print(f"Топ 10 самых выгодных карты для покупки: \n")
             for card in top_10_cards:
                 print(
-                    f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} \n"
+                    f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID({card['id']})\n"
                     f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']:.1f}{WHITE} \n"
                     f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.3f}{WHITE}"
                 )
                 print("-" * 30)
             line_after()
+
+        elif choice.startswith('+'):
+            match = re.search(pattern=r'\+(.*?)$', string=choice)
+            if match:
+                upgrade_id = match.group(1)
+                hamster_client._buy_upgrade(upgradeId=upgrade_id)
+
+        elif choice == '0':
+            exit(1)
 
 
 def test():
