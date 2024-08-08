@@ -568,17 +568,17 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            keys_today = None
-            next_keys = None
-            keys_limit = None
-            promo_title = None
+            keys_today = 0
 
             states = response.json()['states']
             for state in states:
-                if state['promoId'] == promo_id:
-                    keys_today = state.get('receiveKeysToday', 0)
-                    remain = remain_time(state['receiveKeysRefreshSec'])
-                    next_keys = f"Следующие ключи будут доступны через: {remain}"
+                try:
+                    if state['promoId'] == promo_id:
+                        keys_today = state['receiveKeysToday']
+                        remain = remain_time(state['receiveKeysRefreshSec'])
+                        next_keys = f"Следующие ключи будут доступны через: {remain}"
+                except:
+                    keys_today = 0
 
             promos = response.json()['promos']
             for promo in promos:

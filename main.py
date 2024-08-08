@@ -61,24 +61,32 @@ def show_menu():
                     bike_keys = promo['keys']
                     bike_cooldown = promo['remain']
                     bike_status = get_status(promo['isClaimed'])
+                else:
+                    bike = 'Bike Ride 3D'
 
                 if promo['name'] == 'Chain Cube 2048':
                     cube = promo['name']
                     cube_keys = promo['keys']
                     cube_cooldown = promo['remain']
                     cube_status = get_status(promo['isClaimed'])
+                else:
+                    cube = 'Chain Cube 2048'
 
                 if promo['name'] == 'My Clone Army':
                     clon = promo['name']
                     clon_keys = promo['keys']
                     clon_cooldown = promo['remain']
                     clon_status = get_status(promo['isClaimed'])
+                else:
+                    clon = 'My Clone Army'
 
                 if promo['name'] == 'Train Miner':
                     trin = promo['name']
                     trin_keys = promo['keys']
                     trin_cooldown = promo['remain']
                     trin_status = get_status(promo['isClaimed'])
+                else:
+                    trin = 'Train Miner'
 
     max_width = max(len(bike), len(cube), len(clon), len(trin))
     memu = (
@@ -175,32 +183,36 @@ def main():
             choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='BIKE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='BIKE')
 
-            generate_promocodes(prefix='BIKE')
             line_after()
 
         elif choice == '7':
             choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='CUBE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='CUBE')
 
-            generate_promocodes(prefix='CUBE')
             line_after()
 
         elif choice == '8':
             choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='CLONE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='CLONE')
 
-            generate_promocodes(prefix='CLONE')
             line_after()
 
         elif choice == '9':
             choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
             if str(choice.lower()) == 'y'.lower():
                 generate_promocodes(prefix='TRAIN', apply_promo=True)
+            else:
+                generate_promocodes(prefix='TRAIN')
 
-            generate_promocodes(prefix='TRAIN')
             line_after()
 
         elif choice == '*':
