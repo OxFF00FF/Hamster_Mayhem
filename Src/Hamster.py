@@ -759,7 +759,7 @@ class HamsterKombatClicker:
         for card in upgrades:
             if card['isAvailable'] and not card['isExpired']:
                 if card["profitPerHourDelta"] != 0:
-                    card["payback_period"] = remain_time(card["price"] / card["profitPerHourDelta"])
+                    card["payback_period"] = remain_time(int(card["price"] / card["profitPerHourDelta"]) * 3600)
                     card["profitability_ratio"] = card["profitPerHourDelta"] / card["price"]
                 else:
                     card["payback_period"] = float('inf')

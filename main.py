@@ -250,7 +250,7 @@ def main():
             for card in top_10_cards:
                 print(
                     f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID ({card['id']}) \n"
-                    f"💰  Стоимость: {YELLOW}{card['price']:,}{WHITE} \n"
+                    f"💰  Стоимость: {YELLOW}{card['price']:,}{WHITE} · +{card['profitPerHour']} в час \n"
                     f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']}{WHITE} \n"
                     f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.5f}{WHITE}"
                 )
