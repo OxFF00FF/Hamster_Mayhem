@@ -129,5 +129,3 @@ def line_before():
 def line_after():
     time.sleep(1)
     print(" " + "~" * 60 + "\n")
-
-colors_test()

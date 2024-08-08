@@ -762,4 +762,4 @@ class HamsterKombatClicker:
 
             evaluated_cards.append(card)
         sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
-        return sorted_cards[:10]
+        return sorted_cards[:20]
