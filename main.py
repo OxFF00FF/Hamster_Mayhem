@@ -9,20 +9,16 @@ from Src.Hamster import HamsterKombatClicker
 from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, \
     banner, loading, loading_event, line_after, line_before
 
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
+load_dotenv()
 
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.ERROR)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
 # logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s{WHITE}", level=logging.INFO)
 
 # --- CONFIG --- #
 
 send_to_group = True
-BOT_TOKEN = os.getenv('BOT_TOKEN')
-GROUP_ID = os.getenv('GROUP_ID')
 HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
-
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
-
 
 # --- CONFIG --- #
 
@@ -67,7 +63,7 @@ def generate_promocodes(apply_promo=False, prefix=None):
             logging.error(f"Количество должно быть числом больше 0")
             exit(1)
 
-        main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, BOT_TOKEN, GROUP_ID, apply_promo, prefix))
+        main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, apply_promo, prefix))
         loading_thread = threading.Thread(target=loading)
 
         loading_thread.start()
@@ -178,7 +174,7 @@ def main():
 
             def generate_for_all_games(promo):
                 prefix = promo['prefix']
-                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, bot_token=BOT_TOKEN, group_id=GROUP_ID)
+                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group)
 
             with ThreadPoolExecutor() as executor:
                 executor.map(generate_for_all_games, apps)
