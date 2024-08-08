@@ -11,8 +11,8 @@ from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, \
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
-# logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s{WHITE}", level=logging.INFO)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.ERROR)
+# logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s{WHITE}", level=logging.INFO)
 
 # --- CONFIG --- #
 
@@ -58,7 +58,7 @@ def show_menu():
 
 def generate_promocodes(apply_promo=False, prefix=None):
     if prefix:
-        count = input(f"Введите количество ключей для генерации (enter значение по умолчанию): ")
+        count = input(f"Количество ключей для генерации (enter значение по умолчанию): ")
         if count == '':
             count = 1
             print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
