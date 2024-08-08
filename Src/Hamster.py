@@ -738,8 +738,16 @@ class HamsterKombatClicker:
 
         if send_to_group:
             for promocode in promocodes.split():
-                requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
-                time.sleep(2)
+                try:
+                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode})
+                    response.raise_for_status()
+                    time.sleep(2)
+
+                except requests.exceptions.HTTPError:
+                    logging.warning(f"🚫  Токен телеграм бота не указан")
+                except Exception as e:
+                    logging.error(f"🚫  Произошла ошибка: {e}")
+
             print(f"Промокоды были отправлены в группу `{self.GROUP_URL}`")
 
     def evaluate_cards(self):
