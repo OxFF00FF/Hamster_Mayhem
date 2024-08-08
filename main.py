@@ -241,6 +241,7 @@ def main():
 
 
 def test():
+    hamster_client._activity_cooldowns()
     pass
 
 

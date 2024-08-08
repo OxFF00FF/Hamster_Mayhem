@@ -195,12 +195,7 @@ class HamsterKombatClicker:
                         promo_name = promo['title']['en']
                         keys_today = state['receiveKeysToday']
                         remain_promo = remain_time(state['receiveKeysRefreshSec'])
-
-                        if keys_today == 4:
-                            is_claimed = False
-                        else:
-                            is_claimed = True
-
+                        is_claimed = True if keys_today == 4 else False
                         promo_results.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
             result.append({'promo': promo_results})
 
