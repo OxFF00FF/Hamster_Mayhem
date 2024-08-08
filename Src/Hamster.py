@@ -554,6 +554,11 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
+            keys_today = None
+            next_keys = None
+            keys_limit = None
+            promo_title = None
+
             states = response.json()['states']
             for state in states:
                 if state['promoId'] == promo_id:
@@ -567,9 +572,12 @@ class HamsterKombatClicker:
                     keys_limit = promo['keysPerDay']
                     promo_title = promo['title']['en']
 
+            if keys_today is None or keys_limit is None:
+                print(f"❌ Промоакция с ID {promo_id} не найдена.")
+                return
+
             if keys_today == keys_limit:
                 print(f"ℹ️  Все ключи в игре `{promo_title}` сегодня уже получены. {next_keys}")
-
             else:
                 print(f"⚠️  Активация промокода `{promoCode}`...")
                 json_data = {'promoCode': promoCode}
@@ -588,7 +596,10 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=None, bot_token=None, apply_promo=None, prefix=None):
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Произошла ошибка: {e}")
+
+    def get_promocodes(self, count=1, send_to_group=True, bot_token=None, apply_promo=None, prefix=None):
         """
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
@@ -663,7 +674,7 @@ class HamsterKombatClicker:
                     color_title = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
                 elif prefix == "TRAIN":
                     color_title = f"{LIGHT_CYAN}{prefix}{WHITE}"
-                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}\n")
+                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
 
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)

@@ -3,7 +3,6 @@ import logging
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from pprint import pprint
 
 from dotenv import load_dotenv
 
@@ -72,10 +71,10 @@ def show_menu():
                     clon_status = get_status(promo['isClaimed'])
 
                 if promo['name'] == 'Train Miner':
-                    mine = promo['name']
-                    mine_keys = promo['keys']
-                    mine_cooldown = promo['remain']
-                    mine_status = get_status(promo['isClaimed'])
+                    trin = promo['name']
+                    trin_keys = promo['keys']
+                    trin_cooldown = promo['remain']
+                    trin_status = get_status(promo['isClaimed'])
 
     memu = f"""
     Главное меню
@@ -91,7 +90,7 @@ def show_menu():
     {LIGHT_YELLOW}6 |  {RESET}🚴 {YELLOW}Промокоды {LIGHT_YELLOW}{bike} {WHITE}     {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown}
     {LIGHT_YELLOW}7 |  {RESET}🎲 {YELLOW}Промокоды {LIGHT_BLUE}{cube} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown}
     {LIGHT_YELLOW}8 |  {RESET}🕹 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon} {WHITE}    {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown}
-    {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{mine} {WHITE}      {mine_keys}/{keys_per_day}  {mine_status} · Осталось: {mine_cooldown}
+    {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{trin} {WHITE}      {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown}
     {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE}
     {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}
     """
