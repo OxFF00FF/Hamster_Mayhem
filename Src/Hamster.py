@@ -252,7 +252,8 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                remain = remain_time(upgrade['cooldownSeconds'])
+                print(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. Карта будет доступна для улучшения через: {remain}")
             elif response.status_code == 401:
                 logging.error(f"🚫  Предоставлен неверный токен")
             else:
@@ -585,10 +586,6 @@ class HamsterKombatClicker:
                     keys_limit = promo['keysPerDay']
                     promo_title = promo['title']['en']
 
-            if keys_today is None or keys_limit is None:
-                print(f"❌ Промоакция с ID {promo_id} не найдена.")
-                return
-
             if keys_today == keys_limit:
                 print(f"ℹ️  Все ключи в игре `{promo_title}` сегодня уже получены. {next_keys}")
             else:
@@ -742,7 +739,7 @@ class HamsterKombatClicker:
             for promocode in promocodes.split():
                 requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode}).raise_for_status()
                 time.sleep(2)
-            print(f"Ключи были отправлены в группу `{self.GROUP_URL}`")
+            print(f"Промокоды были отправлены в группу `{self.GROUP_URL}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
@@ -753,11 +750,11 @@ class HamsterKombatClicker:
         for card in upgrades:
             if card['isAvailable'] and not card['isExpired']:
                 if card["profitPerHourDelta"] != 0:
-                    card["payback_period"] = card["price"] / card["profitPerHourDelta"]
+                    card["payback_period"] = remain_time(card["price"] / card["profitPerHourDelta"])
                     card["profitability_ratio"] = card["profitPerHourDelta"] / card["price"]
                 else:
-                    card["payback_period"] = float('inf')  # Окупаемость — бесконечность, так как нет прироста прибыли
-                    card["profitability_ratio"] = 0  # Коэффициент рентабельности — 0, так как нет прироста прибыли
+                    card["payback_period"] = float('inf')
+                    card["profitability_ratio"] = 0
 
                 evaluated_cards.append(card)
         sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)

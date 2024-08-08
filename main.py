@@ -82,6 +82,7 @@ def show_menu():
 
     max_width = max(len(bike), len(cube), len(clon), len(trin))
     memu = (
+        f"Настройки \n"
         f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)}\n\n"
         f"Главное меню \n"
         f"  Какую активность хотите выполнить? \n"
@@ -233,12 +234,13 @@ def main():
         elif choice == '$':
             top_10_cards = hamster_client.evaluate_cards()
 
-            print(f"Топ 10 самых выгодных карты для покупки: \n")
+            print(f"Топ 20 самых выгодных карт (показаны только доступные для покупки): \n")
             for card in top_10_cards:
                 print(
-                    f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID({card['id']})\n"
-                    f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']:.1f}{WHITE} \n"
-                    f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.3f}{WHITE}"
+                    f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID ({card['id']}) \n"
+                    f"💰  Стоимость: {YELLOW}{card['price']:,}{WHITE} \n"
+                    f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']}{WHITE} \n"
+                    f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.5f}{WHITE}"
                 )
                 print("-" * 30)
             line_after()
@@ -248,6 +250,7 @@ def main():
             if match:
                 upgrade_id = match.group(1)
                 hamster_client._buy_upgrade(upgradeId=upgrade_id)
+            line_after()
 
         elif choice == '0':
             exit(1)
