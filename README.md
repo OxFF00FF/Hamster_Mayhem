@@ -106,10 +106,19 @@
 4. `git clone https://github.com/OxFF00FF/Hamsters_mayhem.git`
 5. `cd Hamsters_mayhem`
 6. `cp .env.example .env`
-7. `nano .env`. Поставить ваш токен в HAMSTER_TOKEN и другие, если необходимо
+7. `nano .env`. Укажите ваш токен в HAMSTER_TOKEN и другие значения, если необходимо
 8. Нажать кнопку `CTRL` и на клавиатуре английскую `X` потом `Y` и `enter` чтобы сохранить файл
-9. Проверить что данные записались `cat .env`
-10. `pip install -r requirements.txt` установка зависимостей
-11. Если будут ошибки то `pip install python-dotenv requests beautifulsoup4 fuzzywuzzy fake-useragent spinners`
-12. Запускаем `python main.py`
-13. Чтобы обновить код `git pull` и `python main.py`
+9. Проверить что данные записались `cat .env` (выводит содержимое файла .env)
+10. Установка зависимостей `pip install -r requirements.txt` 
+11. Если будут ошибки во время установки то `pip install python-dotenv requests beautifulsoup4 fuzzywuzzy fake-useragent spinners`
+12. Либо по отдельности:
+- `pip install python-dotenv`
+- `pip install requests`
+- `pip install beautifulsoup4`
+- `pip install fuzzywuzzy`
+- `pip install fake-useragent`
+- `pip install spinners`
+13. Запускаем `python main.py`
+14. Чтобы обновить код используйте команды `git pull` и `python main.py`
+15. Если при открытии Termux у вас будет открыта корневая папка `~ $`.
+Вам нужно будет перейти в папку проекта `cd Hamsters_mayhem` и запустить `python main.py`
