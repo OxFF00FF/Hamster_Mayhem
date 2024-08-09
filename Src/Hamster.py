@@ -747,8 +747,8 @@ class HamsterKombatClicker:
                     response_telegram.raise_for_status()
                     time.sleep(2)
 
-                except requests.exceptions.HTTPError:
-                    logging.warning(f"🚫  Токен телеграм бота не указан")
+                except requests.exceptions.HTTPError as http_err:
+                    logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}Указанынй токен бота: {self.BOT_TOKEN}")
                 except Exception as e:
                     logging.error(f"🚫  Произошла ошибка: {e}")
 
