@@ -16,10 +16,43 @@ load_dotenv()
 
 logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
 
+
+def choose_account(default=True):
+    if default:
+        print(f'Вы вошли используя `HAMSTER_TOKEN_1` по умолчанию')
+        return os.getenv('HAMSTER_TOKEN_1')
+
+    accounts = []
+    env_vars = {key: os.getenv(key) for key in os.environ if key in os.environ}
+    for key, value in env_vars.items():
+        if key.startswith('HAMSTER'):
+            accounts.append(value)
+
+    if len(accounts) > 1:
+        print(f"Обнаружено аккаунтов {len(accounts)}: ")
+        for e, token in enumerate(accounts):
+            hamster = HamsterKombatClicker(token)
+            account_info = hamster.get_account_info()
+            username = account_info['username']
+            first_name = account_info['firstName']
+            last_name = account_info['lastName']
+            print(f"[{e + 1}] · {first_name} {last_name} ({username})")
+
+        account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
+        if account_choice == '1':
+            return accounts[0]
+
+        elif account_choice == '2':
+            return accounts[1]
+
+    else:
+        return accounts[0]
+
+
 # --- CONFIG --- #
 
 send_to_group = True
-HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN_2')
+HAMSTER_TOKEN = choose_account(default=True)
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 # --- CONFIG --- #
@@ -27,10 +60,6 @@ hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 def get_status(status):
     return f"{GREEN}✅{RESET}" if status else f"{RED}❌{RESET}"
-
-
-def login():
-    print(hamster_client.show_login())
 
 
 def menu():
@@ -256,20 +285,23 @@ def handle_choice(choice):
     elif choice == '0':
         exit(1)
 
+    else:
+        print("Такой опции нет")
+        line_after()
+
 
 def main():
     banner()
-    login()
+    hamster_client.login()
     menu()
 
     while True:
-        choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/0):{RESET} ")
+        manu_choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/+/0):{RESET} ")
         line_before()
-        handle_choice(choice)
+        handle_choice(manu_choice)
 
 
 def test():
-    hamster_client.show_login()
     pass
 
 

@@ -773,7 +773,23 @@ class HamsterKombatClicker:
         sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
         return sorted_cards[:20]
 
-    def show_login(self):
+    def get_account_info(self):
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            account_info = response.json()['accountInfo']['telegramUsers'][0]
+            return account_info
+
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f"🚫  HTTP ошибка: {http_err}")
+        except Exception as e:
+            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
+
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Произошла ошибка: {e}")
+
+    def login(self):
         try:
             response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
@@ -782,9 +798,7 @@ class HamsterKombatClicker:
             username = account_info['username']
             first_name = account_info['firstName']
             last_name = account_info['lastName']
-
-            result = f"🙍‍♂️  Вы вошли как {first_name} {last_name} ({username})"
-            return result
+            print(f"Вы вошли как {first_name} {last_name} ({username})\n")
 
         except requests.exceptions.HTTPError as http_err:
             logging.error(f"🚫  HTTP ошибка: {http_err}")
