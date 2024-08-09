@@ -8,8 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 
 from Src.Hamster import HamsterKombatClicker
-from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, \
-    banner, loading, loading_event, line_after, line_before, LIGHT_BLUE, LIGHT_MAGENTA, LIGHT_CYAN
+from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, LIGHT_BLUE, LIGHT_MAGENTA, LIGHT_CYAN, \
+    banner, loading, loading_event, line_after, line_before
 
 load_dotenv()
 
@@ -160,6 +160,7 @@ def generate_promocodes(apply_promo=False, prefix=None):
 
         main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, apply_promo, prefix))
         loading_thread = threading.Thread(target=loading)
+        # loading_thread = threading.Thread(target=loading_v2, args=(True, 'simpleDotsScrolling'))
 
         loading_thread.start()
         main_thread.start()

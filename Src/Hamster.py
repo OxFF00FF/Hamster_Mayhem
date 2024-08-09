@@ -613,7 +613,7 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=True, apply_promo=None, prefix=None):
+    def get_promocodes(self, count=1, send_to_group=False, apply_promo=None, prefix=None):
         """
         :param prefix:
         :param count:  Количество ключей для генерации

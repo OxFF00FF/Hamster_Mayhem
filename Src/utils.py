@@ -2,6 +2,8 @@ import os
 import threading
 import time
 
+from spinners import Spinners
+
 loading_event = threading.Event()
 
 DEFAULT = '\x1b[39m'
@@ -116,6 +118,37 @@ def loading():
                 break
             print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
             time.sleep(0.3)
+
+
+def loading_v2(default=True, spinner_name=None):
+    if spinner_name is not None:
+        spinners = [spinner_name.name for spinner_name in Spinners]
+        for spinner_item in spinners:
+            if spinner_item == spinner_name:
+                spinner = Spinners[spinner_name]
+                while not loading_event.is_set():
+                    for frame in spinner.value['frames']:
+                        print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
+                        time.sleep(0.3)
+        print(f'Spinner `{spinner_name}` not found')
+        return
+
+    if default:
+        spinner = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
+        while not loading_event.is_set():
+            for frame in spinner:
+                print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
+                time.sleep(0.3)
+
+
+def spinners_list():
+    spinners = [spinner_name.name for spinner_name in Spinners]
+    text = ''
+    for spinner in spinners:
+        text += f"{spinner}\n"
+
+    print(text)
+    return text
 
 
 def clear_screen():
