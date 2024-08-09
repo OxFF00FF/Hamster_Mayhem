@@ -751,7 +751,7 @@ class HamsterKombatClicker:
             except Exception as e:
                 logging.error(f"🚫  Произошла ошибка: {e}")
 
-            print(f"Промокоды были отправлены в группу `{self.GROUP_URL}`")
+            print(f"{prefix} Промокоды были отправлены в группу `{self.GROUP_URL}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
