@@ -337,10 +337,10 @@ class HamsterKombatClicker:
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}Баланс:{WHITE} {balance['balanceCoins']:,} \n"
-            info += f"⭐️ {LIGHT_YELLOW}Всего:{WHITE} {balance['total']:,} \n"
+            info += f"💰  {LIGHT_YELLOW}Всего:{WHITE} {balance['total']:,} \n"
             info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,} \n"
             if '🚫' in result['combo']:
-                info += "\n⚠️Сегодня вам не все карты доступны"
+                info += "\n⚠️  Сегодня вам не все карты доступны"
             time.sleep(1)
             line_after()
             return info.replace(',', ' ')
