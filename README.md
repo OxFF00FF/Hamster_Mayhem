@@ -1,8 +1,13 @@
 [<img src="https://img.shields.io/badge/python-3.10%20%7C%203.11-blue">](https://www.python.org/downloads/)
+[<img src="https://img.shields.io/badge/Telegram-@me-blue">](https://t.me/OxFF00FF)
+[<img src="https://img.shields.io/badge/Group-Hamster_Mayhem-blue">](https://t.me/+SUekzTWJlq8yNzIy)
+
+
 
 ![Preview](https://github.com/user-attachments/assets/3264960e-cbc8-438d-8f39-6d609a3f954f)
 
-Проект был создал чтобы помочь людям проходить рекламные игры в [hamster kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
+Проект был создал чтобы помочь людям проходить рекламные игры в [Hamster Kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
+
 ## Возможности
 
 - Можно запускать с вашего Android смартфона
@@ -22,7 +27,7 @@
 Чтобы использовать несколько аккаунтов нужно в .env файле указать несколько токенов
 В таком формате `HAMSTER_TOKEN_x`. Напрмиер `HAMSTER_TOKEN_1` `HAMSTER_TOKEN_2` и тд.
 По умолчанию используется `HAMSTER_TOKEN_1` если других не указано.
-Чтобы переключиться на другой аккаунт нужно перезагрузить программу и выбрать  нужный либо открыть еще в одной консоли.
+Чтобы переключиться на другой аккаунт нужно перезагрузить программу и выбрать  нужный аккаун либо открыть еще в одной консоли.
 
 ## ⚙ [Настройки](https://github.com/OxFF00FF/Hamsters_mayhem/blob/master/.env.example)
 | Настройка                    | Описание                                                                                      |
