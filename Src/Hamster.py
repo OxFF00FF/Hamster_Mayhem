@@ -741,16 +741,15 @@ class HamsterKombatClicker:
                 time.sleep(1)
 
         if send_to_group:
-            for promocode in promocodes.split():
-                try:
-                    response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode})
-                    response_telegram.raise_for_status()
-                    time.sleep(2)
+            try:
+                response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode})
+                response_telegram.raise_for_status()
+                time.sleep(3)
 
-                except requests.exceptions.HTTPError as http_err:
-                    logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}")
-                except Exception as e:
-                    logging.error(f"🚫  Произошла ошибка: {e}")
+            except requests.exceptions.HTTPError as http_err:
+                logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}")
+            except Exception as e:
+                logging.error(f"🚫  Произошла ошибка: {e}")
 
             print(f"Промокоды были отправлены в группу `{self.GROUP_URL}`")
 

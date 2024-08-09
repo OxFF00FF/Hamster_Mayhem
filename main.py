@@ -140,7 +140,7 @@ def menu():
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE} \n"
         f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
         f"  {LIGHT_YELLOW}+ |  {RESET}⚡️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
-        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Покахать меню {WHITE} \n"
+        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}"
     )
 
