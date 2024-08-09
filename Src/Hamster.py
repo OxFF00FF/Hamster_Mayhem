@@ -214,11 +214,15 @@ class HamsterKombatClicker:
             availableTaps = int(clickerUser.get('availableTaps'))
             maxTaps = int(clickerUser.get('maxTaps'))
             tapsRecoverPerSec = int(clickerUser.get('tapsRecoverPerSec'))
-            current_remain_time = remain_time(availableTaps / tapsRecoverPerSec)
+
+            current_remain_time = int(availableTaps / tapsRecoverPerSec)
+            total_remain_time = int(maxTaps / tapsRecoverPerSec)
+            remain = remain_time(total_remain_time - current_remain_time)
+
             if availableTaps == maxTaps:
                 result.append({'taps': {'remain': 'n/a', 'isClaimed': True}})
             else:
-                result.append({'taps': {'remain': current_remain_time, 'isClaimed': False}})
+                result.append({'taps': {'remain': remain, 'isClaimed': False}})
 
             return result
 
@@ -768,3 +772,24 @@ class HamsterKombatClicker:
                 evaluated_cards.append(card)
         sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
         return sorted_cards[:20]
+
+    def show_login(self):
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            account_info = response.json()['accountInfo']['telegramUsers'][0]
+            username = account_info['username']
+            first_name = account_info['firstName']
+            last_name = account_info['lastName']
+
+            result = f"🙍‍♂️  Вы вошли как {first_name} {last_name} ({username})"
+            return result
+
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f"🚫  HTTP ошибка: {http_err}")
+        except Exception as e:
+            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
+
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Произошла ошибка: {e}")

@@ -14,14 +14,12 @@ from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, \
 load_dotenv()
 
 logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
-# logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s{WHITE}", level=logging.INFO)
 
 # --- CONFIG --- #
 
 send_to_group = True
-HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN')
+HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN_2')
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
-
 
 # --- CONFIG --- #
 
@@ -145,6 +143,7 @@ def generate_promocodes(apply_promo=False, prefix=None):
 
 def main():
     banner()
+    print(hamster_client.show_login())
     while True:
         choice = show_menu()
 
@@ -269,7 +268,7 @@ def main():
 
 
 def test():
-    hamster_client.evaluate_cards()
+    hamster_client.show_login()
     pass
 
 
