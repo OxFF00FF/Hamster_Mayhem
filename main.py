@@ -241,16 +241,16 @@ def handle_choice(choice):
         with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
             apps = json.loads(f.read())['apps']
 
-        count = input(f"Количество ключей для всех игр Enter(по умолчанию 1): ")
+        count = input(f"\nКоличество ключей для всех игр Enter(по умолчанию 1): ")
         if count == '':
             count = 1
-            print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
+            print("\nКоличество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
 
         if int(count) <= 0:
-            logging.error(f"Количество должно быть числом больше 0")
+            logging.error(f"\nКоличество должно быть числом больше 0")
             exit(1)
 
-        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
+        choice = input(f"\nХотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
         if str(choice.lower()) == 'y'.lower():
             choice = True
         else:
