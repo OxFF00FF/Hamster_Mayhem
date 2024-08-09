@@ -150,8 +150,7 @@ class HamsterKombatClicker:
                 'balanceCoins': int(clicker['balanceCoins']),
                 'total': int(clicker['totalCoins']),
                 'keys': int(clicker['balanceKeys']),
-                'date': int(clicker['lastSyncUpdate']),
-                'tickets': int(clicker['balanceTickets'])
+                'date': int(clicker['lastSyncUpdate'])
             }
 
         except requests.exceptions.HTTPError as http_err:
@@ -253,6 +252,7 @@ class HamsterKombatClicker:
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                         response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         logging.error(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. {response.json()['error_message']}")
+                        return response.json()['error_message']
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -337,10 +337,10 @@ class HamsterKombatClicker:
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}Баланс:{WHITE} {balance['balanceCoins']:,} \n"
-            info += f"⭐️  {LIGHT_YELLOW}Всего:{WHITE} {balance['total']:,} \n"
+            info += f"⭐️ {LIGHT_YELLOW}Всего:{WHITE} {balance['total']:,} \n"
             info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,} \n"
             if '🚫' in result['combo']:
-                info += "⚠️Сегодня вам не все карты доступны"
+                info += "\n⚠️Сегодня вам не все карты доступны"
             time.sleep(1)
             line_after()
             return info.replace(',', ' ')

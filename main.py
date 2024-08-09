@@ -121,10 +121,10 @@ def generate_promocodes(apply_promo=False, prefix=None):
         count = input(f"Количество ключей для генерации Enter(по умолчанию 1): ")
         if count == '':
             count = 1
-            print("Количество ключей не указано. Генерируется 1 ключ по умолчанию")
+            print("\nКоличество ключей не указано. Генерируется 1 ключ по умолчанию")
 
         if int(count) <= 0:
-            logging.error(f"Количество должно быть числом больше 0")
+            logging.error(f"\nКоличество должно быть числом больше 0")
             exit(1)
 
         main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, apply_promo, prefix))
@@ -265,8 +265,8 @@ def handle_choice(choice):
 
 
 def main():
-    login()
     banner()
+    login()
     menu()
 
     while True:
