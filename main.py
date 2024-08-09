@@ -3,7 +3,6 @@ import logging
 import os
 import re
 import threading
-import time
 from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
