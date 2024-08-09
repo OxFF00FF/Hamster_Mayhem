@@ -145,8 +145,7 @@ def generate_promocodes(apply_promo=False, prefix=None):
 
 def handle_choice(choice):
     if choice == '#':
-        info = hamster_client.daily_info()
-        print(info)
+        print(hamster_client.daily_info())
         line_after()
 
     elif choice == '1':
@@ -181,7 +180,6 @@ def handle_choice(choice):
             generate_promocodes(prefix='BIKE', apply_promo=True)
         else:
             generate_promocodes(prefix='BIKE')
-
         line_after()
 
     elif choice == '7':
@@ -190,7 +188,6 @@ def handle_choice(choice):
             generate_promocodes(prefix='CUBE', apply_promo=True)
         else:
             generate_promocodes(prefix='CUBE')
-
         line_after()
 
     elif choice == '8':
@@ -199,7 +196,6 @@ def handle_choice(choice):
             generate_promocodes(prefix='CLONE', apply_promo=True)
         else:
             generate_promocodes(prefix='CLONE')
-
         line_after()
 
     elif choice == '9':
@@ -208,7 +204,6 @@ def handle_choice(choice):
             generate_promocodes(prefix='TRAIN', apply_promo=True)
         else:
             generate_promocodes(prefix='TRAIN')
-
         line_after()
 
     elif choice == '*':
@@ -236,12 +231,10 @@ def handle_choice(choice):
 
         with ThreadPoolExecutor() as executor:
             executor.map(generate_for_all_games, apps)
-
         line_after()
 
     elif choice == '$':
         top_10_cards = hamster_client.evaluate_cards()
-
         print(f"Топ 20 самых выгодных карт (показаны только доступные для покупки): \n")
         for card in top_10_cards:
             print(
