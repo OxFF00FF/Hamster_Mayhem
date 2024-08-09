@@ -17,9 +17,9 @@ load_dotenv()
 logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
 
 
-def choose_account(default=True):
+def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
     if default:
-        print(f'Вы вошли используя `HAMSTER_TOKEN_1` по умолчанию')
+        print(f'Вы вошли используя `{token_number}` по умолчанию')
         return os.getenv('HAMSTER_TOKEN_1')
 
     accounts = []
@@ -54,7 +54,7 @@ def choose_account(default=True):
 # --- CONFIG --- #
 
 send_to_group = True
-HAMSTER_TOKEN = choose_account(default=False)
+HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 # --- CONFIG --- #
@@ -141,6 +141,7 @@ def menu():
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE} \n"
         f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
         f"  {LIGHT_YELLOW}+ |  {RESET}⚡️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
+        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Покахать меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}"
     )
 
@@ -241,7 +242,7 @@ def handle_choice(choice):
         with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
             apps = json.loads(f.read())['apps']
 
-        count = input(f"Количество ключей для всех игр (enter значение по умолчанию): ")
+        count = input(f"Количество ключей для всех игр Enter(по умолчанию 1): ")
         if count == '':
             count = 1
             print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
@@ -282,6 +283,10 @@ def handle_choice(choice):
         if match:
             upgrade_id = match.group(1)
             hamster_client._buy_upgrade(upgradeId=upgrade_id)
+        line_after()
+
+    elif choice == 'm':
+        menu()
         line_after()
 
     elif choice == '0':
