@@ -74,9 +74,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -131,9 +131,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -155,9 +155,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -259,7 +259,7 @@ class HamsterKombatClicker:
                 remain = remain_time(upgrade['cooldownSeconds'])
                 print(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. Карта будет доступна для улучшения через: {remain}")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -310,9 +310,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -394,9 +394,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
                 logging.error(traceback.format_exc())
@@ -425,9 +425,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -455,9 +455,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -494,9 +494,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -530,9 +530,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
@@ -559,9 +559,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
@@ -602,9 +602,9 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
-                logging.error(f"🚫  Токен не был предоставлен")
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
             elif response.status_code == 401:
-                logging.error(f"🚫  Предоставлен неверный токен")
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
@@ -676,7 +676,7 @@ class HamsterKombatClicker:
                     print(f'{YELLOW}{TEXT}{WHITE}')
                     progress_logged[0] = True
 
-            for e in range(EVENTS_COUNT):
+            for n in range(EVENTS_COUNT):
                 color_title = prefix
                 if prefix == "BIKE":
                     color_title = f"{LIGHT_YELLOW}{prefix}{WHITE}"
@@ -689,7 +689,7 @@ class HamsterKombatClicker:
 
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
-                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(e + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
 
                 has_code = __emulate_progress(client_token)
                 if has_code:
@@ -715,8 +715,8 @@ class HamsterKombatClicker:
                 generated_promocodes_text = ''
 
                 with open(file_path, 'w') as file:
-                    for e in range(keys_count):
-                        thread = threading.Thread(target=__key_generation, args=(keys, e, lock_, logged))
+                    for n in range(keys_count):
+                        thread = threading.Thread(target=__key_generation, args=(keys, n, lock_, logged))
                         threads.append(thread)
                         thread.start()
 
