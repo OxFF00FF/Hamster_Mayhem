@@ -30,6 +30,7 @@ def choose_account(default=True):
 
     if len(accounts) > 1:
         print(f"Обнаружено аккаунтов {len(accounts)}: ")
+        account_dict = {}
         for e, token in enumerate(accounts):
             hamster = HamsterKombatClicker(token)
             account_info = hamster.get_account_info()
@@ -37,14 +38,15 @@ def choose_account(default=True):
             first_name = account_info['firstName']
             last_name = account_info['lastName']
             print(f"[{e + 1}] · {first_name} {last_name} ({username})")
+            account_dict[str(e + 1)] = token
 
         account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
-        if account_choice == '1':
-            return accounts[0]
 
-        elif account_choice == '2':
-            return accounts[1]
-
+        if account_choice in account_dict:
+            return account_dict[account_choice]
+        else:
+            print("Некорректный выбор. Попробуйте снова.")
+            return choose_account(default=False)
     else:
         return accounts[0]
 
@@ -52,7 +54,7 @@ def choose_account(default=True):
 # --- CONFIG --- #
 
 send_to_group = True
-HAMSTER_TOKEN = choose_account(default=True)
+HAMSTER_TOKEN = choose_account(default=False)
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 # --- CONFIG --- #
