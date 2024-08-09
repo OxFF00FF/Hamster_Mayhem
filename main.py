@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
@@ -28,7 +29,11 @@ def get_status(status):
     return f"{GREEN}✅{RESET}" if status else f"{RED}❌{RESET}"
 
 
-def show_menu():
+def login():
+    print(hamster_client.show_login())
+
+
+def menu():
     activities = hamster_client._activity_cooldowns()
     keys_per_day = 4
     for activity in activities:
@@ -109,9 +114,6 @@ def show_menu():
     )
 
     print(memu.strip())
-    choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/0):{RESET} ")
-    line_before()
-    return choice
 
 
 def generate_promocodes(apply_promo=False, prefix=None):
@@ -141,130 +143,136 @@ def generate_promocodes(apply_promo=False, prefix=None):
         exit(1)
 
 
-def main():
-    banner()
-    print(hamster_client.show_login())
-    while True:
-        choice = show_menu()
+def handle_choice(choice):
+    if choice == '#':
+        info = hamster_client.daily_info()
+        print(info)
+        line_after()
 
-        if choice == '#':
-            info = hamster_client.daily_info()
-            print(info)
-            line_after()
+    elif choice == '1':
+        hamster_client.complete_taps()
+        line_after()
 
-        elif choice == '1':
-            hamster_client.complete_taps()
-            line_after()
+    elif choice == '2':
+        hamster_client.complete_daily_tasks()
+        line_after()
 
-        elif choice == '2':
-            hamster_client.complete_daily_tasks()
-            line_after()
+    elif choice == '3':
+        hamster_client.complete_daily_chipher()
+        line_after()
 
-        elif choice == '3':
-            hamster_client.complete_daily_chipher()
-            line_after()
-
-        elif choice == '4':
-            upgrades_info = hamster_client._collect_upgrades_info()
-            if all(card['available'] for card in upgrades_info['cards']):
-                hamster_client.complete_daily_combo()
-            else:
-                choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
-                if str(choice.lower()) == 'y'.lower():
-                    hamster_client.complete_daily_combo(buy_anyway=True)
-            line_after()
-
-        elif choice == '5':
-            hamster_client.complete_daily_minigame()
-            line_after()
-
-        elif choice == '6':
-            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
+    elif choice == '4':
+        upgrades_info = hamster_client._collect_upgrades_info()
+        if all(card['available'] for card in upgrades_info['cards']):
+            hamster_client.complete_daily_combo()
+        else:
+            choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
             if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='BIKE', apply_promo=True)
-            else:
-                generate_promocodes(prefix='BIKE')
+                hamster_client.complete_daily_combo(buy_anyway=True)
+        line_after()
 
-            line_after()
+    elif choice == '5':
+        hamster_client.complete_daily_minigame()
+        line_after()
 
-        elif choice == '7':
-            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='CUBE', apply_promo=True)
-            else:
-                generate_promocodes(prefix='CUBE')
+    elif choice == '6':
+        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
+        if str(choice.lower()) == 'y'.lower():
+            generate_promocodes(prefix='BIKE', apply_promo=True)
+        else:
+            generate_promocodes(prefix='BIKE')
 
-            line_after()
+        line_after()
 
-        elif choice == '8':
-            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='CLONE', apply_promo=True)
-            else:
-                generate_promocodes(prefix='CLONE')
+    elif choice == '7':
+        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
+        if str(choice.lower()) == 'y'.lower():
+            generate_promocodes(prefix='CUBE', apply_promo=True)
+        else:
+            generate_promocodes(prefix='CUBE')
 
-            line_after()
+        line_after()
 
-        elif choice == '9':
-            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='TRAIN', apply_promo=True)
-            else:
-                generate_promocodes(prefix='TRAIN')
+    elif choice == '8':
+        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
+        if str(choice.lower()) == 'y'.lower():
+            generate_promocodes(prefix='CLONE', apply_promo=True)
+        else:
+            generate_promocodes(prefix='CLONE')
 
-            line_after()
+        line_after()
 
-        elif choice == '*':
-            with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-                apps = json.loads(f.read())['apps']
+    elif choice == '9':
+        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
+        if str(choice.lower()) == 'y'.lower():
+            generate_promocodes(prefix='TRAIN', apply_promo=True)
+        else:
+            generate_promocodes(prefix='TRAIN')
 
-            count = input(f"Количество ключей для всех игр (enter значение по умолчанию): ")
-            if count == '':
-                count = 1
-                print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
+        line_after()
 
-            if int(count) <= 0:
-                logging.error(f"Количество должно быть числом больше 0")
-                exit(1)
+    elif choice == '*':
+        with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
+            apps = json.loads(f.read())['apps']
 
-            choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
-            if str(choice.lower()) == 'y'.lower():
-                choice = True
-            else:
-                choice = False
+        count = input(f"Количество ключей для всех игр (enter значение по умолчанию): ")
+        if count == '':
+            count = 1
+            print("Количество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
 
-            def generate_for_all_games(promo):
-                prefix = promo['prefix']
-                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=choice)
-
-            with ThreadPoolExecutor() as executor:
-                executor.map(generate_for_all_games, apps)
-
-            line_after()
-
-        elif choice == '$':
-            top_10_cards = hamster_client.evaluate_cards()
-
-            print(f"Топ 20 самых выгодных карт (показаны только доступные для покупки): \n")
-            for card in top_10_cards:
-                print(
-                    f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID ({card['id']}) \n"
-                    f"💰  Стоимость: {YELLOW}{card['price']:,}{WHITE} · +{card['profitPerHour']} в час \n"
-                    f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']}{WHITE} \n"
-                    f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.5f}{WHITE}"
-                )
-                print("-" * 30)
-            line_after()
-
-        elif choice.startswith('+'):
-            match = re.search(pattern=r'\+(.*?)$', string=choice)
-            if match:
-                upgrade_id = match.group(1)
-                hamster_client._buy_upgrade(upgradeId=upgrade_id)
-            line_after()
-
-        elif choice == '0':
+        if int(count) <= 0:
+            logging.error(f"Количество должно быть числом больше 0")
             exit(1)
+
+        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
+        if str(choice.lower()) == 'y'.lower():
+            choice = True
+        else:
+            choice = False
+
+        def generate_for_all_games(promo):
+            prefix = promo['prefix']
+            hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=choice)
+
+        with ThreadPoolExecutor() as executor:
+            executor.map(generate_for_all_games, apps)
+
+        line_after()
+
+    elif choice == '$':
+        top_10_cards = hamster_client.evaluate_cards()
+
+        print(f"Топ 20 самых выгодных карт (показаны только доступные для покупки): \n")
+        for card in top_10_cards:
+            print(
+                f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID ({card['id']}) \n"
+                f"💰  Стоимость: {YELLOW}{card['price']:,}{WHITE} · +{card['profitPerHour']} в час \n"
+                f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']}{WHITE} \n"
+                f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.5f}{WHITE}"
+            )
+            print("-" * 30)
+        line_after()
+
+    elif choice.startswith('+'):
+        match = re.search(pattern=r'\+(.*?)$', string=choice)
+        if match:
+            upgrade_id = match.group(1)
+            hamster_client._buy_upgrade(upgradeId=upgrade_id)
+        line_after()
+
+    elif choice == '0':
+        exit(1)
+
+
+def main():
+    login()
+    banner()
+    menu()
+
+    while True:
+        choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/0):{RESET} ")
+        line_before()
+        handle_choice(choice)
 
 
 def test():
