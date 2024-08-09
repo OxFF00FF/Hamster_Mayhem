@@ -748,7 +748,7 @@ class HamsterKombatClicker:
                     time.sleep(2)
 
                 except requests.exceptions.HTTPError as http_err:
-                    logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}Указанынй токен бота: {self.BOT_TOKEN}\nУказанный id группы: {self.GROUP_ID}")
+                    logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}")
                 except Exception as e:
                     logging.error(f"🚫  Произошла ошибка: {e}")
 
