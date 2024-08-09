@@ -742,7 +742,7 @@ class HamsterKombatClicker:
 
         if send_to_group:
             try:
-                response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocode})
+                response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
                 response_telegram.raise_for_status()
                 time.sleep(3)
 
