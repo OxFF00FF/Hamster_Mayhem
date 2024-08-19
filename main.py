@@ -53,7 +53,7 @@ def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
 # --- CONFIG --- #
 
 send_to_group = False
-save_to_file = False
+save_to_file = True
 HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
