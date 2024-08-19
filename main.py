@@ -70,7 +70,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         logging.error(f"\nКоличество должно быть числом больше 0")
 
     try:
-        asyncio.run(hamster_client.get_promocodes(count, send_to_group, apply_promo, prefix))
+        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix))
 
     except Exception as e:
         logging.error(e)
