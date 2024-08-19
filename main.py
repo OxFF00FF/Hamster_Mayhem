@@ -203,7 +203,6 @@ def handle_main_menu_choice(choice):
         line_after()
         print(hamster_client.daily_info())
 
-
     elif choice == '1':
         hamster_client.complete_taps()
         line_after()
