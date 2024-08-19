@@ -12,7 +12,7 @@
             "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
             "prefix": "BIKE",
             "title": "Bike Ride 3D",
-            "eventsCount": 5,
+            "eventsCount": 17,
             "registerEventTimeout": 20000,
             "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)"
         },
@@ -21,7 +21,7 @@
             "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
             "prefix": "CUBE",
             "title": "Chain Cube 2048",
-            "eventsCount": 6,
+            "eventsCount": 7,
             "registerEventTimeout": 20000,
             "text": "\uD83C\uDFB2  Гоняем кубы за вас"
         },
@@ -30,8 +30,8 @@
             "promoId": "fe693b26-b342-4159-8808-15e3ff7f8767",
             "prefix": "CLONE",
             "title": "My Clone Army",
-            "eventsCount": 2,
-            "registerEventTimeout": 120000,
+            "eventsCount": 19,
+            "registerEventTimeout": 119000,
             "text": "\uD83C\uDFAE  Проходим клонов вместо вас"
         },
         {
@@ -39,7 +39,7 @@
             "promoId": "c4480ac7-e178-4973-8061-9ed5b2e17954",
             "prefix": "TRAIN",
             "title": "Train Miner",
-            "eventsCount": 1,
+            "eventsCount": 7,
             "registerEventTimeout": 120000,
             "text": "\uD83D\uDE82  Проходим поезда, чтобы вам не пришлось)"
         },

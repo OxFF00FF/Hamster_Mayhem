@@ -183,21 +183,6 @@ class HamsterKombatClicker:
             remain_minigame = remain_time(daily_minigame.get('remainSeconds', 0))
             result.append({'minigame': {'remain': remain_minigame, 'isClaimed': daily_minigame.get('isClaimed', False)}})
 
-            response = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
-            promos = response.json().get('promos', [{}])
-            states = response.json().get('states', [{}])
-            promo_results = []
-            for promo in promos:
-                for state in states:
-                    if promo['promoId'] == state['promoId']:
-                        promo_name = promo['title']['en']
-                        keys_today = state['receiveKeysToday']
-                        remain_promo = remain_time(state['receiveKeysRefreshSec'])
-                        is_claimed = True if keys_today == 4 else False
-                        promo_results.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
-            result.append({'promo': promo_results})
-
             response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
             tasks = response.json().get('tasks', [])
@@ -230,6 +215,26 @@ class HamsterKombatClicker:
 
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
+
+    def _get_promos(self):
+        result = []
+
+        response = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
+        response.raise_for_status()
+        promos = response.json().get('promos', [{}])
+        states = response.json().get('states', [{}])
+        promo_results = []
+        for promo in promos:
+            for state in states:
+                if promo['promoId'] == state['promoId']:
+                    promo_name = promo['title']['en']
+                    keys_today = state['receiveKeysToday']
+                    remain_promo = remain_time(state['receiveKeysRefreshSec'])
+                    is_claimed = True if keys_today == 4 else False
+                    promo_results.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
+
+        result.append({'promo': promo_results})
+        return result
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:
@@ -617,7 +622,7 @@ class HamsterKombatClicker:
         """
         :param save_to_file:
         :param prefix:
-        :param count:  Количество ключей для генерации
+        :param count:  Количество промокодов для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
         """

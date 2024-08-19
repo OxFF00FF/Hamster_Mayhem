@@ -56,16 +56,38 @@ send_to_group = True
 HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
+
 # --- CONFIG --- #
+
+def generate_promocodes(apply_promo=False, prefix=None):
+    count = input(f"Количество промокодов для генерации Enter(по умолчанию 1): ")
+    if count == '':
+        count = 1
+        print("\nКоличество промокодов не указано. Генерируется 1 промокод по умолчанию")
+
+    if int(count) <= 0:
+        logging.error(f"\nКоличество должно быть числом больше 0")
+        exit(1)
+
+    main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, apply_promo, prefix))
+    loading_thread = threading.Thread(target=loading)
+    # loading_thread = threading.Thread(target=loading_v2, args=(True, 'simpleDotsScrolling'))
+
+    loading_thread.start()
+    main_thread.start()
+
+    main_thread.join()
+
+    loading_event.set()
+    loading_thread.join()
 
 
 def get_status(status):
     return f"{GREEN}✅{RESET}" if status else f"{RED}🚫{RESET}"
 
 
-def menu():
+def main_menu():
     activities = hamster_client._activity_cooldowns()
-    keys_per_day = 4
     for activity in activities:
         if 'taps' in activity:
             taps_status = get_status(activity['taps']['isClaimed'])
@@ -82,100 +104,103 @@ def menu():
         if 'minigame' in activity:
             minigame_status = get_status(activity['minigame']['isClaimed'])
             minigame_cooldown = activity['minigame']['remain']
-        if 'promo' in activity:
-            bike = cube = clon = trin = ""
-            bike_keys = cube_keys = clon_keys = trin_keys = 0
-            bike_cooldown = cube_cooldown = clon_cooldown = trin_cooldown = "n/a"
-            bike_status = cube_status = clon_status = trin_status = "n/a"
 
-            for promo in activity['promo']:
-                if promo['name'] == 'Bike Ride 3D':
-                    bike = promo['name']
-                    bike_keys = promo['keys']
-                    bike_cooldown = promo['remain']
-                    bike_status = get_status(promo['isClaimed'])
-                else:
-                    bike = 'Bike Ride 3D'
-
-                if promo['name'] == 'Chain Cube 2048':
-                    cube = promo['name']
-                    cube_keys = promo['keys']
-                    cube_cooldown = promo['remain']
-                    cube_status = get_status(promo['isClaimed'])
-                else:
-                    cube = 'Chain Cube 2048'
-
-                if promo['name'] == 'My Clone Army':
-                    clon = promo['name']
-                    clon_keys = promo['keys']
-                    clon_cooldown = promo['remain']
-                    clon_status = get_status(promo['isClaimed'])
-                else:
-                    clon = 'My Clone Army'
-
-                if promo['name'] == 'Train Miner':
-                    trin = promo['name']
-                    trin_keys = promo['keys']
-                    trin_cooldown = promo['remain']
-                    trin_status = get_status(promo['isClaimed'])
-                else:
-                    trin = 'Train Miner'
-
-    max_width = max(len(bike), len(cube), len(clon), len(trin))
     memu = (
         f"Настройки \n"
         f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)}\n\n"
         f"Главное меню \n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
-        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE:<15}                           {taps_status} · Осталось: {taps_cooldown}\n"
-        f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE:<15}                         {task_status} · Осталось: {task_cooldown} \n"
-        f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE:<15}                            {cipher_status} · Осталось: {cipher_cooldown} \n"
-        f"  {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE:<15}                           {combo_status} · Осталось: {combo_cooldown} \n"
-        f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}Миниигра {WHITE:<15}                        {minigame_status} · Осталось: {minigame_cooldown} \n"
-        f"  {LIGHT_YELLOW}6 |  {RESET}🚴 {YELLOW}Промокоды {LIGHT_YELLOW}{bike:<{max_width}} {WHITE}  {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown} \n"
-        f"  {LIGHT_YELLOW}7 |  {RESET}🎲 {YELLOW}Промокоды {LIGHT_BLUE}{cube:<{max_width}} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown} \n"
-        f"  {LIGHT_YELLOW}8 |  {RESET}🎮 {YELLOW}Промокоды {LIGHT_MAGENTA}{clon:<{max_width}} {WHITE}  {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown} \n"
-        f"  {LIGHT_YELLOW}9 |  {RESET}🚂 {YELLOW}Промокоды {LIGHT_CYAN}{trin:<{max_width}} {WHITE}  {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown} \n"
-        f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW}Промокоды для всех игр {WHITE} \n"
+        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown}\n"
+        f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}     {task_status} · Осталось: {task_cooldown} \n"
+        f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE}        {cipher_status} · Осталось: {cipher_cooldown} \n"
+        f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
+        f"  {LIGHT_YELLOW}5 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
+        f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
         f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
-        f"  {LIGHT_YELLOW}+ |  {RESET}⚡️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
+        f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔙 {YELLOW}Выйти{WHITE}"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
     )
-
     print(memu.strip())
 
 
-def generate_promocodes(apply_promo=False, prefix=None):
-    if prefix:
-        count = input(f"Количество ключей для генерации Enter(по умолчанию 1): ")
-        if count == '':
-            count = 1
-            print("\nКоличество ключей не указано. Генерируется 1 ключ по умолчанию")
+def playground_menu():
+    promos = hamster_client._get_promos()[0]['promo']
 
-        if int(count) <= 0:
-            logging.error(f"\nКоличество должно быть числом больше 0")
-            exit(1)
+    keys_per_day = 4
+    bike = cube = clon = trin = ""
+    bike_keys = cube_keys = clon_keys = trin_keys = 0
+    bike_cooldown = cube_cooldown = clon_cooldown = trin_cooldown = "n/a"
+    bike_status = cube_status = clon_status = trin_status = "n/a"
 
-        main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, apply_promo, prefix))
-        loading_thread = threading.Thread(target=loading)
-        # loading_thread = threading.Thread(target=loading_v2, args=(True, 'simpleDotsScrolling'))
+    for promo in promos:
+        if promo['name'] == 'Bike Ride 3D':
+            bike = promo['name']
+            bike_keys = promo['keys']
+            bike_cooldown = promo['remain']
+            bike_status = get_status(promo['isClaimed'])
+        else:
+            bike = 'Bike Ride 3D'
 
-        loading_thread.start()
-        main_thread.start()
+        if promo['name'] == 'Chain Cube 2048':
+            cube = promo['name']
+            cube_keys = promo['keys']
+            cube_cooldown = promo['remain']
+            cube_status = get_status(promo['isClaimed'])
+        else:
+            cube = 'Chain Cube 2048'
 
-        main_thread.join()
+        if promo['name'] == 'My Clone Army':
+            clon = promo['name']
+            clon_keys = promo['keys']
+            clon_cooldown = promo['remain']
+            clon_status = get_status(promo['isClaimed'])
+        else:
+            clon = 'My Clone Army'
 
-        loading_event.set()
-        loading_thread.join()
+        if promo['name'] == 'Train Miner':
+            trin = promo['name']
+            trin_keys = promo['keys']
+            trin_cooldown = promo['remain']
+            trin_status = get_status(promo['isClaimed'])
+        else:
+            trin = 'Train Miner'
 
-    else:
-        logging.error(f"Префикс игры не узказан")
-        exit(1)
+        if promo['name'] == 'Merge Away':
+            mrge = promo['name']
+            mrge_keys = promo['keys']
+            mrge_cooldown = promo['remain']
+            mrge_status = get_status(promo['isClaimed'])
+        else:
+            mrge = 'Merge Away'
+
+        if promo['name'] == 'Twerk Race':
+            twrk = promo['name']
+            twrk_keys = promo['keys']
+            twrk_cooldown = promo['remain']
+            twrk_status = get_status(promo['isClaimed'])
+        else:
+            twrk = 'Twerk Race'
+
+    max_width = max(len(bike), len(cube), len(clon), len(trin), len(mrge), len(twrk))
+    memu = (
+        f"Игровая площадка \n"
+        f"  Для какой игры хотите получить промокоды? \n"
+        f"  {LIGHT_YELLOW}1 |  {RESET}🚴 {YELLOW} {LIGHT_YELLOW}{bike:<{max_width}} {WHITE}  {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown} \n"
+        f"  {LIGHT_YELLOW}2 |  {RESET}🎲 {YELLOW} {LIGHT_BLUE}{cube:<{max_width}} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown} \n"
+        f"  {LIGHT_YELLOW}3 |  {RESET}🎮 {YELLOW} {LIGHT_MAGENTA}{clon:<{max_width}} {WHITE}  {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown} \n"
+        f"  {LIGHT_YELLOW}4 |  {RESET}🚂 {YELLOW} {LIGHT_CYAN}{trin:<{max_width}} {WHITE}  {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown} \n"
+        f"  {LIGHT_YELLOW}5 |  {RESET}🙍‍ {YELLOW} {GREEN}{mrge:<{max_width}} {WHITE}  {mrge_keys}/{keys_per_day}  {mrge_status} · Осталось: {mrge_cooldown} \n"
+        f"  {LIGHT_YELLOW}6 |  {RESET}🏃 {YELLOW} {CYAN}{twrk:<{max_width}} {WHITE}  {twrk_keys}/{keys_per_day}  {twrk_status} · Осталось: {twrk_cooldown} \n"
+        f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} Для всех игр {WHITE} \n"
+        f"  {LIGHT_YELLOW}9 |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
+    )
+    print(memu.strip())
 
 
-def handle_choice(choice):
+def handle_main_menu_choice(choice):
     if choice == '#':
         print(hamster_client.daily_info())
         line_after()
@@ -193,6 +218,10 @@ def handle_choice(choice):
         line_after()
 
     elif choice == '4':
+        hamster_client.complete_daily_minigame()
+        line_after()
+
+    elif choice == '5':
         upgrades_info = hamster_client._collect_upgrades_info()
         if all(card['available'] for card in upgrades_info['cards']):
             hamster_client.complete_daily_combo()
@@ -202,68 +231,8 @@ def handle_choice(choice):
                 hamster_client.complete_daily_combo(buy_anyway=True)
         line_after()
 
-    elif choice == '5':
-        hamster_client.complete_daily_minigame()
-        line_after()
-
     elif choice == '6':
-        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-        if str(choice.lower()) == 'y'.lower():
-            generate_promocodes(prefix='BIKE', apply_promo=True)
-        else:
-            generate_promocodes(prefix='BIKE')
-        line_after()
-
-    elif choice == '7':
-        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-        if str(choice.lower()) == 'y'.lower():
-            generate_promocodes(prefix='CUBE', apply_promo=True)
-        else:
-            generate_promocodes(prefix='CUBE')
-        line_after()
-
-    elif choice == '8':
-        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-        if str(choice.lower()) == 'y'.lower():
-            generate_promocodes(prefix='CLONE', apply_promo=True)
-        else:
-            generate_promocodes(prefix='CLONE')
-        line_after()
-
-    elif choice == '9':
-        choice = input(f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
-        if str(choice.lower()) == 'y'.lower():
-            generate_promocodes(prefix='TRAIN', apply_promo=True)
-        else:
-            generate_promocodes(prefix='TRAIN')
-        line_after()
-
-    elif choice == '*':
-        with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-            apps = json.loads(f.read())['apps']
-
-        choice = input(f"\nХотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
-        if str(choice.lower()) == 'y'.lower():
-            choice = True
-        else:
-            choice = False
-
-        count = input(f"\nКоличество ключей для всех игр Enter(по умолчанию 1): ")
-        if count == '':
-            count = 1
-            print("\nКоличество ключей не предоставлено. Генерируется 1 ключ по умолчанию")
-
-        if int(count) <= 0:
-            logging.error(f"\nКоличество должно быть числом больше 0")
-            exit(1)
-
-        def generate_for_all_games(promo):
-            prefix = promo['prefix']
-            hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=choice)
-
-        with ThreadPoolExecutor() as executor:
-            executor.map(generate_for_all_games, apps)
-        line_after()
+        handle_playground_menu()
 
     elif choice == '$':
         top_10_cards = hamster_client.evaluate_cards()
@@ -286,7 +255,7 @@ def handle_choice(choice):
         line_after()
 
     elif choice == 'm':
-        menu()
+        main_menu()
         line_after()
 
     elif choice == '0':
@@ -297,15 +266,107 @@ def handle_choice(choice):
         line_after()
 
 
+def handle_playground_menu():
+    while True:
+        playground_menu()
+        choice = input(f"\nВыберите действие\n{CYAN}(1/2/3/4/5/6/*/9/0): {RESET}")
+        choice_text = f"\nХотите применить прмокоды после получения?\nY(да) / Enter(Нет): "
+
+        if choice == '1':
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='BIKE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='BIKE')
+            line_after()
+
+        elif choice == '2':
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='CUBE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='CUBE')
+            line_after()
+
+        elif choice == '3':
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='CLONE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='CLONE')
+            line_after()
+
+        elif choice == '4':
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='MERGE', apply_promo=True)
+            else:
+                generate_promocodes(prefix='MERGE')
+            line_after()
+
+        elif choice == '5':
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='TWERK', apply_promo=True)
+            else:
+                generate_promocodes(prefix='TWERK')
+            line_after()
+
+        elif choice == '6':
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                generate_promocodes(prefix='TRAIN', apply_promo=True)
+            else:
+                generate_promocodes(prefix='TRAIN')
+            line_after()
+
+        elif choice == '*':
+            with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
+                apps = json.loads(f.read())['apps']
+
+            choice = input(choice_text)
+            if str(choice.lower()) == 'y'.lower():
+                choice = True
+            else:
+                choice = False
+
+            count = input(f"\nКоличество промокодов для всех игр Enter(по умолчанию 1): ")
+            if count == '':
+                count = 1
+                print("\nКоличество промокодов не предоставлено. Генерируется 1 промокод")
+
+            if int(count) <= 0:
+                logging.error(f"\nКоличество должно быть числом больше 0")
+                exit(1)
+
+            def generate_for_all_games(promo):
+                prefix = promo['prefix']
+                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=choice)
+
+            with ThreadPoolExecutor() as executor:
+                executor.map(generate_for_all_games, apps)
+            line_after()
+
+        elif choice == '9':
+            line_after()
+            return
+
+        elif choice == '0':
+            print("Выход")
+            line_after()
+            exit(1)
+
+
 def main():
     banner()
     hamster_client.login()
-    menu()
+    main_menu()
 
     while True:
-        manu_choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/7/8/9/*/$/+/0):{RESET} ")
+        main_menu_choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
         line_before()
-        handle_choice(manu_choice)
+        handle_main_menu_choice(main_menu_choice)
+        line_after()
 
 
 def test():
