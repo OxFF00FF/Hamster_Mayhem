@@ -642,13 +642,17 @@ class HamsterKombatClicker:
                 TEXT = promo['text']
 
                 if prefix == "BIKE":
-                    color_prefix = f"{LIGHT_YELLOW}{prefix}{WHITE}"
+                    color_prefix = f"{LIGHT_YELLOW}{prefix} {WHITE}"
                 elif prefix == "CUBE":
-                    color_prefix = f"{LIGHT_BLUE}{prefix}{WHITE}"
+                    color_prefix = f"{LIGHT_BLUE}{prefix} {WHITE}"
                 elif prefix == "CLONE":
                     color_prefix = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
                 elif prefix == "TRAIN":
                     color_prefix = f"{LIGHT_CYAN}{prefix}{WHITE}"
+                elif prefix == "MERGE":
+                    color_prefix = f"{GREEN}{prefix}{WHITE}"
+                elif prefix == "TWERK":
+                    color_prefix = f"{CYAN}{prefix}{WHITE}"
 
         async def delay_random():
             return random.random() / 3 + 1
@@ -708,12 +712,12 @@ class HamsterKombatClicker:
 
         async def __key_generation(session, index, keys_count) -> str:
             client_id = await __generate_client_id()
-            print(f'[{index}/{keys_count}] {LIGHT_GREEN} · `{TITLE}` Getting clientId successful{WHITE}')
-            time.sleep(0.5)
+            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · `{TITLE}` Getting clientId successful{WHITE}')
+            time.sleep(1)
 
             client_token = await __get_client_token(session, client_id)
-            print(f'[{index}/{keys_count}] {LIGHT_GREEN} · `{TITLE}` Login successful{WHITE}')
-            time.sleep(0.5)
+            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · `{TITLE}` Login successful{WHITE}')
+            time.sleep(1)
 
             for n in range(EVENTS_COUNT):
                 await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
@@ -730,7 +734,7 @@ class HamsterKombatClicker:
 
             try:
                 promoCode = await __get_promocode(session, client_token)
-                print(f'Сгенерированный промокод: {LIGHT_GREEN}`{promoCode}`{WHITE}')
+                print(f'\nСгенерированный промокод: {LIGHT_GREEN}`{promoCode}`{WHITE}\n')
                 return promoCode
 
             except Exception as error:
@@ -782,7 +786,7 @@ class HamsterKombatClicker:
             file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
             with open(file_path, 'w') as file:
                 file.write(result)
-                print(f"\nВсе промокоды сохранены в файл\n`{file_path}`")
+                print(f"\nПромокоды `{TITLE}` сохранены в файл:\n`{file_path}`\n")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
