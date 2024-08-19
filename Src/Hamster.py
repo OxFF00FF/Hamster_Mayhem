@@ -1,15 +1,16 @@
+import asyncio
 import base64
 import datetime
 import json
 import logging
 import os
 import random
-import threading
 import time
 import traceback
 import uuid
 from random import randint
 
+import aiohttp
 import requests
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup as BS
@@ -17,7 +18,7 @@ from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
 from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_MAGENTA, LIGHT_CYAN, LIGHT_BLUE, DARK_GRAY, \
-    text_to_morse, remain_time, line_after
+    text_to_morse, remain_time, line_after, loading
 
 load_dotenv()
 
@@ -95,6 +96,7 @@ class HamsterKombatClicker:
 
             date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.datetime.today().year}"
             combo_from_site = [item.text.strip() for item in combo_block]
+            print(f"⚙️  {combo_from_site}")
             combo_ids = []
 
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
@@ -106,8 +108,8 @@ class HamsterKombatClicker:
                     name_from_site = str(upgrade_name.strip().lower())
                     name_from_hamster = str(upgrade['name'].strip().lower())
 
-                    match = fuzz.partial_ratio(name_from_site, name_from_hamster)
-                    if match > 90:
+                    match = fuzz.ratio(name_from_site, name_from_hamster)
+                    if match > 85:
                         combo_ids.append(upgrade['id'])
 
             print(f"⚙️  Combo: {combo_ids} · Date: {date}")
@@ -342,7 +344,7 @@ class HamsterKombatClicker:
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}Баланс:{WHITE} {balance['balanceCoins']:,} \n"
-            info += f"💰  {LIGHT_YELLOW}Всего:{WHITE} {balance['total']:,} \n"
+            info += f"💰  {LIGHT_YELLOW}Всего: {WHITE} {balance['total']:,} \n"
             info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,} \n"
             if '🚫' in result['combo']:
                 info += "\n⚠️  Сегодня вам не все карты доступны"
@@ -618,7 +620,7 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=False, apply_promo=False, prefix=None, save_to_file=True):
+    async def get_promocodes(self, count=1, send_to_group=False, apply_promo=False, prefix=None, save_to_file=True):
         """
         :param save_to_file:
         :param prefix:
@@ -628,9 +630,9 @@ class HamsterKombatClicker:
         """
 
         with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-            data = json.loads(f.read())
+            games_data = json.loads(f.read())
 
-        for promo in data['apps']:
+        for promo in games_data['apps']:
             if promo['prefix'] == prefix:
                 APP_TOKEN = promo['appToken']
                 PROMO_ID = promo['promoId']
@@ -648,112 +650,112 @@ class HamsterKombatClicker:
                 elif prefix == "TRAIN":
                     color_prefix = f"{LIGHT_CYAN}{prefix}{WHITE}"
 
-        def __generate_client_id() -> str:
+        async def delay_random():
+            return random.random() / 3 + 1
+
+        async def __generate_client_id() -> str:
             timestamp = int(time.time() * 1000)
             random_numbers = ''.join([str(random.randint(0, 9)) for _ in range(19)])
             return f"{timestamp}-{random_numbers}"
 
-        def __get_client_token(client_id) -> str:
-            headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io'}
-            json_data = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
+        async def __get_client_token(session, client_id) -> str:
+            url = 'https://api.gamepromo.io/promo/login-client'
+            headers = {'Content-Type': 'application/json'}
+            payload = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
 
             try:
-                response = requests.post(f'https://api.gamepromo.io/promo/login-client', headers=headers, json=json_data)
-                response.raise_for_status()
-                return response.json()['clientToken']
+                async with session.post(url, json=payload, headers=headers) as response:
+                    data = await response.json()
+                    response.raise_for_status()
+                    return data['clientToken']
+
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
-        def __emulate_progress(token) -> str:
-            headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io', 'Authorization': f'Bearer {token}'}
-            json_data = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
+        async def __emulate_progress(session, client_token) -> str:
+            url = 'https://api.gamepromo.io/promo/register-event'
+            headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
+            payload = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
 
             try:
-                response = requests.post(f'https://api.gamepromo.io/promo/register-event', headers=headers, json=json_data)
-                response.raise_for_status()
-                return response.json().get('hasCode', False)
+                async with session.post(url, json=payload, headers=headers) as response:
+                    data = await response.json()
+                    response.raise_for_status()
+                    return data['hasCode']
+
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
-        def __get_promocode(token) -> str:
-            headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io', 'Authorization': f'Bearer {token}'}
-            json_data = {'promoId': PROMO_ID}
+        async def __get_promocode(session, client_token) -> str:
+            url = 'https://api.gamepromo.io/promo/create-code'
+            headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
+            payload = {'promoId': PROMO_ID}
 
-            response = requests.post(f'https://api.gamepromo.io/promo/create-code', headers=headers, json=json_data)
-            response.raise_for_status()
-            return response.json().get('promoCode', '')
+            try:
+                async with session.post(url, json=payload, headers=headers) as response:
+                    data = await response.json()
+                    response.raise_for_status()
+                    return data['promoCode']
 
-        def __key_generation(keys_list, index, lock, progress_logged) -> None:
-            client_id = __generate_client_id()
-            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] `{TITLE}` Getting clientId successful{WHITE}')
+            except requests.exceptions.HTTPError:
+                if response.status_code == 429:
+                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
+                    return None
 
-            client_token = __get_client_token(client_id)
-            print(f'{LIGHT_GREEN}[{index + 1}/{len(keys_list)}] `{TITLE}` Login successful{WHITE}')
+        async def __key_generation(session, index, keys_count) -> str:
+            client_id = await __generate_client_id()
+            print(f'[{index}/{keys_count}] {LIGHT_GREEN} · `{TITLE}` Getting clientId successful{WHITE}')
+            time.sleep(0.5)
 
-            has_code = False
-            with lock:
-                if not progress_logged[0]:
-                    time.sleep(2)
-                    print(f'{YELLOW}{TEXT}{WHITE}')
-                    progress_logged[0] = True
+            client_token = await __get_client_token(session, client_id)
+            print(f'[{index}/{keys_count}] {LIGHT_GREEN} · `{TITLE}` Login successful{WHITE}')
+            time.sleep(0.5)
 
             for n in range(EVENTS_COUNT):
-                delay = EVENTS_DELAY * (random.random() / 3 + 1)
-                time.sleep(delay / 1000.0)
-                print(f"{color_prefix} [{index + 1}/{len(keys_list)}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
+                try:
+                    has_code = await __emulate_progress(session, client_token)
+                except Exception as error:
+                    logging.error(f'[{index}/{keys_count}] Progress emulation failed: {error}')
+                    return None
 
-                has_code = __emulate_progress(client_token)
+                progress = (n + 1) / EVENTS_COUNT * 100
+                print(f"{color_prefix} [{index}/{keys_count}] · Статус: {progress:.0f}%{WHITE}")
                 if has_code:
                     break
 
-            promoCode = __get_promocode(client_token)
-            print(f'Сгенерированный промокод: {LIGHT_GREEN}`{promoCode}`{WHITE}')
-            keys_list[index] = promoCode
+            try:
+                promoCode = await __get_promocode(session, client_token)
+                print(f'Сгенерированный промокод: {LIGHT_GREEN}`{promoCode}`{WHITE}')
+                return promoCode
 
-        def __start_generate(keys_count):
-            print(f"{LIGHT_YELLOW}`{TITLE}`. Генерируется промокодов: {keys_count}{WHITE}\n")
+            except Exception as error:
+                print(f'[{index}/{keys_count}] Key generation failed: {error}')
+                return None
 
-            keys_count = int(keys_count)
-            if keys_count > 0:
-                if not os.path.exists('data'):
-                    os.makedirs('data')
+        async def __start_generate(keys_count):
+            print(f"{LIGHT_YELLOW}`{TITLE}`. Генерируется промокодов: {keys_count}{WHITE}")
+            print(f'{YELLOW}{TEXT}{WHITE}')
 
-                file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
-                keys = [None] * keys_count
-                threads = []
-                lock_ = threading.Lock()
-                logged = [False]
-                generated_promocodes_text = ''
+            loading_event = asyncio.Event()
+            spinner_task = asyncio.create_task(loading(loading_event))
 
-                with open(file_path, 'w') as file:
-                    for n in range(keys_count):
-                        thread = threading.Thread(target=__key_generation, args=(keys, n, lock_, logged))
-                        threads.append(thread)
-                        thread.start()
+            async with aiohttp.ClientSession() as session:
+                tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
+                keys = await asyncio.gather(*tasks)
+                loading_event.set()
+                await spinner_task
+            return [key for key in keys if key]
 
-                    for thread in threads:
-                        thread.join()
-
-                    for key in keys:
-                        generated_promocodes_text += f"{key}\n"
-
-                    if save_to_file:
-                        file.write(generated_promocodes_text)
-                        print(f"Все промокоды сохранены в файл\n`{file_path}`")
-                return generated_promocodes_text
-
-            else:
-                logging.error('Количество должно быть больше 0')
-                exit(1)
-
-        promocodes = __start_generate(count)
+        promocodes = await __start_generate(count)
         if apply_promo:
             send_to_group = False
-            for promocode in promocodes.split():
+            save_to_file = False
+            for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
                 time.sleep(1)
 
@@ -762,12 +764,25 @@ class HamsterKombatClicker:
                 response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
                 response_telegram.raise_for_status()
                 time.sleep(3)
-                print(f"{prefix} Промокоды были отправлены в группу `{self.GROUP_URL}`")
+                print(f"{color_prefix} Промокоды были отправлены в группу `{self.GROUP_URL}`")
 
             except requests.exceptions.HTTPError as http_err:
-                logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}")
+                logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}")
             except Exception as e:
                 logging.error(f"🚫  Произошла ошибка: {e}")
+
+        if save_to_file:
+            result = ""
+            if not os.path.exists('data'):
+                os.makedirs('data')
+
+            for promocode in promocodes:
+                result += f"{promocode}\n"
+
+            file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
+            with open(file_path, 'w') as file:
+                file.write(result)
+                print(f"\nВсе промокоды сохранены в файл\n`{file_path}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))

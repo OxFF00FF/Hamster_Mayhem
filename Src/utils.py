@@ -1,3 +1,4 @@
+import asyncio
 import os
 import threading
 import time
@@ -110,17 +111,17 @@ def remain_time(seconds):
     return f"{h}:{m}:{s}"
 
 
-def loading():
+async def loading(event):
     spinner = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
-    while not loading_event.is_set():
+    while not event.is_set():
         for frame in spinner:
-            if loading_event.is_set():
+            if event.is_set():
                 break
             print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
-            time.sleep(0.3)
+            await asyncio.sleep(0.3)
 
 
-def loading_v2(default=True, spinner_name=None):
+def loading_v2(spinner_name):
     if spinner_name is not None:
         spinners = [spinner_name.name for spinner_name in Spinners]
         for spinner_item in spinners:
@@ -132,13 +133,6 @@ def loading_v2(default=True, spinner_name=None):
                         time.sleep(0.3)
         print(f'Spinner `{spinner_name}` not found')
         return
-
-    if default:
-        spinner = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
-        while not loading_event.is_set():
-            for frame in spinner:
-                print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
-                time.sleep(0.3)
 
 
 def spinners_list():

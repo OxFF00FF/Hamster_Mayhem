@@ -1,15 +1,15 @@
+import asyncio
 import json
 import logging
 import os
 import re
-import threading
 from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, LIGHT_BLUE, LIGHT_MAGENTA, LIGHT_CYAN, \
-    banner, loading, loading_event, line_after, line_before
+    banner, line_after, line_before
 
 load_dotenv()
 
@@ -52,14 +52,15 @@ def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
 
 # --- CONFIG --- #
 
-send_to_group = True
+send_to_group = False
+save_to_file = False
 HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 
 # --- CONFIG --- #
 
-def generate_promocodes(apply_promo=False, prefix=None):
+def generate_promocodes(prefix='', apply_promo=False):
     count = input(f"Количество промокодов для генерации Enter(по умолчанию 1): ")
     if count == '':
         count = 1
@@ -67,19 +68,15 @@ def generate_promocodes(apply_promo=False, prefix=None):
 
     if int(count) <= 0:
         logging.error(f"\nКоличество должно быть числом больше 0")
-        exit(1)
 
-    main_thread = threading.Thread(target=hamster_client.get_promocodes, args=(count, send_to_group, apply_promo, prefix))
-    loading_thread = threading.Thread(target=loading)
-    # loading_thread = threading.Thread(target=loading_v2, args=(True, 'simpleDotsScrolling'))
+    try:
+        asyncio.run(hamster_client.get_promocodes(count, send_to_group, apply_promo, prefix))
 
-    loading_thread.start()
-    main_thread.start()
+    except Exception as e:
+        logging.error(e)
 
-    main_thread.join()
-
-    loading_event.set()
-    loading_thread.join()
+    finally:
+        pass
 
 
 def get_status(status):
@@ -107,7 +104,8 @@ def main_menu():
 
     memu = (
         f"Настройки \n"
-        f"  ⚙️  Отправлять промокоды в группу: {get_status(send_to_group)}\n\n"
+        f"  ⚙️  Отправлять в группу:  {get_status(send_to_group)}\n"
+        f"  ⚙️  Сохранять в файл:     {get_status(save_to_file)}\n\n"
         f"Главное меню \n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
@@ -185,7 +183,7 @@ def playground_menu():
 
     max_width = max(len(bike), len(cube), len(clon), len(trin), len(mrge), len(twrk))
     memu = (
-        f"Игровая площадка \n"
+        f"\n🎮  Игровая площадка \n"
         f"  Для какой игры хотите получить промокоды? \n"
         f"  {LIGHT_YELLOW}1 |  {RESET}🚴 {YELLOW} {LIGHT_YELLOW}{bike:<{max_width}} {WHITE}  {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown} \n"
         f"  {LIGHT_YELLOW}2 |  {RESET}🎲 {YELLOW} {LIGHT_BLUE}{cube:<{max_width}} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown} \n"
@@ -202,8 +200,9 @@ def playground_menu():
 
 def handle_main_menu_choice(choice):
     if choice == '#':
-        print(hamster_client.daily_info())
         line_after()
+        print(hamster_client.daily_info())
+
 
     elif choice == '1':
         hamster_client.complete_taps()
@@ -326,14 +325,14 @@ def handle_playground_menu():
 
             choice = input(choice_text)
             if str(choice.lower()) == 'y'.lower():
-                choice = True
+                apply_promo = True
             else:
-                choice = False
+                apply_promo = False
 
             count = input(f"\nКоличество промокодов для всех игр Enter(по умолчанию 1): ")
             if count == '':
                 count = 1
-                print("\nКоличество промокодов не предоставлено. Генерируется 1 промокод")
+                print("\nКоличество промокодов не предоставлено. Генерируется 1 по умолчанию")
 
             if int(count) <= 0:
                 logging.error(f"\nКоличество должно быть числом больше 0")
@@ -341,13 +340,15 @@ def handle_playground_menu():
 
             def generate_for_all_games(promo):
                 prefix = promo['prefix']
-                hamster_client.get_promocodes(count=count, prefix=prefix, send_to_group=send_to_group, apply_promo=choice)
+                asyncio.run(hamster_client.get_promocodes(count, send_to_group, apply_promo, prefix))
 
             with ThreadPoolExecutor() as executor:
                 executor.map(generate_for_all_games, apps)
             line_after()
 
         elif choice == '9':
+            line_before()
+            print('Вы вышли в главное меню')
             line_after()
             return
 
@@ -364,7 +365,6 @@ def main():
 
     while True:
         main_menu_choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
-        line_before()
         handle_main_menu_choice(main_menu_choice)
         line_after()
 
