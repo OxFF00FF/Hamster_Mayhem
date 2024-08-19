@@ -738,7 +738,7 @@ class HamsterKombatClicker:
                 return None
 
         async def __start_generate(keys_count):
-            print(f"{LIGHT_YELLOW}`{TITLE}`. Генерируется промокодов: {keys_count}{WHITE}")
+            print(f"\n{LIGHT_YELLOW}`{TITLE}`. Генерируется промокодов: {keys_count}{WHITE}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             loading_event = asyncio.Event()
