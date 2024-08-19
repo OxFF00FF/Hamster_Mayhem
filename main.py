@@ -7,8 +7,8 @@ import re
 from dotenv import load_dotenv
 
 from Src.Hamster import HamsterKombatClicker
-from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, RED, LIGHT_BLUE, LIGHT_MAGENTA, LIGHT_CYAN, \
-    banner, line_after, line_before
+from Src.utils import WHITE, RESET, YELLOW, CYAN, LIGHT_YELLOW, GREEN, LIGHT_BLUE, LIGHT_MAGENTA, LIGHT_CYAN, \
+    banner, line_after, line_before, get_status
 
 load_dotenv()
 
@@ -76,10 +76,6 @@ def generate_promocodes(prefix='', apply_promo=False):
 
     finally:
         pass
-
-
-def get_status(status):
-    return f"{GREEN}✅{RESET}" if status else f"{RED}🚫{RESET}"
 
 
 def main_menu():

@@ -155,3 +155,7 @@ def line_before():
 
 def line_after():
     print("\n " + "~" * 60)
+
+
+def get_status(status):
+    return f"{GREEN}✅{RESET}" if status else f"{RED}🚫{RESET}"
