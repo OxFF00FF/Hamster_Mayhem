@@ -613,8 +613,9 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    def get_promocodes(self, count=1, send_to_group=False, apply_promo=None, prefix=None):
+    def get_promocodes(self, count=1, send_to_group=False, apply_promo=False, prefix=None, save_to_file=True):
         """
+        :param save_to_file:
         :param prefix:
         :param count:  Количество ключей для генерации
         :param send_to_group: отправлять ли результат в вашу группу (необязательно)
@@ -633,6 +634,15 @@ class HamsterKombatClicker:
                 TITLE = promo['title']
                 TEXT = promo['text']
 
+                if prefix == "BIKE":
+                    color_prefix = f"{LIGHT_YELLOW}{prefix}{WHITE}"
+                elif prefix == "CUBE":
+                    color_prefix = f"{LIGHT_BLUE}{prefix}{WHITE}"
+                elif prefix == "CLONE":
+                    color_prefix = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
+                elif prefix == "TRAIN":
+                    color_prefix = f"{LIGHT_CYAN}{prefix}{WHITE}"
+
         def __generate_client_id() -> str:
             timestamp = int(time.time() * 1000)
             random_numbers = ''.join([str(random.randint(0, 9)) for _ in range(19)])
@@ -642,17 +652,27 @@ class HamsterKombatClicker:
             headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io'}
             json_data = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
 
-            response = requests.post(f'https://api.gamepromo.io/promo/login-client', headers=headers, json=json_data)
-            response.raise_for_status()
-            return response.json()['clientToken']
+            try:
+                response = requests.post(f'https://api.gamepromo.io/promo/login-client', headers=headers, json=json_data)
+                response.raise_for_status()
+                return response.json()['clientToken']
+            except requests.exceptions.HTTPError:
+                if response.status_code == 429:
+                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
+                    return None
 
         def __emulate_progress(token) -> str:
             headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io', 'Authorization': f'Bearer {token}'}
             json_data = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
 
-            response = requests.post(f'https://api.gamepromo.io/promo/register-event', headers=headers, json=json_data)
-            response.raise_for_status()
-            return response.json().get('hasCode', False)
+            try:
+                response = requests.post(f'https://api.gamepromo.io/promo/register-event', headers=headers, json=json_data)
+                response.raise_for_status()
+                return response.json().get('hasCode', False)
+            except requests.exceptions.HTTPError:
+                if response.status_code == 429:
+                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
+                    return None
 
         def __get_promocode(token) -> str:
             headers = {'content-type': 'application/json; charset=utf-8', 'Host': 'api.gamepromo.io', 'Authorization': f'Bearer {token}'}
@@ -677,19 +697,9 @@ class HamsterKombatClicker:
                     progress_logged[0] = True
 
             for n in range(EVENTS_COUNT):
-                color_title = prefix
-                if prefix == "BIKE":
-                    color_title = f"{LIGHT_YELLOW}{prefix}{WHITE}"
-                elif prefix == "CUBE":
-                    color_title = f"{LIGHT_BLUE}{prefix}{WHITE}"
-                elif prefix == "CLONE":
-                    color_title = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
-                elif prefix == "TRAIN":
-                    color_title = f"{LIGHT_CYAN}{prefix}{WHITE}"
-
                 delay = EVENTS_DELAY * (random.random() / 3 + 1)
                 time.sleep(delay / 1000.0)
-                print(f"{color_title} [{index + 1}/{len(keys_list)}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                print(f"{color_prefix} [{index + 1}/{len(keys_list)}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
 
                 has_code = __emulate_progress(client_token)
                 if has_code:
@@ -700,7 +710,7 @@ class HamsterKombatClicker:
             keys_list[index] = promoCode
 
         def __start_generate(keys_count):
-            print(f"{LIGHT_YELLOW}`{TITLE}`. Генерируется ключей: {keys_count}{WHITE}\n")
+            print(f"{LIGHT_YELLOW}`{TITLE}`. Генерируется промокодов: {keys_count}{WHITE}\n")
 
             keys_count = int(keys_count)
             if keys_count > 0:
@@ -725,12 +735,14 @@ class HamsterKombatClicker:
 
                     for key in keys:
                         generated_promocodes_text += f"{key}\n"
-                    file.write(generated_promocodes_text)
-                    print(f"Все ключи сохранены в файл `{file_path}`")
+
+                    if save_to_file:
+                        file.write(generated_promocodes_text)
+                        print(f"Все промокоды сохранены в файл\n`{file_path}`")
                 return generated_promocodes_text
 
             else:
-                logging.error('Количество ключей должно быть больше 0')
+                logging.error('Количество должно быть больше 0')
                 exit(1)
 
         promocodes = __start_generate(count)
@@ -745,13 +757,12 @@ class HamsterKombatClicker:
                 response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
                 response_telegram.raise_for_status()
                 time.sleep(3)
+                print(f"{prefix} Промокоды были отправлены в группу `{self.GROUP_URL}`")
 
             except requests.exceptions.HTTPError as http_err:
                 logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}\n{traceback.format_exc()}")
             except Exception as e:
                 logging.error(f"🚫  Произошла ошибка: {e}")
-
-            print(f"{prefix} Промокоды были отправлены в группу `{self.GROUP_URL}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))

@@ -60,7 +60,7 @@ hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 
 
 def get_status(status):
-    return f"{GREEN}✅{RESET}" if status else f"{RED}❌{RESET}"
+    return f"{GREEN}✅{RESET}" if status else f"{RED}🚫{RESET}"
 
 
 def menu():
@@ -242,6 +242,12 @@ def handle_choice(choice):
         with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
             apps = json.loads(f.read())['apps']
 
+        choice = input(f"\nХотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
+        if str(choice.lower()) == 'y'.lower():
+            choice = True
+        else:
+            choice = False
+
         count = input(f"\nКоличество ключей для всех игр Enter(по умолчанию 1): ")
         if count == '':
             count = 1
@@ -250,12 +256,6 @@ def handle_choice(choice):
         if int(count) <= 0:
             logging.error(f"\nКоличество должно быть числом больше 0")
             exit(1)
-
-        choice = input(f"\nХотите применить прмокоды после получения?\nY(да) / Enter (Нет): ")
-        if str(choice.lower()) == 'y'.lower():
-            choice = True
-        else:
-            choice = False
 
         def generate_for_all_games(promo):
             prefix = promo['prefix']
