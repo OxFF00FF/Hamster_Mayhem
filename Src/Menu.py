@@ -6,7 +6,7 @@ import re
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, LIGHT_BLUE, GREEN, \
-    line_before, line_after
+    line_before, line_after, save_settings
 
 
 def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
@@ -45,7 +45,7 @@ def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
 
 # --- CONFIG --- #
 
-send_to_group = True
+send_to_group = False
 save_to_file = True
 HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
@@ -72,7 +72,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         pass
 
 
-def main_menu():
+def main_menu(settings):
     activities = hamster_client._activity_cooldowns()
     for activity in activities:
         if 'taps' in activity:
@@ -92,9 +92,9 @@ def main_menu():
             minigame_cooldown = activity['minigame']['remain']
 
     memu = (
-        f"Настройки \n"
-        f"  ⚙️  Отправлять в группу:  {get_status(send_to_group)}\n"
-        f"  ⚙️  Сохранять в файл:     {get_status(save_to_file)}\n\n"
+        f"\nНастройки \n"
+        f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
+        f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file · включить/отключить)\n\n"
         f"Главное меню \n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
@@ -187,7 +187,7 @@ def playground_menu():
     print(memu.strip())
 
 
-def handle_main_menu_choice(choice):
+def handle_main_menu_choice(choice, settings):
     if choice == '#':
         line_after()
         print(hamster_client.daily_info())
@@ -243,10 +243,28 @@ def handle_main_menu_choice(choice):
 
     elif choice == 'm':
         line_after()
-        main_menu()
+        main_menu(settings)
 
     elif choice == '0':
         exit(1)
+
+    elif choice == 'toggle_group':
+        line_after()
+        settings['send_to_group'] = not settings['send_to_group']
+        save_settings(settings)
+        status = 'включена' if settings['send_to_group'] else 'отключена'
+        print(f'Отправка промокодов в группу {status}')
+        line_before()
+        main_menu(settings)
+
+    elif choice == 'toggle_file':
+        line_after()
+        settings['save_to_file'] = not settings['save_to_file']
+        save_settings(settings)
+        status = 'включено' if settings['send_to_group'] else 'отключено'
+        print(f'Сохранение в файл {status}')
+        line_before()
+        main_menu(settings)
 
     else:
         line_after()

@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import time
 
@@ -159,3 +160,19 @@ def line_after():
 
 def get_status(status):
     return f"{GREEN}✅{RESET}" if status else f"{RED}🚫{RESET}"
+
+
+def load_settings():
+    """Load settings from the JSON file."""
+    try:
+        with open('data/settings.json', 'r') as file:
+            settings = json.load(file)
+            return settings
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {'send_to_group': False}
+
+
+def save_settings(settings):
+    """Save settings to the JSON file."""
+    with open('data/settings.json', 'w') as file:
+        json.dump(settings, file, indent=4)
