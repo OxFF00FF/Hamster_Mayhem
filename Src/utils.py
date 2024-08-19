@@ -165,14 +165,14 @@ def get_status(status):
 def load_settings():
     """Load settings from the JSON file."""
     try:
-        with open('data/settings.json', 'r') as file:
+        with open('settings.json', 'r') as file:
             settings = json.load(file)
             return settings
     except (FileNotFoundError, json.JSONDecodeError):
-        return {'send_to_group': False}
+        return {'send_to_group': False, 'save_to_file': False}
 
 
 def save_settings(settings):
     """Save settings to the JSON file."""
-    with open('data/settings.json', 'w') as file:
+    with open('settings.json', 'w') as file:
         json.dump(settings, file, indent=4)
