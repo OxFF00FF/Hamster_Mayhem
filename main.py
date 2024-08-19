@@ -182,7 +182,7 @@ def playground_menu():
 
     max_width = max(len(bike), len(cube), len(clon), len(trin), len(mrge), len(twrk))
     memu = (
-        f"\n🎮  Игровая площадка \n"
+        f"\n\n🎮  Игровая площадка \n"
         f"  Для какой игры хотите получить промокоды? \n"
         f"  {LIGHT_YELLOW}1 |  {RESET}🚴 {YELLOW} {LIGHT_YELLOW}{bike:<{max_width}} {WHITE}  {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown} \n"
         f"  {LIGHT_YELLOW}2 |  {RESET}🎲 {YELLOW} {LIGHT_BLUE}{cube:<{max_width}} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown} \n"
@@ -277,7 +277,7 @@ def handle_playground_menu():
                 generate_promocodes(prefix='BIKE', apply_promo=True)
             else:
                 generate_promocodes(prefix='BIKE')
-            line_after()
+            line_before()
 
         elif choice == '2':
             choice = input(choice_text)
@@ -285,7 +285,7 @@ def handle_playground_menu():
                 generate_promocodes(prefix='CUBE', apply_promo=True)
             else:
                 generate_promocodes(prefix='CUBE')
-            line_after()
+            line_before()
 
         elif choice == '3':
             choice = input(choice_text)
@@ -293,7 +293,7 @@ def handle_playground_menu():
                 generate_promocodes(prefix='CLONE', apply_promo=True)
             else:
                 generate_promocodes(prefix='CLONE')
-            line_after()
+            line_before()
 
         elif choice == '4':
             choice = input(choice_text)
@@ -301,7 +301,7 @@ def handle_playground_menu():
                 generate_promocodes(prefix='MERGE', apply_promo=True)
             else:
                 generate_promocodes(prefix='MERGE')
-            line_after()
+            line_before()
 
         elif choice == '5':
             choice = input(choice_text)
@@ -309,7 +309,7 @@ def handle_playground_menu():
                 generate_promocodes(prefix='TWERK', apply_promo=True)
             else:
                 generate_promocodes(prefix='TWERK')
-            line_after()
+            line_before()
 
         elif choice == '6':
             choice = input(choice_text)
@@ -317,20 +317,19 @@ def handle_playground_menu():
                 generate_promocodes(prefix='TRAIN', apply_promo=True)
             else:
                 generate_promocodes(prefix='TRAIN')
-            line_after()
+            line_before()
 
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
-            line_after()
+            line_before()
 
         elif choice == '9':
-            line_after()
             print('Вы вышли в главное меню')
             return
 
         elif choice == '0':
             print("Выход")
-            line_after()
+            line_before()
             exit(1)
 
 
