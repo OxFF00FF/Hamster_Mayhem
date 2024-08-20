@@ -829,7 +829,11 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             account_info = response.json()['accountInfo']['telegramUsers'][0]
-            username = account_info['username']
+            if 'username' in account_info:
+                 username = account_info['username']
+            else:
+                 username = 'empty'
+
             first_name = account_info['firstName']
             last_name = account_info['lastName']
             print(f"Вы вошли как {first_name} {last_name} ({username})\n")
