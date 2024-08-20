@@ -757,8 +757,8 @@ class HamsterKombatClicker:
 
         promocodes = await __start_generate(count)
         if apply_promo:
-            send_to_group = False
-            save_to_file = False
+            # send_to_group = False
+            # save_to_file = False
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
                 time.sleep(1)
