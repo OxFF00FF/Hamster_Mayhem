@@ -306,25 +306,25 @@ def handle_playground_menu():
         elif choice == '4':
             choice = input(choice_text)
             if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='MERGE', apply_promo=True)
+                generate_promocodes(prefix='TRAIN', apply_promo=True)
             else:
-                generate_promocodes(prefix='MERGE')
+                generate_promocodes(prefix='TRAIN')
             line_before()
 
         elif choice == '5':
             choice = input(choice_text)
             if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='TWERK', apply_promo=True)
+                generate_promocodes(prefix='MERGE', apply_promo=True)
             else:
-                generate_promocodes(prefix='TWERK')
+                generate_promocodes(prefix='MERGE')
             line_before()
 
         elif choice == '6':
             choice = input(choice_text)
             if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='TRAIN', apply_promo=True)
+                generate_promocodes(prefix='TWERK', apply_promo=True)
             else:
-                generate_promocodes(prefix='TRAIN')
+                generate_promocodes(prefix='TWERK')
             line_before()
 
         elif choice == '*':
