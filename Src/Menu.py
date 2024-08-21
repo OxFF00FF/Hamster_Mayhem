@@ -89,7 +89,7 @@ def main_menu():
         if 'minigame' in activity:
             minigame_status = get_status(activity['minigame']['isClaimed'])
             minigame_cooldown = activity['minigame']['remain']
-
+    print()
     memu = (
         f"\nНастройки \n"
         f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
@@ -246,6 +246,7 @@ def handle_main_menu_choice(choice):
         main_menu()
 
     elif choice == '0':
+        line_after()
         print("Выход")
         line_before()
         exit(1)
@@ -305,7 +306,7 @@ def handle_playground_menu():
 
         elif choice == '2':
             if settings['apply_promo']:
-                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
+                generate_promocodes(prefix='CUBE', apply_promo=settings['apply_promo'])
             else:
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
@@ -318,7 +319,7 @@ def handle_playground_menu():
 
         elif choice == '3':
             if settings['apply_promo']:
-                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
+                generate_promocodes(prefix='CLONE', apply_promo=settings['apply_promo'])
             else:
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
@@ -331,7 +332,7 @@ def handle_playground_menu():
 
         elif choice == '4':
             if settings['apply_promo']:
-                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
+                generate_promocodes(prefix='TRAIN', apply_promo=settings['apply_promo'])
             else:
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
@@ -344,7 +345,7 @@ def handle_playground_menu():
 
         elif choice == '5':
             if settings['apply_promo']:
-                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
+                generate_promocodes(prefix='MERGE', apply_promo=settings['apply_promo'])
             else:
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
@@ -357,7 +358,7 @@ def handle_playground_menu():
 
         elif choice == '6':
             if settings['apply_promo']:
-                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
+                generate_promocodes(prefix='TWERK', apply_promo=settings['apply_promo'])
             else:
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
@@ -382,8 +383,9 @@ def handle_playground_menu():
             exit(1)
 
         else:
-            line_after()
             print("Такой опции нет")
+            line_before()
+            print()
 
 
 async def genetare_for_all_games():
