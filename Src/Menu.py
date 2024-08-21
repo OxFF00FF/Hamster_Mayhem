@@ -94,7 +94,7 @@ def main_menu():
         f"\nНастройки \n"
         f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
         f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
-        f"  ⚙️  Сохранять в файл   :  {get_status(settings['save_to_file'])} (toggle_file · включить/отключить)\n\n"
+        f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n\n"
         f"Главное меню \n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
@@ -295,8 +295,10 @@ def handle_playground_menu():
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
                     generate_promocodes(prefix='BIKE', apply_promo=True)
-                else:
+                elif choice == '':
                     generate_promocodes(prefix='BIKE')
+                else:
+                    print("Такой опции нет")
             line_before()
 
         elif choice == '2':
@@ -306,8 +308,10 @@ def handle_playground_menu():
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
                     generate_promocodes(prefix='CUBE', apply_promo=True)
-                else:
+                elif choice == '':
                     generate_promocodes(prefix='CUBE')
+                else:
+                    print("Такой опции нет")
             line_before()
 
         elif choice == '3':
@@ -317,9 +321,11 @@ def handle_playground_menu():
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
                     generate_promocodes(prefix='CLONE', apply_promo=True)
-                else:
+                elif choice == '':
                     generate_promocodes(prefix='CLONE')
-                line_before()
+                else:
+                    print("Такой опции нет")
+            line_before()
 
         elif choice == '4':
             if settings['apply_promo']:
@@ -328,9 +334,11 @@ def handle_playground_menu():
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
                     generate_promocodes(prefix='TRAIN', apply_promo=True)
-                else:
+                elif choice == '':
                     generate_promocodes(prefix='TRAIN')
-                line_before()
+                else:
+                    print("Такой опции нет")
+            line_before()
 
         elif choice == '5':
             if settings['apply_promo']:
@@ -339,9 +347,11 @@ def handle_playground_menu():
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
                     generate_promocodes(prefix='MERGE', apply_promo=True)
-                else:
+                elif choice == '':
                     generate_promocodes(prefix='MERGE')
-                line_before()
+                else:
+                    print("Такой опции нет")
+            line_before()
 
         elif choice == '6':
             if settings['apply_promo']:
@@ -350,9 +360,11 @@ def handle_playground_menu():
                 choice = input(choice_text)
                 if str(choice.lower()) == 'y'.lower():
                     generate_promocodes(prefix='TWERK', apply_promo=True)
-                else:
+                elif choice == '':
                     generate_promocodes(prefix='TWERK')
-                line_before()
+                else:
+                    print("Такой опции нет")
+            line_before()
 
         elif choice == '*':
             asyncio.run(genetare_for_all_games())

@@ -169,7 +169,10 @@ def load_settings():
             settings = json.load(file)
             return settings
     except (FileNotFoundError, json.JSONDecodeError):
-        return {'send_to_group': False, 'save_to_file': False, 'apply_promo': False}
+        print("Настройки не найдены. Создан файл с настройками по умолчанию")
+        settings = {'send_to_group': False, 'save_to_file': False, 'apply_promo': False}
+        save_settings(settings)
+        return settings
 
 
 def save_settings(settings):
