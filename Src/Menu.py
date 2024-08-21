@@ -6,7 +6,7 @@ import re
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, LIGHT_BLUE, GREEN, \
-    line_before, line_after, save_settings
+    line_before, line_after, save_settings, load_settings
 
 
 def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
@@ -45,15 +45,14 @@ def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
 
 # --- CONFIG --- #
 
-send_to_group = False
-save_to_file = True
 HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
+settings = load_settings()
 
 # --- CONFIG --- #
 
 
-def generate_promocodes(prefix='', apply_promo=False):
+def generate_promocodes(prefix='', apply_promo=None):
     count = input(f"Количество промокодов для генерации Enter(по умолчанию 1): ")
     if count == '':
         count = 1
@@ -63,7 +62,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         logging.error(f"\nКоличество должно быть числом больше 0")
 
     try:
-        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix))
+        asyncio.run(hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, prefix, settings['save_to_file']))
 
     except Exception as e:
         logging.error(e)
@@ -72,7 +71,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         pass
 
 
-def main_menu(settings):
+def main_menu():
     activities = hamster_client._activity_cooldowns()
     for activity in activities:
         if 'taps' in activity:
@@ -94,7 +93,8 @@ def main_menu(settings):
     memu = (
         f"\nНастройки \n"
         f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
-        f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file · включить/отключить)\n\n"
+        f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
+        f"  ⚙️  Сохранять в файл   :  {get_status(settings['save_to_file'])} (toggle_file · включить/отключить)\n\n"
         f"Главное меню \n"
         f"  Какую активность хотите выполнить? \n"
         f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
@@ -187,7 +187,7 @@ def playground_menu():
     print(memu.strip())
 
 
-def handle_main_menu_choice(choice, settings):
+def handle_main_menu_choice(choice):
     if choice == '#':
         line_after()
         print(hamster_client.daily_info())
@@ -243,7 +243,7 @@ def handle_main_menu_choice(choice, settings):
 
     elif choice == 'm':
         line_after()
-        main_menu(settings)
+        main_menu()
 
     elif choice == '0':
         exit(1)
@@ -255,16 +255,25 @@ def handle_main_menu_choice(choice, settings):
         status = 'включена' if settings['send_to_group'] else 'отключена'
         print(f'Отправка промокодов в группу {status}')
         line_before()
-        main_menu(settings)
+        main_menu()
 
     elif choice == 'toggle_file':
         line_after()
         settings['save_to_file'] = not settings['save_to_file']
         save_settings(settings)
-        status = 'включено' if settings['send_to_group'] else 'отключено'
+        status = 'включено' if settings['save_to_file'] else 'отключено'
         print(f'Сохранение в файл {status}')
         line_before()
-        main_menu(settings)
+        main_menu()
+
+    elif choice == 'toggle_apply':
+        line_after()
+        settings['apply_promo'] = not settings['apply_promo']
+        status = 'включено' if settings['apply_promo'] else 'отключено'
+        save_settings(settings)
+        print(f'Применение промокодов по умолчанию {status}')
+        line_before()
+        main_menu()
 
     else:
         line_after()
@@ -357,6 +366,5 @@ async def genetare_for_all_games():
         logging.error(f"\nКоличество должно быть числом больше 0")
         exit(1)
 
-    tasks = [hamster_client.get_promocodes(int(count), send_to_group, apply_promo, app["prefix"]) for app in apps]
-    print(tasks)
+    tasks = [hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
     await asyncio.gather(*tasks)
