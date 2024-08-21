@@ -30,8 +30,8 @@
             "promoId": "fe693b26-b342-4159-8808-15e3ff7f8767",
             "prefix": "CLONE",
             "title": "My Clone Army",
-            "eventsCount": 19,
-            "registerEventTimeout": 119000,
+            "eventsCount": 2,
+            "registerEventTimeout": 120000,
             "text": "\uD83C\uDFAE  Проходим клонов вместо вас"
         },
         {
@@ -39,7 +39,7 @@
             "promoId": "c4480ac7-e178-4973-8061-9ed5b2e17954",
             "prefix": "TRAIN",
             "title": "Train Miner",
-            "eventsCount": 7,
+            "eventsCount": 2,
             "registerEventTimeout": 120000,
             "text": "\uD83D\uDE82  Проходим поезда, чтобы вам не пришлось)"
         },
