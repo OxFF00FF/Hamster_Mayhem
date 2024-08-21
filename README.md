@@ -3,8 +3,8 @@
 [<img src="https://img.shields.io/badge/Group-Hamster_Mayhem-blue">](https://t.me/+SUekzTWJlq8yNzIy)
 
 
+![1](https://github.com/user-attachments/assets/bc847b2b-721c-42f4-b78d-dd6872c5b865)
 
-![Preview](https://github.com/user-attachments/assets/3264960e-cbc8-438d-8f39-6d609a3f954f)
 
 Проект был создал чтобы помочь людям проходить рекламные игры в [Hamster Kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
 
