@@ -456,7 +456,7 @@ class HamsterKombatClicker:
                 json_data = {'cipher': cipher}
                 claim_cipher = requests.post(f'{self.base_url}/clicker/claim-daily-cipher', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 claim_cipher.raise_for_status()
-                print(f"⚡️  Ежедневный шифр получен. {next_cipher}")
+                print(f"✅  Ежедневный шифр получен. {next_cipher}")
             else:
                 print(f"ℹ️  Шифр сегодня уже получен. {next_cipher}")
 
@@ -600,12 +600,13 @@ class HamsterKombatClicker:
             if keys_today == keys_limit:
                 print(f"ℹ️  Все ключи в игре `{promo_title}` сегодня уже получены. {next_keys}")
             else:
-                print(f"⚠️  Активация промокода `{promoCode}`...")
+                print(f"🔄  Активация промокода `{promoCode}`...")
                 json_data = {'promoCode': promoCode}
                 response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
-                time.sleep(2)
+                time.sleep(1)
                 print(f"🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}\n")
+            time.sleep(1)
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -615,12 +616,12 @@ class HamsterKombatClicker:
             else:
                 logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}")
+            logging.error(f"🚫  Не удалось активировать промокод: {e}\n{traceback.format_exc()}")
 
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    async def get_promocodes(self, count=1, send_to_group=False, apply_promo=False, prefix=None, save_to_file=True):
+    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=None, prefix=None, save_to_file=None):
         """
         :param save_to_file:
         :param prefix:
@@ -710,13 +711,13 @@ class HamsterKombatClicker:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
-        async def __key_generation(session, index, keys_count) -> str:
+        async def __key_generation(session, index, keys_count) -> list:
             client_id = await __generate_client_id()
-            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · `{TITLE}` Getting clientId successful{WHITE}')
+            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Getting clientId successful{WHITE}')
             time.sleep(1)
 
             client_token = await __get_client_token(session, client_id)
-            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · `{TITLE}` Login successful{WHITE}')
+            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Login successful{WHITE}')
             time.sleep(1)
 
             for n in range(EVENTS_COUNT):
@@ -727,14 +728,13 @@ class HamsterKombatClicker:
                     logging.error(f'[{index}/{keys_count}] Progress emulation failed: {error}')
                     return None
 
-                progress = (n + 1) / EVENTS_COUNT * 100
-                print(f"{color_prefix} [{index}/{keys_count}] · Статус: {progress:.0f}%{WHITE}")
+                print(f"{color_prefix} [{index}/{keys_count}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
                 if has_code:
                     break
 
             try:
                 promoCode = await __get_promocode(session, client_token)
-                print(f'\nСгенерированный промокод: {LIGHT_GREEN}`{promoCode}`{WHITE}\n')
+                print(f'\n[{index}]: {LIGHT_GREEN}`{promoCode}`{WHITE}\n')
                 return promoCode
 
             except Exception as error:
@@ -742,7 +742,8 @@ class HamsterKombatClicker:
                 return None
 
         async def __start_generate(keys_count):
-            print(f"\n{LIGHT_YELLOW}`{TITLE}`. Генерируется промокодов: {keys_count}{WHITE}")
+            remain = remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)
+            print(f"\n{LIGHT_YELLOW}`{TITLE}` · Генерируется промокодов: {keys_count}{WHITE} · ~ {remain}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             loading_event = asyncio.Event()
@@ -757,37 +758,37 @@ class HamsterKombatClicker:
 
         promocodes = await __start_generate(count)
         if apply_promo:
-            # send_to_group = False
-            # save_to_file = False
+            send_to_group = False
+            save_to_file = False
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
-                time.sleep(1)
 
         if send_to_group:
-            print(promocodes)
-            try:
-                response_telegram = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
-                response_telegram.raise_for_status()
-                time.sleep(3)
-                print(f"{color_prefix} Промокоды были отправлены в группу `{self.GROUP_URL}`")
-
-            except requests.exceptions.HTTPError as http_err:
-                logging.warning(f"🚫  Ошибкка во время запроса к телеграм API\n{http_err}")
-            except Exception as e:
-                logging.error(f"🚫  Произошла ошибка: {e}")
+            logging.warning(f'send_to_group {send_to_group}')
+            # try:
+            #     telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
+            #     telegram_response.raise_for_status()
+            #     time.sleep(3)
+            #     print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
+            #
+            # except requests.exceptions.HTTPError:
+            #     logging.error(f"🚫  Ошибкка во время запроса к телеграм API\n{telegram_response.status_code}")
+            # except Exception as e:
+            #     logging.error(f"🚫  Произошла ошибка: {e}")
 
         if save_to_file:
-            result = ""
-            if not os.path.exists('data'):
-                os.makedirs('data')
-
-            for promocode in promocodes:
-                result += f"{promocode}\n"
-
-            file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
-            with open(file_path, 'w') as file:
-                file.write(result)
-                print(f"\nПромокоды `{TITLE}` сохранены в файл:\n`{file_path}`\n")
+            logging.warning(f'save_to_file {save_to_file}')
+            # result = ""
+            # if not os.path.exists('data'):
+            #     os.makedirs('data')
+            #
+            # for promocode in promocodes:
+            #     result += f"{promocode}\n"
+            #
+            # file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
+            # with open(file_path, 'w') as file:
+            #     file.write(result)
+            #     print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
