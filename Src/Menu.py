@@ -26,9 +26,9 @@ def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
         for e, token in enumerate(accounts):
             hamster = HamsterKombatClicker(token)
             account_info = hamster.get_account_info()
-            username = account_info['username']
-            first_name = account_info['firstName']
-            last_name = account_info['lastName']
+            username = account_info.get('username', 'n/a')
+            first_name = account_info.get('firstName', 'n/a')
+            last_name = account_info.get('lastName', 'n/a')
             print(f"[{e + 1}] · {first_name} {last_name} ({username})")
             account_dict[str(e + 1)] = token
 
