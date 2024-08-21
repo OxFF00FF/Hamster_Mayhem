@@ -246,6 +246,8 @@ def handle_main_menu_choice(choice):
         main_menu()
 
     elif choice == '0':
+        print("Выход")
+        line_before()
         exit(1)
 
     elif choice == 'toggle_group':
@@ -378,6 +380,10 @@ def handle_playground_menu():
             print("Выход")
             line_before()
             exit(1)
+
+        else:
+            line_after()
+            print("Такой опции нет")
 
 
 async def genetare_for_all_games():
