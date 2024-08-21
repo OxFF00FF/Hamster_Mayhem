@@ -18,7 +18,7 @@ from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
 from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_MAGENTA, LIGHT_CYAN, LIGHT_BLUE, DARK_GRAY, \
-    text_to_morse, remain_time, line_after, loading
+    text_to_morse, remain_time, line_after, loading, loading_v2
 
 load_dotenv()
 
@@ -747,7 +747,8 @@ class HamsterKombatClicker:
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             loading_event = asyncio.Event()
-            spinner_task = asyncio.create_task(loading(loading_event))
+            # spinner_task = asyncio.create_task(loading(loading_event))
+            spinner_task = asyncio.create_task(loading_v2(loading_event, 'shark'))
 
             async with aiohttp.ClientSession() as session:
                 tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
@@ -763,32 +764,32 @@ class HamsterKombatClicker:
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
 
+        logging.warning(f'send_to_group: {send_to_group} · save_to_file: {save_to_file} · apply_promo: {apply_promo}')
+
         if send_to_group:
-            logging.warning(f'send_to_group {send_to_group}')
-            # try:
-            #     telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
-            #     telegram_response.raise_for_status()
-            #     time.sleep(3)
-            #     print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
-            #
-            # except requests.exceptions.HTTPError:
-            #     logging.error(f"🚫  Ошибкка во время запроса к телеграм API\n{telegram_response.status_code}")
-            # except Exception as e:
-            #     logging.error(f"🚫  Произошла ошибка: {e}")
+            try:
+                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
+                telegram_response.raise_for_status()
+                time.sleep(3)
+                print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
+
+            except requests.exceptions.HTTPError:
+                logging.error(f"🚫  Ошибкка во время запроса к телеграм API\n{telegram_response.status_code}")
+            except Exception as e:
+                logging.error(f"🚫  Произошла ошибка: {e}")
 
         if save_to_file:
-            logging.warning(f'save_to_file {save_to_file}')
-            # result = ""
-            # if not os.path.exists('data'):
-            #     os.makedirs('data')
-            #
-            # for promocode in promocodes:
-            #     result += f"{promocode}\n"
-            #
-            # file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
-            # with open(file_path, 'w') as file:
-            #     file.write(result)
-            #     print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
+            result = ""
+            if not os.path.exists('data'):
+                os.makedirs('data')
+
+            for promocode in promocodes:
+                result += f"{promocode}\n"
+
+            file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
+            with open(file_path, 'w') as file:
+                file.write(result)
+                print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
 
     def evaluate_cards(self):
         response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
