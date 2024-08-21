@@ -1,4 +1,5 @@
 {
-    "send_to_group": true,
-    "save_to_file": false
+    "save_to_file": false,
+    "apply_promo": true,
+    "send_to_group": false
 }
