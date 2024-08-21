@@ -289,7 +289,7 @@ def handle_playground_menu():
         choice = input(f"\nВыберите действие\n{CYAN}(1/2/3/4/5/6/*/9/0): {RESET}")
         line_after()
 
-        choice_text = f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): "
+        choice_text = f"Хотите применить промокоды после получения?\nY(да) / Enter(Нет): "
 
         if choice == '1':
             if settings['apply_promo']:
@@ -392,7 +392,7 @@ async def genetare_for_all_games():
     with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
         apps = json.loads(f.read())['apps']
 
-    choice = input(f"\nХотите применить прмокоды после получения?\nY(да) / Enter(Нет): ")
+    choice = input(f"\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): ")
     apply_promo = str(choice.lower()) == 'y'.lower()
 
     count = input(f"\nКоличество промокодов для всех игр Enter(по умолчанию 1): ")
