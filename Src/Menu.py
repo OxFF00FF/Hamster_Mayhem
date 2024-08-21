@@ -52,11 +52,11 @@ settings = load_settings()
 # --- CONFIG --- #
 
 
-def generate_promocodes(prefix='', apply_promo=None):
-    count = input(f"Количество промокодов для генерации Enter(по умолчанию 1): ")
+def generate_promocodes(prefix='', apply_promo=False):
+    count = input(f"\nКакое количество промокодов генерировать?\nEnter(по умолчанию 1): ")
     if count == '':
         count = 1
-        print("\nКоличество промокодов не указано. Генерируется 1 промокод по умолчанию")
+        print("Количество промокодов не указано. Генерируется 1 по умолчанию")
 
     if int(count) <= 0:
         logging.error(f"\nКоличество должно быть числом больше 0")
@@ -289,52 +289,70 @@ def handle_playground_menu():
         choice_text = f"Хотите применить прмокоды после получения?\nY(да) / Enter(Нет): "
 
         if choice == '1':
-            choice = input(choice_text)
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='BIKE', apply_promo=True)
+            if settings['apply_promo']:
+                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
             else:
-                generate_promocodes(prefix='BIKE')
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='BIKE', apply_promo=True)
+                else:
+                    generate_promocodes(prefix='BIKE')
             line_before()
 
         elif choice == '2':
-            choice = input(choice_text)
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='CUBE', apply_promo=True)
+            if settings['apply_promo']:
+                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
             else:
-                generate_promocodes(prefix='CUBE')
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='CUBE', apply_promo=True)
+                else:
+                    generate_promocodes(prefix='CUBE')
             line_before()
 
         elif choice == '3':
-            choice = input(choice_text)
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='CLONE', apply_promo=True)
+            if settings['apply_promo']:
+                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
             else:
-                generate_promocodes(prefix='CLONE')
-            line_before()
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='CLONE', apply_promo=True)
+                else:
+                    generate_promocodes(prefix='CLONE')
+                line_before()
 
         elif choice == '4':
-            choice = input(choice_text)
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='TRAIN', apply_promo=True)
+            if settings['apply_promo']:
+                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
             else:
-                generate_promocodes(prefix='TRAIN')
-            line_before()
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='TRAIN', apply_promo=True)
+                else:
+                    generate_promocodes(prefix='TRAIN')
+                line_before()
 
         elif choice == '5':
-            choice = input(choice_text)
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='MERGE', apply_promo=True)
+            if settings['apply_promo']:
+                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
             else:
-                generate_promocodes(prefix='MERGE')
-            line_before()
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='MERGE', apply_promo=True)
+                else:
+                    generate_promocodes(prefix='MERGE')
+                line_before()
 
         elif choice == '6':
-            choice = input(choice_text)
-            if str(choice.lower()) == 'y'.lower():
-                generate_promocodes(prefix='TWERK', apply_promo=True)
+            if settings['apply_promo']:
+                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
             else:
-                generate_promocodes(prefix='TWERK')
-            line_before()
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='TWERK', apply_promo=True)
+                else:
+                    generate_promocodes(prefix='TWERK')
+                line_before()
 
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
