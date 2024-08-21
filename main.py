@@ -1,6 +1,8 @@
 import logging
+import traceback
+
 from Src.Menu import handle_main_menu_choice, hamster_client, main_menu
-from Src.utils import WHITE, RESET, CYAN, line_before, banner, load_settings
+from Src.utils import WHITE, RESET, CYAN, line_before, banner
 
 from dotenv import load_dotenv
 
@@ -18,7 +20,11 @@ if __name__ == '__main__':
     hamster_client.login()
     main_menu()
 
-    while True:
-        choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
-        handle_main_menu_choice(choice)
-        line_before()
+    try:
+        while True:
+            choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
+            handle_main_menu_choice(choice)
+            line_before()
+
+    except Exception as e:
+        logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
