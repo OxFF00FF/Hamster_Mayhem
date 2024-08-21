@@ -14,7 +14,8 @@
             "title": "Bike Ride 3D",
             "eventsCount": 17,
             "registerEventTimeout": 20000,
-            "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)"
+            "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)",
+            "emoji": "\uD83D\uDEB4"
         },
         {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
@@ -23,7 +24,8 @@
             "title": "Chain Cube 2048",
             "eventsCount": 7,
             "registerEventTimeout": 20000,
-            "text": "\uD83C\uDFB2  Гоняем кубы за вас"
+            "text": "\uD83C\uDFB2  Гоняем кубы за вас",
+            "emoji": "\uD83C\uDFB2"
         },
         {
             "appToken": "74ee0b5b-775e-4bee-974f-63e7f4d5bacb",
@@ -32,7 +34,8 @@
             "title": "My Clone Army",
             "eventsCount": 2,
             "registerEventTimeout": 120000,
-            "text": "\uD83C\uDFAE  Проходим клонов вместо вас"
+            "text": "\uD83C\uDFAE  Проходим клонов вместо вас",
+            "emoji": "\uD83C\uDFAE"
         },
         {
             "appToken": "82647f43-3f87-402d-88dd-09a90025313f",
@@ -41,7 +44,8 @@
             "title": "Train Miner",
             "eventsCount": 2,
             "registerEventTimeout": 120000,
-            "text": "\uD83D\uDE82  Проходим поезда, чтобы вам не пришлось)"
+            "text": "\uD83D\uDE82  Проходим поезда, чтобы вам не пришлось)",
+            "emoji": "\uD83D\uDE82"
         },
         {
             "appToken": "8d1cc2ad-e097-4b86-90ef-7a27e19fb833",
@@ -50,7 +54,8 @@
             "title": "Merge Away",
             "eventsCount": 7,
             "registerEventTimeout": 20000,
-            "text": "\uD83E\uDDD1\u200D\uD83C\uDF73  Объединяем предметы вместо вас"
+            "text": "\uD83E\uDDD1\u200D\uD83C\uDF73  Объединяем предметы вместо вас",
+            "emoji": "\uD83E\uDDD1\u200D\uD83C\uDF73"
         },
         {
             "appToken": "61308365-9d16-4040-8bb0-2f4a4c69074c",
@@ -59,7 +64,8 @@
             "title": "Twerk Race",
             "eventsCount": 10,
             "registerEventTimeout": 20000,
-            "text": "\uD83C\uDFC3  Бежим куда-то"
+            "text": "\uD83C\uDFC3  Бежим куда-то",
+            "emoji": "\uD83C\uDFC3"
         }
     ]
 }

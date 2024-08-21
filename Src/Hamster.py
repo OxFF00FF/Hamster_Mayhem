@@ -70,7 +70,6 @@ class HamsterKombatClicker:
         try:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
-
             return response.json()['clickerUser']['id']
 
         except requests.exceptions.HTTPError as http_err:
@@ -545,7 +544,7 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def send_balance_to_group(self, bot_token, update_time_sec=7200):
+    def send_balance_to_group(self, bot_token, update_time_sec=7200, chat_id=None):
         try:
             while True:
                 info = self._get_balance()
@@ -558,8 +557,12 @@ class HamsterKombatClicker:
                          f"🔄  Обновление: {update_date}"
                 balance = result.replace(',', ' ')
 
-                response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": balance})
-                response.raise_for_status()
+                if chat_id is not None:
+                    response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": chat_id, "text": balance})
+                    response.raise_for_status()
+                else:
+                    response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": balance})
+                    response.raise_for_status()
 
                 print(f"✅  {update_date} · Баланс успешно отправлен в группу")
                 time.sleep(update_time_sec)
@@ -642,6 +645,7 @@ class HamsterKombatClicker:
                 EVENTS_COUNT = promo['eventsCount']
                 TITLE = promo['title']
                 TEXT = promo['text']
+                EMOJI = promo['emoji']
 
                 if prefix == "BIKE":
                     color_prefix = f"{LIGHT_YELLOW}{prefix} {WHITE}"
@@ -767,11 +771,12 @@ class HamsterKombatClicker:
 
         if send_to_group:
             try:
-                result = ""
+                result = f"*{EMOJI} {TITLE}*\n\n" \
+                         f"*Промокоды: *\n"
                 for promocode in promocodes:
-                    result += f"{promocode}\n"
+                    result += f"·  `{promocode}`\n"
 
-                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": result})
+                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "parse_mode": "Markdown", "text": result})
                 telegram_response.raise_for_status()
                 time.sleep(3)
                 print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
