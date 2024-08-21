@@ -14,13 +14,11 @@ def test():
 
 
 if __name__ == '__main__':
-    settings = load_settings()
-
     banner()
     hamster_client.login()
-    main_menu(settings)
+    main_menu()
 
     while True:
         choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
-        handle_main_menu_choice(choice, settings)
+        handle_main_menu_choice(choice)
         line_before()
