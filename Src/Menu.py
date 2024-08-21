@@ -64,7 +64,7 @@ def generate_promocodes(prefix='', apply_promo=False):
     try:
         send_to_group = settings['send_to_group']
         save_to_file = settings['save_to_file']
-        spinner = 'shark'
+        spinner = None
         asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
 
     except Exception as e:

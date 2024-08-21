@@ -18,7 +18,7 @@ from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
 from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_MAGENTA, LIGHT_CYAN, LIGHT_BLUE, DARK_GRAY, \
-    text_to_morse, remain_time, line_after, loading, loading_v2
+    text_to_morse, remain_time, line_after, loading_v2
 
 load_dotenv()
 
@@ -758,9 +758,6 @@ class HamsterKombatClicker:
             return [key for key in keys if key]
 
         promocodes = await __start_generate(count)
-        print(promocodes)
-        print(type(promocodes))
-
         if apply_promo:
             send_to_group = False
             save_to_file = False
@@ -770,7 +767,11 @@ class HamsterKombatClicker:
 
         if send_to_group:
             try:
-                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": promocodes})
+                result = ""
+                for promocode in promocodes:
+                    result += f"{promocode}\n"
+
+                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": result})
                 telegram_response.raise_for_status()
                 time.sleep(3)
                 print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
