@@ -119,19 +119,23 @@ async def loading(event):
             await asyncio.sleep(0.3)
 
 
-async def loading_v2(event, spinner_name: str):
-    spinners = [spinner_name.name for spinner_name in Spinners]
-    for spinner_item in spinners:
-        if spinner_item == spinner_name:
-            spinner = Spinners[spinner_name]
-            while not event.is_set():
-                for frame in spinner.value['frames']:
-                    if event.is_set():
-                        break
-                    print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
-                    time.sleep(0.3)
-    print(f'Spinner `{spinner_name}` not found')
-    return
+async def loading_v2(event, spinner_name=None):
+    if spinner_name is not None:
+        spinners = [spinner_name.name for spinner_name in Spinners]
+        for spinner_item in spinners:
+            if spinner_item == spinner_name:
+                spinner = Spinners[spinner_name]
+                while not event.is_set():
+                    for frame in spinner.value['frames']:
+                        if event.is_set():
+                            break
+                        print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
+                        await asyncio.sleep(0.3)
+        print(f'Spinner `{spinner_name}` not found')
+        await loading(event)
+
+    else:
+        await loading(event)
 
 
 def spinners_list():

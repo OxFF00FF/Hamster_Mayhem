@@ -621,8 +621,9 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=None, prefix=None, save_to_file=None):
+    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=None, prefix=None, save_to_file=None, spinner=None):
         """
+        :param spinner:
         :param save_to_file:
         :param prefix:
         :param count:  Количество промокодов для генерации
@@ -714,7 +715,6 @@ class HamsterKombatClicker:
         async def __key_generation(session, index, keys_count) -> list:
             client_id = await __generate_client_id()
             print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Getting clientId successful{WHITE}')
-            time.sleep(1)
 
             client_token = await __get_client_token(session, client_id)
             print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Login successful{WHITE}')
@@ -734,7 +734,7 @@ class HamsterKombatClicker:
 
             try:
                 promoCode = await __get_promocode(session, client_token)
-                print(f'\n[{index}]: {LIGHT_GREEN}`{promoCode}`{WHITE}\n')
+                print(f'[{index}]: {LIGHT_GREEN}`{promoCode}`{WHITE}')
                 return promoCode
 
             except Exception as error:
@@ -748,7 +748,7 @@ class HamsterKombatClicker:
 
             loading_event = asyncio.Event()
             # spinner_task = asyncio.create_task(loading(loading_event))
-            spinner_task = asyncio.create_task(loading_v2(loading_event, 'shark'))
+            spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
 
             async with aiohttp.ClientSession() as session:
                 tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
@@ -758,13 +758,15 @@ class HamsterKombatClicker:
             return [key for key in keys if key]
 
         promocodes = await __start_generate(count)
+        print(promocodes)
+        print(type(promocodes))
+
         if apply_promo:
             send_to_group = False
             save_to_file = False
+            logging.warning(f'Промокоды не будут отправленны в группу и не записаны в файл')
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
-
-        logging.warning(f'send_to_group: {send_to_group} · save_to_file: {save_to_file} · apply_promo: {apply_promo}')
 
         if send_to_group:
             try:

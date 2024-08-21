@@ -62,7 +62,10 @@ def generate_promocodes(prefix='', apply_promo=False):
         logging.error(f"\nКоличество должно быть числом больше 0")
 
     try:
-        asyncio.run(hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, prefix, settings['save_to_file']))
+        send_to_group = settings['send_to_group']
+        save_to_file = settings['save_to_file']
+        spinner = 'shark'
+        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
 
     except Exception as e:
         logging.error(e)
