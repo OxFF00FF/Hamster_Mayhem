@@ -718,10 +718,10 @@ class HamsterKombatClicker:
 
         async def __key_generation(session, index, keys_count) -> list:
             client_id = await __generate_client_id()
-            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Getting clientId successful{WHITE}')
+            # print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Getting clientId successful{WHITE}')
 
             client_token = await __get_client_token(session, client_id)
-            print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Login successful{WHITE}')
+            # print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Login successful{WHITE}')
             time.sleep(1)
 
             for n in range(EVENTS_COUNT):

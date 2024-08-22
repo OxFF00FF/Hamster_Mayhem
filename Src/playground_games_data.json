@@ -32,8 +32,8 @@
             "promoId": "fe693b26-b342-4159-8808-15e3ff7f8767",
             "prefix": "CLONE",
             "title": "My Clone Army",
-            "eventsCount": 2,
-            "registerEventTimeout": 120000,
+            "eventsCount": 19,
+            "registerEventTimeout": 119000,
             "text": "\uD83C\uDFAE  Проходим клонов вместо вас",
             "emoji": "\uD83C\uDFAE"
         },
@@ -66,6 +66,16 @@
             "registerEventTimeout": 20000,
             "text": "\uD83C\uDFC3  Бежим куда-то",
             "emoji": "\uD83C\uDFC3"
+        },
+        {
+            "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
+            "promoId": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
+            "prefix": "POLY",
+            "title": "Polysphere",
+            "eventsCount": 17,
+            "registerEventTimeout": 3000,
+            "text": "",
+            "emoji": ""
         }
     ]
 }
