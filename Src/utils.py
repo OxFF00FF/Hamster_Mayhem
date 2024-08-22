@@ -182,3 +182,9 @@ def save_settings(settings):
     """Save settings to the JSON file."""
     with open('settings.json', 'w') as file:
         json.dump(settings, file, indent=4)
+
+
+def get_games_data():
+    with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
+        games_data = json.loads(f.read())
+    return games_data
