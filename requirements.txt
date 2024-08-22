@@ -6,3 +6,5 @@ fake-useragent==1.5.1
 spinners==0.0.24
 python-Levenshtein==0.25.1
 aiohttp==3.10.4
+
+python-telegram-bot==20.3
