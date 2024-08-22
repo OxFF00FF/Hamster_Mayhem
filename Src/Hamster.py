@@ -1,7 +1,6 @@
 import asyncio
 import base64
 import datetime
-import json
 import logging
 import os
 import random
@@ -18,7 +17,7 @@ from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
 from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_MAGENTA, LIGHT_CYAN, LIGHT_BLUE, DARK_GRAY, \
-    text_to_morse, remain_time, line_after, loading_v2
+    text_to_morse, remain_time, line_after, loading_v2, get_games_data
 
 load_dotenv()
 
@@ -634,8 +633,7 @@ class HamsterKombatClicker:
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
         """
 
-        with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-            games_data = json.loads(f.read())
+        games_data = get_games_data()
 
         for promo in games_data['apps']:
             if promo['prefix'] == prefix:
@@ -788,13 +786,13 @@ class HamsterKombatClicker:
 
         if save_to_file:
             result = ""
-            if not os.path.exists('data'):
-                os.makedirs('data')
+            if not os.path.exists('generated keys'):
+                os.makedirs('generated keys')
 
             for promocode in promocodes:
                 result += f"{promocode}\n"
 
-            file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', f'generated_keys ({TITLE}).txt')
+            file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'generated keys', f'generated_keys ({TITLE}).txt')
             with open(file_path, 'w') as file:
                 file.write(result)
                 print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
@@ -852,3 +850,39 @@ class HamsterKombatClicker:
 
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
+
+    def get_cooldowns(self) -> dict:
+        response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
+        if response.status_code != 200:
+            logging.error(f"❌  {response.json()['error_message']}")
+            logging.error(f"🚫  Токен не был предоставлен")
+            return
+        result = {}
+
+        clickerUser = response.json().get('clickerUser')
+        availableTaps = int(clickerUser.get('availableTaps'))
+        maxTaps = int(clickerUser.get('maxTaps'))
+        tapsRecoverPerSec = clickerUser.get('tapsRecoverPerSec')
+        total_remain_time = (maxTaps / tapsRecoverPerSec) / 60
+        current_remain_time = (availableTaps / tapsRecoverPerSec) / 60
+        remain_taps = total_remain_time - current_remain_time
+        if remain_taps == 0:
+            result['taps'] = True
+        else:
+            result['taps'] = False
+            result['taps_remain'] = f"{remain_taps:.0f}"
+
+        response = requests.post('https://api.hamsterkombatgame.io/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
+        result['cipher'] = response.json()['dailyCipher']['isClaimed']
+        result['key'] = response.json().get('dailyKeysMiniGame').get('isClaimed')
+
+        result['combo'] = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json()['dailyCombo']['isClaimed']
+
+        response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
+        task_list = response.json().get('tasks', [])
+        if all(task['isCompleted'] for task in task_list):
+            result['tasks'] = True
+        else:
+            result['tasks'] = False
+
+        return result
