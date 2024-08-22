@@ -1,12 +1,11 @@
 import asyncio
-import json
 import logging
 import os
 import re
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, LIGHT_BLUE, GREEN, \
-    line_before, line_after, save_settings, load_settings
+    line_before, line_after, save_settings, load_settings, get_games_data
 
 
 def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
@@ -392,8 +391,7 @@ def handle_playground_menu():
 
 
 async def genetare_for_all_games():
-    with open('Src/playground_games_data.json', 'r', encoding='utf-8') as f:
-        apps = json.loads(f.read())['apps']
+    apps = get_games_data()['apps']
 
     choice = input(f"\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): ")
     apply_promo = str(choice.lower()) == 'y'.lower()
