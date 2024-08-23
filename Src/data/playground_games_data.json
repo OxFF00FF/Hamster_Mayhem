@@ -1,0 +1,101 @@
+{
+    "promos": {
+        "loginAttemptTimeoutSec": 15,
+        "loginSameIpLimitSec": 600,
+        "loginSameIpLimitCount": 20,
+        "loginSessionTimeoutSec": 86400,
+        "registerEventTimeoutSec": 20
+    },
+    "apps": [
+        {
+            "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
+            "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
+            "prefix": "BIKE",
+            "title": "Bike Ride 3D",
+            "eventsCount": 17,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)",
+            "emoji": "\uD83D\uDEB4"
+        },
+        {
+            "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
+            "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
+            "prefix": "CUBE",
+            "title": "Chain Cube 2048",
+            "eventsCount": 7,
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDFB2  Гоняем кубы за вас",
+            "emoji": "\uD83C\uDFB2"
+        },
+        {
+            "appToken": "74ee0b5b-775e-4bee-974f-63e7f4d5bacb",
+            "promoId": "fe693b26-b342-4159-8808-15e3ff7f8767",
+            "prefix": "CLONE",
+            "title": "My Clone Army",
+            "eventsCount": 7,
+            "registerEventTimeout": 119000,
+            "text": "\uD83C\uDFAE  Проходим клонов вместо вас",
+            "emoji": "\uD83C\uDFAE"
+        },
+        {
+            "appToken": "82647f43-3f87-402d-88dd-09a90025313f",
+            "promoId": "c4480ac7-e178-4973-8061-9ed5b2e17954",
+            "prefix": "TRAIN",
+            "title": "Train Miner",
+            "eventsCount": 2,
+            "registerEventTimeout": 120000,
+            "text": "\uD83D\uDE82  Проходим поезда, чтобы вам не пришлось)",
+            "emoji": "\uD83D\uDE82"
+        },
+        {
+            "appToken": "8d1cc2ad-e097-4b86-90ef-7a27e19fb833",
+            "promoId": "dc128d28-c45b-411c-98ff-ac7726fbaea4",
+            "prefix": "MERGE",
+            "title": "Merge Away",
+            "eventsCount": 7,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDC8E  Объединяем предметы вместо вас",
+            "emoji": "\uD83D\uDC8E"
+        },
+        {
+            "appToken": "61308365-9d16-4040-8bb0-2f4a4c69074c",
+            "promoId": "61308365-9d16-4040-8bb0-2f4a4c69074c",
+            "prefix": "TWERK",
+            "title": "Twerk Race",
+            "eventsCount": 10,
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDFC3  Бежим куда-то",
+            "emoji": "\uD83C\uDFC3"
+        },
+        {
+            "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
+            "promoId": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
+            "prefix": "POLY",
+            "title": "Polysphere",
+            "eventsCount": 17,
+            "registerEventTimeout": 3000,
+            "text": "\uD83D\uDC0B  Восстанавливаем изображения за вас",
+            "emoji": "\uD83D\uDC0B"
+        },
+        {
+            "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
+            "promoId": "8814a785-97fb-4177-9193-ca4180ff9da8",
+            "prefix": "RACE",
+            "title": "Mud Racing",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDE99  Едем за ключами вместо вас",
+            "emoji": "\uD83D\uDE99"
+        },
+        {
+            "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
+            "promoId": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
+            "prefix": "TRIM",
+            "title": "Mow and Trim",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDF3E  Косим траву",
+            "emoji": "\uD83C\uDF3E"
+        }
+    ]
+}
