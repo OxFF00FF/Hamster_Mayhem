@@ -168,7 +168,7 @@ def get_status(status):
 def load_settings():
     """Load settings from the JSON file."""
     try:
-        with open('settings.json', 'r') as file:
+        with open('Src/data/settings.json', 'r') as file:
             settings = json.load(file)
             return settings
     except (FileNotFoundError, json.JSONDecodeError):
