@@ -8,6 +8,7 @@ import time
 import traceback
 import uuid
 from random import randint
+from typing import Any
 
 import aiohttp
 import requests
@@ -16,7 +17,7 @@ from bs4 import BeautifulSoup as BS
 from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
-from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_MAGENTA, LIGHT_CYAN, LIGHT_BLUE, DARK_GRAY, \
+from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_BLUE, DARK_GRAY, \
     text_to_morse, remain_time, line_after, loading_v2, get_games_data
 
 load_dotenv()
@@ -645,19 +646,6 @@ class HamsterKombatClicker:
                 TEXT = promo['text']
                 EMOJI = promo['emoji']
 
-                if prefix == "BIKE":
-                    color_prefix = f"{LIGHT_YELLOW}{prefix} {WHITE}"
-                elif prefix == "CUBE":
-                    color_prefix = f"{LIGHT_BLUE}{prefix} {WHITE}"
-                elif prefix == "CLONE":
-                    color_prefix = f"{LIGHT_MAGENTA}{prefix}{WHITE}"
-                elif prefix == "TRAIN":
-                    color_prefix = f"{LIGHT_CYAN}{prefix}{WHITE}"
-                elif prefix == "MERGE":
-                    color_prefix = f"{GREEN}{prefix}{WHITE}"
-                elif prefix == "TWERK":
-                    color_prefix = f"{CYAN}{prefix}{WHITE}"
-
         async def delay_random():
             return random.random() / 3 + 1
 
@@ -666,7 +654,7 @@ class HamsterKombatClicker:
             random_numbers = ''.join([str(random.randint(0, 9)) for _ in range(19)])
             return f"{timestamp}-{random_numbers}"
 
-        async def __get_client_token(session, client_id) -> str:
+        async def __get_client_token(session, client_id) -> Any | None:
             url = 'https://api.gamepromo.io/promo/login-client'
             headers = {'Content-Type': 'application/json'}
             payload = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
@@ -682,7 +670,7 @@ class HamsterKombatClicker:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
-        async def __emulate_progress(session, client_token) -> str:
+        async def __emulate_progress(session, client_token) -> Any | None:
             url = 'https://api.gamepromo.io/promo/register-event'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
             payload = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
@@ -698,7 +686,7 @@ class HamsterKombatClicker:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
-        async def __get_promocode(session, client_token) -> str:
+        async def __get_promocode(session, client_token) -> Any | None:
             url = 'https://api.gamepromo.io/promo/create-code'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
             payload = {'promoId': PROMO_ID}
@@ -714,12 +702,9 @@ class HamsterKombatClicker:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
-        async def __key_generation(session, index, keys_count) -> list:
+        async def __key_generation(session, index, keys_count) -> str | None:
             client_id = await __generate_client_id()
-            # print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Getting clientId successful{WHITE}')
-
             client_token = await __get_client_token(session, client_id)
-            # print(f'[{index}/{keys_count}]{LIGHT_GREEN} · Login successful{WHITE}')
             time.sleep(1)
 
             for n in range(EVENTS_COUNT):
@@ -730,7 +715,7 @@ class HamsterKombatClicker:
                     logging.error(f'[{index}/{keys_count}] Progress emulation failed: {error}')
                     return None
 
-                print(f"{color_prefix} [{index}/{keys_count}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%{WHITE}")
+                print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%")
                 if has_code:
                     break
 
@@ -851,7 +836,7 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    def get_cooldowns(self) -> dict:
+    def get_cooldowns(self) -> dict[str, bool | str | Any] | None:
         response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
         if response.status_code != 200:
             logging.error(f"❌  {response.json()['error_message']}")

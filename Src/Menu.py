@@ -116,77 +116,40 @@ def main_menu():
 
 def playground_menu():
     promos = hamster_client._get_promos()[0]['promo']
+    games_data = get_games_data()['apps']
 
     keys_per_day = 4
-    bike = cube = clon = trin = ""
-    bike_keys = cube_keys = clon_keys = trin_keys = 0
-    bike_cooldown = cube_cooldown = clon_cooldown = trin_cooldown = "n/a"
-    bike_status = cube_status = clon_status = trin_status = "n/a"
+    games_info = {game['title']: {"icon": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
 
     for promo in promos:
-        if promo['name'] == 'Bike Ride 3D':
-            bike = promo['name']
-            bike_keys = promo['keys']
-            bike_cooldown = promo['remain']
-            bike_status = get_status(promo['isClaimed'])
-        else:
-            bike = 'Bike Ride 3D'
+        game_name = promo['name']
+        if game_name in games_info:
+            games_info[game_name].update({
+                "keys": promo['keys'],
+                "cooldown": promo['remain'],
+                "status": get_status(promo['isClaimed'])
+            })
 
-        if promo['name'] == 'Chain Cube 2048':
-            cube = promo['name']
-            cube_keys = promo['keys']
-            cube_cooldown = promo['remain']
-            cube_status = get_status(promo['isClaimed'])
-        else:
-            cube = 'Chain Cube 2048'
+    max_width = max(len(game) for game in games_info)
+    menu = "\n\n🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
 
-        if promo['name'] == 'My Clone Army':
-            clon = promo['name']
-            clon_keys = promo['keys']
-            clon_cooldown = promo['remain']
-            clon_status = get_status(promo['isClaimed'])
-        else:
-            clon = 'My Clone Army'
+    for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
+        keys = game_data.get("keys", 0)
+        cooldown = game_data.get("cooldown", "n/a")
+        status = game_data.get("status", "n/a")
+        icon = game_data["icon"]
+        color = game_data["color"]
 
-        if promo['name'] == 'Train Miner':
-            trin = promo['name']
-            trin_keys = promo['keys']
-            trin_cooldown = promo['remain']
-            trin_status = get_status(promo['isClaimed'])
-        else:
-            trin = 'Train Miner'
+        menu += (f"  {LIGHT_YELLOW}{i} |  {RESET}{icon} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  "
+                 f"{keys}/{keys_per_day}  {status} · Осталось: {cooldown} \n")
 
-        if promo['name'] == 'Merge Away':
-            mrge = promo['name']
-            mrge_keys = promo['keys']
-            mrge_cooldown = promo['remain']
-            mrge_status = get_status(promo['isClaimed'])
-        else:
-            mrge = 'Merge Away'
-
-        if promo['name'] == 'Twerk Race':
-            twrk = promo['name']
-            twrk_keys = promo['keys']
-            twrk_cooldown = promo['remain']
-            twrk_status = get_status(promo['isClaimed'])
-        else:
-            twrk = 'Twerk Race'
-
-    max_width = max(len(bike), len(cube), len(clon), len(trin), len(mrge), len(twrk))
-    memu = (
-        f"\n\n🎮  Игровая площадка \n"
-        f"  Для какой игры хотите получить промокоды? \n"
-        f"  {LIGHT_YELLOW}1 |  {RESET}🚴 {YELLOW} {LIGHT_YELLOW}{bike:<{max_width}} {WHITE}  {bike_keys}/{keys_per_day}  {bike_status} · Осталось: {bike_cooldown} \n"
-        f"  {LIGHT_YELLOW}2 |  {RESET}🎲 {YELLOW} {LIGHT_BLUE}{cube:<{max_width}} {WHITE}  {cube_keys}/{keys_per_day}  {cube_status} · Осталось: {cube_cooldown} \n"
-        f"  {LIGHT_YELLOW}3 |  {RESET}🎮 {YELLOW} {LIGHT_MAGENTA}{clon:<{max_width}} {WHITE}  {clon_keys}/{keys_per_day}  {clon_status} · Осталось: {clon_cooldown} \n"
-        f"  {LIGHT_YELLOW}4 |  {RESET}🚂 {YELLOW} {LIGHT_CYAN}{trin:<{max_width}} {WHITE}  {trin_keys}/{keys_per_day}  {trin_status} · Осталось: {trin_cooldown} \n"
-        f"  {LIGHT_YELLOW}5 |  {RESET}🙍‍ {YELLOW} {GREEN}{mrge:<{max_width}} {WHITE}  {mrge_keys}/{keys_per_day}  {mrge_status} · Осталось: {mrge_cooldown} \n"
-        f"  {LIGHT_YELLOW}6 |  {RESET}🏃 {YELLOW} {CYAN}{twrk:<{max_width}} {WHITE}  {twrk_keys}/{keys_per_day}  {twrk_status} · Осталось: {twrk_cooldown} \n"
+    menu += (
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} Для всех игр {WHITE} \n"
-        f"  {LIGHT_YELLOW}9 |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
+        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
     )
-    print(memu.strip())
+
+    print(menu.strip())
 
 
 def handle_main_menu_choice(choice):
@@ -371,11 +334,50 @@ def handle_playground_menu():
                     print("Такой опции нет")
             line_before()
 
+        elif choice == '7':
+            if settings['apply_promo']:
+                generate_promocodes(prefix='POLY', apply_promo=settings['apply_promo'])
+            else:
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='POLY', apply_promo=True)
+                elif choice == '':
+                    generate_promocodes(prefix='POLY')
+                else:
+                    print("Такой опции нет")
+            line_before()
+
+        elif choice == '8':
+            if settings['apply_promo']:
+                generate_promocodes(prefix='RACE', apply_promo=settings['apply_promo'])
+            else:
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='RACE', apply_promo=True)
+                elif choice == '':
+                    generate_promocodes(prefix='RACE')
+                else:
+                    print("Такой опции нет")
+            line_before()
+
+        elif choice == '9':
+            if settings['apply_promo']:
+                generate_promocodes(prefix='TRIM', apply_promo=settings['apply_promo'])
+            else:
+                choice = input(choice_text)
+                if str(choice.lower()) == 'y'.lower():
+                    generate_promocodes(prefix='TRIM', apply_promo=True)
+                elif choice == '':
+                    generate_promocodes(prefix='TRIM')
+                else:
+                    print("Такой опции нет")
+            line_before()
+
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
             line_before()
 
-        elif choice == '9':
+        elif choice == '<':
             print('Вы вышли в главное меню')
             return
 
