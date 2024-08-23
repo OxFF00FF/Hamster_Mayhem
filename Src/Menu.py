@@ -4,7 +4,7 @@ import os
 import re
 
 from Src.Hamster import HamsterKombatClicker
-from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, LIGHT_BLUE, GREEN, \
+from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, \
     line_before, line_after, save_settings, load_settings, get_games_data
 
 
