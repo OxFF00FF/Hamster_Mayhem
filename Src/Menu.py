@@ -8,9 +8,8 @@ from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, L
     line_before, line_after, save_settings, load_settings, get_games_data, GREEN, LIGHT_GREEN, MAGENTA
 
 
-def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
+def choose_account(default=True):
     if default:
-        print(f'Вы вошли используя `{token_number}` по умолчанию')
         return os.getenv('HAMSTER_TOKEN_1')
 
     accounts = []
@@ -59,8 +58,7 @@ def generate_promocodes(prefix='', apply_promo=False):
     try:
         send_to_group = settings['send_to_group']
         save_to_file = settings['save_to_file']
-        spinner = None
-        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
+        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file))
 
     except Exception as e:
         logging.error(e)
@@ -169,7 +167,7 @@ def playground_menu():
 
     games_data = get_games_data()['apps']
     keys_per_day = 4
-    games_info = {game['title']: {"icon": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
+    games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
 
     for promo in promos:
         game_name = promo['name']
@@ -181,16 +179,17 @@ def playground_menu():
             })
 
     max_width = max(len(game) for game in games_info)
-    menu = "\n\n🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
+    print()
+    menu = "🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
 
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
-        keys = game_data.get("keys", 0)
+        keys = game_data.get("keys", 'n/a')
         cooldown = game_data.get("cooldown", "n/a")
         status = game_data.get("status", "n/a")
-        icon = game_data["icon"]
+        emoji = game_data["emoji"]
         color = game_data["color"]
 
-        menu += (f"  {LIGHT_YELLOW}{i} |  {RESET}{icon} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  "
+        menu += (f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  "
                  f"{keys}/{keys_per_day}  {status} · Осталось: {cooldown} \n")
 
     menu += (
