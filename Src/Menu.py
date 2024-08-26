@@ -14,7 +14,7 @@ settings = load_settings()
 
 def choose_account():
     accounts = []
-    current_account = hamster_client().get_account_info().get('username', 'n/a')
+    current_account = hamster_client().get_account_info()
 
     env_vars = {key: os.getenv(key) for key in os.environ if key in os.environ}
     for key, value in env_vars.items():
@@ -30,20 +30,19 @@ def choose_account():
             username = account_info.get('username', 'n/a')
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
-
-            if username == current_account:
+            if username == current_account.get('username', 'n/a'):
                 print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} (вход выполнен)")
             else:
                 print(f"[{e + 1}] · {first_name} {last_name} ({username})")
-
             account_dict[str(e + 1)] = token
 
         account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
         line_after()
         if account_choice in account_dict:
             return f"HAMSTER_TOKEN_{account_choice}"
-        else:
-            return None
+    else:
+        print(f"Обнаружен только 1 аккаунт в вашем .env файле. Используется `HAMSTER_TOKEN_1`")
+        return "HAMSTER_TOKEN_1"
 
 
 def generate_promocodes(prefix='', apply_promo=False):
