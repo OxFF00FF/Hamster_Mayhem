@@ -5,7 +5,7 @@ import re
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, \
-    line_before, line_after, save_settings, load_settings, get_games_data
+    line_before, line_after, save_settings, load_settings, get_games_data, LIGHT_BLUE, GREEN, LIGHT_GREEN, MAGENTA
 
 
 def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
@@ -189,13 +189,17 @@ def handle_main_menu_choice(choice):
     elif choice == '$':
         line_after()
         top_10_cards = hamster_client.evaluate_cards()
+        print(f"Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\n"
+              f"прирост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n")
+
         print(f"Топ 20 самых выгодных карт (показаны только доступные для покупки): \n")
         for card in top_10_cards:
+            price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} в час · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} в час (после покупки)".replace(',', ' ')
             print(
-                f"🏷  {LIGHT_YELLOW}{card['name']} · `{card['section']}`{WHITE} ID ({card['id']}) \n"
-                f"💰  Стоимость: {YELLOW}{card['price']:,}{WHITE} · +{card['profitPerHour']} в час \n"
-                f"⌚️  Окупаемость (в часах):{LIGHT_MAGENTA} {card['payback_period']}{WHITE} \n"
-                f"📊  Коэффициент рентабельности:{LIGHT_CYAN} {card['profitability_ratio']:.5f}{WHITE}"
+                f"🏷  {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
+                f"💰  {YELLOW}Стоимость: {price}\n"
+                f"🕞  {YELLOW}Время окупаемости: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} дней) \n"
+                f"📊  {YELLOW}Коэффициент рентабельности: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
             )
             print("-" * 30)
 
