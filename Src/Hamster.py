@@ -831,7 +831,7 @@ class HamsterKombatClicker:
             username = account_info['username']
             first_name = account_info['firstName']
             last_name = account_info['lastName']
-            print(f"Вы вошли как `{first_name} {last_name}` ({username})")
+            print(f"{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}")
 
         except requests.exceptions.HTTPError as http_err:
             print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"

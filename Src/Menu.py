@@ -14,6 +14,8 @@ settings = load_settings()
 
 def choose_account():
     accounts = []
+    current_account = hamster_client().get_account_info().get('username', 'n/a')
+
     env_vars = {key: os.getenv(key) for key in os.environ if key in os.environ}
     for key, value in env_vars.items():
         if key.startswith('HAMSTER'):
@@ -28,7 +30,12 @@ def choose_account():
             username = account_info.get('username', 'n/a')
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
-            print(f"[{e + 1}] · {first_name} {last_name} ({username})")
+
+            if username == current_account:
+                print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} (вход выполнен)")
+            else:
+                print(f"[{e + 1}] · {first_name} {last_name} ({username})")
+
             account_dict[str(e + 1)] = token
 
         account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
@@ -36,8 +43,7 @@ def choose_account():
         if account_choice in account_dict:
             return f"HAMSTER_TOKEN_{account_choice}"
         else:
-            print("Некорректный выбор. Попробуйте снова.")
-            return choose_account()
+            return None
 
 
 def generate_promocodes(prefix='', apply_promo=False):
@@ -52,7 +58,7 @@ def generate_promocodes(prefix='', apply_promo=False):
     try:
         send_to_group = settings['send_to_group']
         save_to_file = settings['save_to_file']
-        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file))
+        asyncio.run(hamster_client().get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file))
 
     except Exception as e:
         logging.error(e)
@@ -95,12 +101,12 @@ async def genetare_for_all_games():
         logging.error(f"\nКоличество должно быть числом больше 0")
         exit(1)
 
-    tasks = [hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
+    tasks = [hamster_client().get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
     await asyncio.gather(*tasks)
 
 
 def main_menu():
-    activities = hamster_client._activity_cooldowns()
+    activities = hamster_client()._activity_cooldowns()
     taps_status = task_status = cipher_status = combo_status = minigame_status = 'n/a'
     taps_cooldown = task_cooldown = cipher_cooldown = combo_cooldown = minigame_cooldown = 'n/a'
 
@@ -158,7 +164,7 @@ def main_menu():
 def playground_menu():
     promos = []
     if settings['hamster_token']:
-        promos = hamster_client._get_promos()[0]['promo']
+        promos = hamster_client()._get_promos()[0]['promo']
 
     games_data = get_games_data()['apps']
     keys_per_day = 4
@@ -199,33 +205,33 @@ def playground_menu():
 def handle_main_menu_choice(choice):
     if choice == '#':
         line_after()
-        print(hamster_client.daily_info())
+        print(hamster_client().daily_info())
 
     elif choice == '1':
         line_after()
-        hamster_client.complete_taps()
+        hamster_client().complete_taps()
 
     elif choice == '2':
         line_after()
-        hamster_client.complete_daily_tasks()
+        hamster_client().complete_daily_tasks()
 
     elif choice == '3':
         line_after()
-        hamster_client.complete_daily_chipher()
+        hamster_client().complete_daily_chipher()
 
     elif choice == '4':
         line_after()
-        hamster_client.complete_daily_minigame()
+        hamster_client().complete_daily_minigame()
 
     elif choice == '5':
         line_after()
-        upgrades_info = hamster_client._collect_upgrades_info()
+        upgrades_info = hamster_client()._collect_upgrades_info()
         if all(card['available'] for card in upgrades_info['cards']):
-            hamster_client.complete_daily_combo()
+            hamster_client().complete_daily_combo()
         else:
             choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
             if str(choice.lower()) == 'y'.lower():
-                hamster_client.complete_daily_combo(buy_anyway=True)
+                hamster_client().complete_daily_combo(buy_anyway=True)
 
     elif choice == '6':
         handle_playground_menu_choice()
@@ -234,10 +240,11 @@ def handle_main_menu_choice(choice):
         line_after()
         settings['account'] = choose_account()
         save_settings(settings)
+        hamster_client().login()
 
     elif choice == '$':
         line_after()
-        top_10_cards = hamster_client.evaluate_cards()
+        top_10_cards = hamster_client().evaluate_cards()
         print(f"Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\n"
               f"прирост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n")
 
@@ -257,7 +264,7 @@ def handle_main_menu_choice(choice):
         match = re.search(pattern=r'\+(.*?)$', string=choice)
         if match:
             upgrade_id = match.group(1)
-            hamster_client._buy_upgrade(upgradeId=upgrade_id)
+            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
         line_after()
