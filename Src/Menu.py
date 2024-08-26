@@ -235,7 +235,6 @@ def handle_main_menu_choice(choice):
         settings['account'] = choose_account()
         save_settings(settings)
 
-
     elif choice == '$':
         line_after()
         top_10_cards = hamster_client.evaluate_cards()
