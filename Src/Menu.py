@@ -5,7 +5,7 @@ import re
 
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, \
-    line_before, line_after, save_settings, load_settings, get_games_data, LIGHT_BLUE, GREEN, LIGHT_GREEN, MAGENTA
+    line_before, line_after, save_settings, load_settings, get_games_data, GREEN, LIGHT_GREEN, MAGENTA
 
 
 def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
@@ -42,13 +42,9 @@ def choose_account(default=True, token_number='HAMSTER_TOKEN_1'):
         return accounts[0]
 
 
-# --- CONFIG --- #
-
 HAMSTER_TOKEN = choose_account()
 hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
 settings = load_settings()
-
-# --- CONFIG --- #
 
 
 def generate_promocodes(prefix='', apply_promo=False):
@@ -73,51 +69,105 @@ def generate_promocodes(prefix='', apply_promo=False):
         pass
 
 
+def generate_for_game(prefix):
+    choice_text = "Хотите применить промокоды после получения?\nY(да) / Enter(Нет): "
+    if settings.get('hamster_token'):
+        if settings.get('apply_promo'):
+            generate_promocodes(prefix=prefix, apply_promo=settings['apply_promo'])
+        else:
+            choice = input(choice_text).lower()
+            if choice == 'y':
+                generate_promocodes(prefix=prefix, apply_promo=True)
+            elif choice == '':
+                generate_promocodes(prefix=prefix)
+            else:
+                print("Такой опции нет")
+    else:
+        generate_promocodes(prefix=prefix)
+    line_before()
+
+
+async def genetare_for_all_games():
+    apps = get_games_data()['apps']
+
+    if settings['hamster_token']:
+        choice = input(f"\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): ")
+        apply_promo = str(choice.lower()) == 'y'.lower()
+
+    count = input(f"\nКоличество промокодов для всех игр Enter(по умолчанию 1): ")
+    if count == '':
+        count = 1
+        print("\nКоличество промокодов не предоставлено. Генерируется 1 по умолчанию")
+
+    if int(count) <= 0:
+        logging.error(f"\nКоличество должно быть числом больше 0")
+        exit(1)
+
+    tasks = [hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
+    await asyncio.gather(*tasks)
+
+
 def main_menu():
     activities = hamster_client._activity_cooldowns()
-    for activity in activities:
-        if 'taps' in activity:
-            taps_status = get_status(activity['taps']['isClaimed'])
-            taps_cooldown = activity['taps']['remain']
-        if 'tasks' in activity:
-            task_status = get_status(activity['tasks']['isClaimed'])
-            task_cooldown = activity['tasks']['remain']
-        if 'cipher' in activity:
-            cipher_status = get_status(activity['cipher']['isClaimed'])
-            cipher_cooldown = activity['cipher']['remain']
-        if 'combo' in activity:
-            combo_status = get_status(activity['combo']['isClaimed'])
-            combo_cooldown = activity['combo']['remain']
-        if 'minigame' in activity:
-            minigame_status = get_status(activity['minigame']['isClaimed'])
-            minigame_cooldown = activity['minigame']['remain']
+    taps_status = task_status = cipher_status = combo_status = minigame_status = 'n/a'
+    taps_cooldown = task_cooldown = cipher_cooldown = combo_cooldown = minigame_cooldown = 'n/a'
+
+    if activities:
+        for activity in activities:
+            if 'taps' in activity:
+                taps_status = get_status(activity['taps']['isClaimed'])
+                taps_cooldown = activity['taps']['remain']
+            if 'tasks' in activity:
+                task_status = get_status(activity['tasks']['isClaimed'])
+                task_cooldown = activity['tasks']['remain']
+            if 'cipher' in activity:
+                cipher_status = get_status(activity['cipher']['isClaimed'])
+                cipher_cooldown = activity['cipher']['remain']
+            if 'combo' in activity:
+                combo_status = get_status(activity['combo']['isClaimed'])
+                combo_cooldown = activity['combo']['remain']
+            if 'minigame' in activity:
+                minigame_status = get_status(activity['minigame']['isClaimed'])
+                minigame_cooldown = activity['minigame']['remain']
     print()
-    memu = (
-        f"\nНастройки \n"
-        f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
-        f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
-        f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n\n"
-        f"Главное меню \n"
-        f"  Какую активность хотите выполнить? \n"
-        f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
-        f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown}\n"
-        f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}     {task_status} · Осталось: {task_cooldown} \n"
-        f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE}        {cipher_status} · Осталось: {cipher_cooldown} \n"
-        f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
-        f"  {LIGHT_YELLOW}5 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
-        f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
-        f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
-        f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
-        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
-    )
+    if settings['hamster_token']:
+        memu = (
+            f"Настройки \n"
+            f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
+            f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
+            f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n\n"
+            f"Главное меню \n"
+            f"  Какую активность хотите выполнить? \n"
+            f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
+            f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown}\n"
+            f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}     {task_status} · Осталось: {task_cooldown} \n"
+            f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE}        {cipher_status} · Осталось: {cipher_cooldown} \n"
+            f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
+            f"  {LIGHT_YELLOW}5 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
+            f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
+            f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
+            f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
+            f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
+            f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
+        )
+
+    else:
+        memu = (
+            f"Главное меню \n"
+            f"  Какую активность хотите выполнить? \n"
+            f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
+            f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
+            f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
+        )
     print(memu.strip())
 
 
 def playground_menu():
-    promos = hamster_client._get_promos()[0]['promo']
-    games_data = get_games_data()['apps']
+    promos = []
+    if settings['hamster_token']:
+        promos = hamster_client._get_promos()[0]['promo']
 
+    games_data = get_games_data()['apps']
     keys_per_day = 4
     games_info = {game['title']: {"icon": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
 
@@ -253,163 +303,25 @@ def handle_main_menu_choice(choice):
 
 
 def handle_playground_menu():
+    games_data = get_games_data()['apps']
+    games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
+
     while True:
         playground_menu()
-        choice = input(f"\nВыберите действие\n{CYAN}(1/2/3/4/5/6/*/9/0): {RESET}")
+        choice = input(f"\nВыберите действие\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
         line_after()
 
-        choice_text = f"Хотите применить промокоды после получения?\nY(да) / Enter(Нет): "
-
-        if choice == '1':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='BIKE', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='BIKE', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='BIKE')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '2':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='CUBE', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='CUBE', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='CUBE')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '3':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='CLONE', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='CLONE', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='CLONE')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '4':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='TRAIN', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='TRAIN', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='TRAIN')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '5':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='MERGE', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='MERGE', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='MERGE')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '6':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='TWERK', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='TWERK', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='TWERK')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '7':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='POLY', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='POLY', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='POLY')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '8':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='RACE', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='RACE', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='RACE')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
-        elif choice == '9':
-            if settings['apply_promo']:
-                generate_promocodes(prefix='TRIM', apply_promo=settings['apply_promo'])
-            else:
-                choice = input(choice_text)
-                if str(choice.lower()) == 'y'.lower():
-                    generate_promocodes(prefix='TRIM', apply_promo=True)
-                elif choice == '':
-                    generate_promocodes(prefix='TRIM')
-                else:
-                    print("Такой опции нет")
-            line_before()
-
+        if choice in games_prefix:
+            generate_for_game(games_prefix[choice])
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
             line_before()
-
         elif choice == '<':
             print('Вы вышли в главное меню')
             return
-
         elif choice == '0':
             print("Выход")
             line_before()
             exit(1)
-
         else:
             print("Такой опции нет")
-            line_before()
-            print()
-
-
-async def genetare_for_all_games():
-    apps = get_games_data()['apps']
-
-    choice = input(f"\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): ")
-    apply_promo = str(choice.lower()) == 'y'.lower()
-
-    count = input(f"\nКоличество промокодов для всех игр Enter(по умолчанию 1): ")
-    if count == '':
-        count = 1
-        print("\nКоличество промокодов не предоставлено. Генерируется 1 по умолчанию")
-
-    if int(count) <= 0:
-        logging.error(f"\nКоличество должно быть числом больше 0")
-        exit(1)
-
-    tasks = [hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
-    await asyncio.gather(*tasks)

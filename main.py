@@ -2,17 +2,18 @@ import logging
 import traceback
 
 from Src.Menu import handle_main_menu_choice, hamster_client, main_menu
-from Src.utils import WHITE, RESET, CYAN, line_before, banner
+from Src.utils import WHITE, RESET, CYAN, line_before, banner, load_settings
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.INFO)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.ERROR)
 
 
 def test():
     pass
+
 
 
 if __name__ == '__main__':
@@ -20,9 +21,13 @@ if __name__ == '__main__':
     hamster_client.login()
     main_menu()
 
+    settings = load_settings()
     try:
         while True:
-            choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
+            if settings['hamster_token']:
+                choice = input(f"\nВыберите действие\n{CYAN}(#/1/2/3/4/5/6/$/+/m/0):{RESET} ")
+            else:
+                choice = input(f"\nВыберите действие\n{CYAN}(6/m/0):{RESET} ")
             handle_main_menu_choice(choice)
             line_before()
 

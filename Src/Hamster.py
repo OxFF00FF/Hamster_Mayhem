@@ -723,7 +723,7 @@ class HamsterKombatClicker:
 
             try:
                 promoCode = await __get_promocode(session, client_token)
-                print(f'[{index}]: {LIGHT_GREEN}`{promoCode}`{WHITE}')
+                print(f'PROMO [{index}] · {LIGHT_GREEN}{promoCode}{WHITE}')
                 return promoCode
 
             except Exception as error:
