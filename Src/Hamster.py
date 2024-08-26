@@ -31,7 +31,7 @@ class HamsterKombatClicker:
         """
 
         self.HAMSTER_TOKEN = hamster_token
-        self.BOT_TOKEN = os.getenv('BOT_TOKEN')
+        self.BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
         self.GROUP_ID = os.getenv('GROUP_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
 
