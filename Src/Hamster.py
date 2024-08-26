@@ -18,9 +18,10 @@ from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
 from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_BLUE, DARK_GRAY, \
-    text_to_morse, remain_time, line_after, loading_v2, get_games_data
+    text_to_morse, remain_time, line_after, loading_v2, get_games_data, load_settings, save_settings
 
 load_dotenv()
+settings = load_settings()
 
 
 class HamsterKombatClicker:
@@ -42,8 +43,8 @@ class HamsterKombatClicker:
             exit(1)
 
         if show_warning:
-            settings = ['BOT_TOKEN', 'GROUP_ID', 'GROUP_URL']
-            missing_values = [value for value in settings if os.getenv(value) == 'XXX']
+            env = ['BOT_TOKEN', 'GROUP_ID', 'GROUP_URL']
+            missing_values = [value for value in env if os.getenv(value) == 'XXX']
             if len(missing_values) > 0:
                 logging.warning(f'{YELLOW}Следующие значения среды отсутствуют в вашем .env файле: {", ".join(missing_values)}{WHITE}')
 
@@ -212,7 +213,8 @@ class HamsterKombatClicker:
             return result
 
         except requests.exceptions.HTTPError as http_err:
-            logging.error(f"🚫  HTTP ошибка: {http_err}")
+            logging.warning(f"🚫  HTTP ошибка: {http_err}")
+            return None
 
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
@@ -624,7 +626,7 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=None, prefix=None, save_to_file=None, spinner=None):
+    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         """
         :param spinner:
         :param save_to_file:
@@ -831,7 +833,12 @@ class HamsterKombatClicker:
             print(f"Вы вошли как {first_name} {last_name} ({username})\n")
 
         except requests.exceptions.HTTPError as http_err:
-            logging.error(f"🚫  HTTP ошибка: {http_err}")
+            print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
+                  f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat не доступны!{WHITE}")
+            settings['hamster_token'] = False
+            save_settings(settings)
+
+            logging.warning(http_err)
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
 
