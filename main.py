@@ -4,7 +4,8 @@ import traceback
 
 from Src.Login import hamster_client
 from Src.Menu import handle_main_menu_choice, main_menu
-from Src.utils import WHITE, RESET, CYAN, line_before, banner, load_settings
+from Src.utils import WHITE, RESET, CYAN, line_before, banner
+from Src.Settings import load_settings
 
 from dotenv import load_dotenv
 

@@ -3,10 +3,11 @@ import logging
 import os
 import re
 
-from Src.Login import hamster_client
+from Src.Colors import *
 from Src.Hamster import HamsterKombatClicker
-from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, \
-    line_before, line_after, save_settings, load_settings, get_games_data, GREEN, LIGHT_GREEN, MAGENTA
+from Src.Login import hamster_client
+from Src.Settings import save_settings, load_settings
+from Src.utils import get_status, line_before, line_after, get_games_data
 
 settings = load_settings()
 
@@ -227,7 +228,7 @@ def handle_main_menu_choice(choice):
                 hamster_client.complete_daily_combo(buy_anyway=True)
 
     elif choice == '6':
-        handle_playground_menu()
+        handle_playground_menu_choice()
 
     elif choice == 'a':
         line_after()
@@ -301,7 +302,7 @@ def handle_main_menu_choice(choice):
         print("Такой опции нет")
 
 
-def handle_playground_menu():
+def handle_playground_menu_choice():
     games_data = get_games_data()['apps']
     games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
 

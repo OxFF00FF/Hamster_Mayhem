@@ -17,8 +17,9 @@ from bs4 import BeautifulSoup as BS
 from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 
-from Src.utils import WHITE, YELLOW, LIGHT_YELLOW, LIGHT_GREEN, GREEN, RED, CYAN, MAGENTA, LIGHT_BLUE, DARK_GRAY, \
-    text_to_morse, remain_time, line_after, loading_v2, get_games_data, load_settings, save_settings
+from Src.Colors import *
+from Src.Settings import load_settings, save_settings
+from Src.utils import text_to_morse, remain_time, line_after, loading_v2, get_games_data
 
 load_dotenv()
 settings = load_settings()
