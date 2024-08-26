@@ -9,7 +9,7 @@ def load_settings():
             return settings
     except (FileNotFoundError, json.JSONDecodeError):
         print("Настройки не найдены. Создан файл с настройками по умолчанию")
-        settings = {'send_to_group': False, 'save_to_file': False, 'apply_promo': False, 'hamster_token': None}
+        settings = {'send_to_group': False, 'save_to_file': False, 'apply_promo': False, 'hamster_token': None, 'account': 'HAMSTER_TOKEN_1'}
         save_settings(settings)
         return settings
 
