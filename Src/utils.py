@@ -180,7 +180,7 @@ def load_settings():
 
 def save_settings(settings):
     """Save settings to the JSON file."""
-    with open('settings.json', 'w') as file:
+    with open('Src/data/settings.json', 'w') as file:
         json.dump(settings, file, indent=4)
 
 

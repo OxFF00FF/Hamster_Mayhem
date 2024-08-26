@@ -3,15 +3,15 @@ import logging
 import os
 import re
 
+from Src.Login import hamster_client
 from Src.Hamster import HamsterKombatClicker
 from Src.utils import RESET, CYAN, LIGHT_YELLOW, YELLOW, LIGHT_MAGENTA, WHITE, LIGHT_CYAN, get_status, \
     line_before, line_after, save_settings, load_settings, get_games_data, GREEN, LIGHT_GREEN, MAGENTA
 
+settings = load_settings()
 
-def choose_account(default=True):
-    if default:
-        return os.getenv('HAMSTER_TOKEN_1')
 
+def choose_account():
     accounts = []
     env_vars = {key: os.getenv(key) for key in os.environ if key in os.environ}
     for key, value in env_vars.items():
@@ -31,19 +31,12 @@ def choose_account(default=True):
             account_dict[str(e + 1)] = token
 
         account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
-
+        line_after()
         if account_choice in account_dict:
-            return account_dict[account_choice]
+            return f"HAMSTER_TOKEN_{account_choice}"
         else:
             print("Некорректный выбор. Попробуйте снова.")
-            return choose_account(default=False)
-    else:
-        return accounts[0]
-
-
-HAMSTER_TOKEN = choose_account()
-hamster_client = HamsterKombatClicker(HAMSTER_TOKEN)
-settings = load_settings()
+            return choose_account()
 
 
 def generate_promocodes(prefix='', apply_promo=False):
@@ -143,6 +136,7 @@ def main_menu():
             f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
             f"  {LIGHT_YELLOW}5 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
             f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
+            f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}Аккаунты {WHITE}     \n"
             f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
             f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
             f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
@@ -234,6 +228,12 @@ def handle_main_menu_choice(choice):
 
     elif choice == '6':
         handle_playground_menu()
+
+    elif choice == 'a':
+        line_after()
+        settings['account'] = choose_account()
+        save_settings(settings)
+
 
     elif choice == '$':
         line_after()
