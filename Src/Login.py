@@ -1,15 +1,15 @@
+import logging
 import os
 from Src.Hamster import HamsterKombatClicker
-from Src.Settings import load_settings, save_settings
+from Src.Settings import load_settings
 
 
 def hamster_client():
+    settings = load_settings()
     try:
-        settings = load_settings()
         HAMSTER_TOKEN = os.getenv(settings['account'])
-        settings['hamster_token'] = True
-        save_settings(settings)
         return HamsterKombatClicker(HAMSTER_TOKEN)
 
-    except:
-        return HamsterKombatClicker('HAMSTER_TOKEN_1')
+    except Exception as e:
+        logging.error(e)
+
