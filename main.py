@@ -3,8 +3,9 @@ import logging
 import traceback
 
 from Src.Colors import *
+from Src.Handlers import handle_main_menu_choice
 from Src.Login import hamster_client
-from Src.Menu import handle_main_menu_choice, main_menu
+from Src.Menu import main_menu
 from Src.utils import line_before, banner
 from Src.Settings import load_setting
 
