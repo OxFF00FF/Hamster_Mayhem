@@ -6,40 +6,43 @@ import re
 from Src.Colors import *
 from Src.Hamster import HamsterKombatClicker
 from Src.Login import hamster_client
-from Src.Settings import save_settings, load_settings
+from Src.Settings import save_settings, load_settings, load_setting
 from Src.utils import get_status, line_before, line_after, get_games_data
 
 settings = load_settings()
 
 
 def choose_account():
-    accounts = []
+    accounts = [{'key': key, 'token': value} for key, value in os.environ.items() if key.startswith('HAMSTER')]
     current_account = hamster_client().get_account_info()
-
-    env_vars = {key: os.getenv(key) for key in os.environ if key in os.environ}
-    for key, value in env_vars.items():
-        if key.startswith('HAMSTER'):
-            accounts.append(value)
 
     if len(accounts) > 1:
         print(f"Обнаружено аккаунтов {len(accounts)}: ")
         account_dict = {}
-        for e, token in enumerate(accounts):
-            hamster = HamsterKombatClicker(token)
-            account_info = hamster.get_account_info()
-            username = account_info.get('username', 'n/a')
-            first_name = account_info.get('firstName', 'n/a')
-            last_name = account_info.get('lastName', 'n/a')
-            if username == current_account.get('username', 'n/a'):
-                print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} (вход выполнен)")
-            else:
-                print(f"[{e + 1}] · {first_name} {last_name} ({username})")
-            account_dict[str(e + 1)] = token
+
+        for e, account in enumerate(accounts):
+            token = account['token']
+            key = account['key']
+
+            try:
+                hamster = HamsterKombatClicker(token)
+                account_info = hamster.get_account_info()
+                username = account_info.get('username', 'n/a')
+                first_name = account_info.get('firstName', 'n/a')
+                last_name = account_info.get('lastName', 'n/a')
+
+                if username == current_account.get('username', 'n/a'):
+                    print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} (вход выполнен)")
+                else:
+                    print(f"[{e + 1}] · {first_name} {last_name} ({username})")
+
+                account_dict[str(e + 1)] = token
+            except Exception:
+                print(f"[X] · {LIGHT_RED}Не удалось получить данные аккаунта для `{key}`. Неверно указан токен{WHITE}")
 
         account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
         line_after()
-        if account_choice in account_dict:
-            return f"HAMSTER_TOKEN_{account_choice}"
+        return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
     else:
         print(f"Обнаружен только 1 аккаунт в вашем .env файле. Используется `HAMSTER_TOKEN_1`")
         return "HAMSTER_TOKEN_1"
@@ -127,7 +130,7 @@ def main_menu():
                 minigame_status = get_status(activity['minigame']['isClaimed'])
                 minigame_cooldown = activity['minigame']['remain']
     print()
-    if settings['hamster_token']:
+    if load_setting('hamster_token'):
         memu = (
             f"Настройки \n"
             f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
