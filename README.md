@@ -140,7 +140,7 @@ https://t.me/Hamster_Mayhem_bot
 >14. Этот токен нужно будет поставить в .env файле в HAMSTER_TOKEN между кавычек.
 >
 Например:
->`HAMSTER_TOKEN="Bearer 2367343478565fuiGOLjkhegyWEkjeruGFjEkjueowhefiwehggergerUTquvnmpoifehkFwugnjle6732593756"`
+>`HAMSTER_TOKEN_1="Bearer 2367343478565fuiGOLjkhegyWEkjeruGFjEkjueowhefiwehggergerUTquvnmpoifehkFwugnjle6732593756"`
 
 
 
