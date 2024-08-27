@@ -7,6 +7,7 @@
 
 
 Проект был создал чтобы помочь людям проходить рекламные игры в [Hamster Kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
+
 Поддержать проект: [donationalerts](https://www.donationalerts.com/r/oxff00ff)
 
 ## Обновление
