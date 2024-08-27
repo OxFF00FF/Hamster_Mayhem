@@ -14,6 +14,8 @@
 
 - 💎  [Donationalerts](https://www.donationalerts.com/r/oxff00ff)
 
+- 💎 [Paypal]()
+
 - 💎  TON (Telegram coin): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
 
 - 💎  Bitcoin: `188BPS54Pkjaa8uZ8CDdZegBwWP1iwxdrG`
