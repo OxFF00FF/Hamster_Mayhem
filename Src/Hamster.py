@@ -753,7 +753,7 @@ class HamsterKombatClicker:
         if apply_promo:
             send_to_group = False
             save_to_file = False
-            logging.warning(f'Промокоды не будут отправленны в группу и не записаны в файл')
+            print(f'Промокоды не будут отправленны в группу и не записаны в файл')
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
 
