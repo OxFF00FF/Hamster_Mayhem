@@ -816,9 +816,6 @@ class HamsterKombatClicker:
             account_info = response.json()['accountInfo']['telegramUsers'][0]
             return account_info
 
-        except requests.exceptions.HTTPError as http_err:
-            pass
-            # logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
 
