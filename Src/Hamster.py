@@ -664,19 +664,14 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
+                    data = await response.json()
                     response.raise_for_status()
-                    if 'application/json' in response.headers.get('Content-Type', ''):
-                        data = await response.json()
-                        return data['clientToken']
-                    else:
-                        text = await response.text()
-                        logging.warning(f"⚠️ Ожидался JSON, но получен другой тип контента: {response.headers.get('Content-Type')}")
-                        logging.warning(f"Ответ сервера: {text}")
-                        return None
+                    return data['clientToken']
 
-            except Exception as e:
-                logging.error(e)
-                return None
+            except requests.exceptions.HTTPError:
+                if response.status_code == 429:
+                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
+                    return None
 
         async def __emulate_progress(session, client_token) -> Any | None:
             url = 'https://api.gamepromo.io/promo/register-event'
@@ -689,9 +684,9 @@ class HamsterKombatClicker:
                     response.raise_for_status()
                     return data['hasCode']
 
-            except:
+            except requests.exceptions.HTTPError:
                 if response.status_code == 429:
-                    logging.error(f"{LIGHT_RED}🚫  Не удалось начать генерацию. Превышено количетсво запросов{WHITE}")
+                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
         async def __get_promocode(session, client_token) -> Any | None:
@@ -707,7 +702,7 @@ class HamsterKombatClicker:
 
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
-                    logging.error(f"{LIGHT_RED}🚫  Не удалось начать генерацию. Превышено количетсво запросов{WHITE}")
+                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
                     return None
 
         async def __key_generation(session, index, keys_count) -> str | None:
