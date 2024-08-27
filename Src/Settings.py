@@ -1,6 +1,14 @@
 import json
 
 
+def load_setting(key=None):
+    """Load settings from the JSON file and return the value for the specified key."""
+    settings = load_settings()
+    if key:
+        return settings.get(key)
+    return settings
+
+
 def load_settings():
     """Load settings from the JSON file."""
     try:
@@ -8,7 +16,6 @@ def load_settings():
             settings = json.load(file)
             return settings
     except (FileNotFoundError, json.JSONDecodeError):
-        print("Настройки не найдены. Создан файл с настройками по умолчанию")
         settings = {'send_to_group': False, 'save_to_file': False, 'apply_promo': False, 'hamster_token': None, 'account': 'HAMSTER_TOKEN_1'}
         save_settings(settings)
         return settings
