@@ -8,7 +8,8 @@
 
 Проект был создал чтобы помочь людям проходить рекламные игры в [Hamster Kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
 
-🔔  Доступные способы поддержать проект  🔔
+🔔  Для желающих поддержать проект, доступны способы оплаты:  🔔
+
 - [donationalerts](https://www.donationalerts.com/r/oxff00ff)
 
 - 💎  TON (Telegram coin): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
