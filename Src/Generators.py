@@ -22,8 +22,8 @@ def generate_promocodes(prefix='', apply_promo=False):
         save_to_file = settings['save_to_file']
         asyncio.run(hamster_client().get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file))
 
-    except Exception as e:
-        logging.error(e)
+    except Exception:
+        print(f"🚫  Произошла ошибка во время генерации. Попробуйте снова, если ошибки прололжаться, то попробуйте позже.")
 
     finally:
         pass

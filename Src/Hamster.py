@@ -606,12 +606,12 @@ class HamsterKombatClicker:
             if keys_today == keys_limit:
                 print(f"ℹ️  Все ключи в игре `{promo_title}` сегодня уже получены. {next_keys}")
             else:
-                print(f"🔄  Активация промокода `{promoCode}`...")
+                print(f"{LIGHT_YELLOW}🔄  Активация промокода `{promoCode}`...{WHITE}")
                 json_data = {'promoCode': promoCode}
                 response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
                 time.sleep(1)
-                print(f"🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}\n")
+                print(f"{LIGHT_YELLOW}🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}{WHITE}")
             time.sleep(1)
 
         except requests.exceptions.HTTPError as http_err:
@@ -664,14 +664,19 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    data = await response.json()
                     response.raise_for_status()
-                    return data['clientToken']
+                    if 'application/json' in response.headers.get('Content-Type', ''):
+                        data = await response.json()
+                        return data['clientToken']
+                    else:
+                        text = await response.text()
+                        logging.warning(f"⚠️ Ожидался JSON, но получен другой тип контента: {response.headers.get('Content-Type')}")
+                        logging.warning(f"Ответ сервера: {text}")
+                        return None
 
-            except requests.exceptions.HTTPError:
-                if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                    return None
+            except Exception as e:
+                logging.error(e)
+                return None
 
         async def __emulate_progress(session, client_token) -> Any | None:
             url = 'https://api.gamepromo.io/promo/register-event'
@@ -684,9 +689,9 @@ class HamsterKombatClicker:
                     response.raise_for_status()
                     return data['hasCode']
 
-            except requests.exceptions.HTTPError:
+            except:
                 if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
+                    logging.error(f"{LIGHT_RED}🚫  Не удалось начать генерацию. Превышено количетсво запросов{WHITE}")
                     return None
 
         async def __get_promocode(session, client_token) -> Any | None:
@@ -702,7 +707,7 @@ class HamsterKombatClicker:
 
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
+                    logging.error(f"{LIGHT_RED}🚫  Не удалось начать генерацию. Превышено количетсво запросов{WHITE}")
                     return None
 
         async def __key_generation(session, index, keys_count) -> str | None:
@@ -715,7 +720,7 @@ class HamsterKombatClicker:
                 try:
                     has_code = await __emulate_progress(session, client_token)
                 except Exception as error:
-                    logging.error(f'[{index}/{keys_count}] Progress emulation failed: {error}')
+                    logging.warning(f'[{index}/{keys_count}] {RED}Progress emulation failed: {error}{WHITE}')
                     return None
 
                 print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%")
@@ -724,11 +729,11 @@ class HamsterKombatClicker:
 
             try:
                 promoCode = await __get_promocode(session, client_token)
-                print(f'PROMO [{index}] · {LIGHT_GREEN}{promoCode}{WHITE}')
+                print(f'{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {LIGHT_GREEN}Получен{WHITE}')
                 return promoCode
 
             except Exception as error:
-                print(f'[{index}/{keys_count}] Key generation failed: {error}')
+                logging.warning(f'[{index}/{keys_count}] Key generation failed: {error}')
                 return None
 
         async def __start_generate(keys_count):
@@ -748,6 +753,8 @@ class HamsterKombatClicker:
             return [key for key in keys if key]
 
         promocodes = await __start_generate(count)
+
+
         if apply_promo:
             send_to_group = False
             save_to_file = False

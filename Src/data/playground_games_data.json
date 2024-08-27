@@ -10,7 +10,7 @@
         {
             "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
             "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
-            "prefix": "BIKE",
+            "prefix": "BIKE ",
             "title": "Bike Ride 3D",
             "eventsCount": 17,
             "registerEventTimeout": 20000,
@@ -20,7 +20,7 @@
         {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
             "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
-            "prefix": "CUBE",
+            "prefix": "CUBE ",
             "title": "Chain Cube 2048",
             "eventsCount": 7,
             "registerEventTimeout": 20000,
@@ -60,7 +60,7 @@
         {
             "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
             "promoId": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
-            "prefix": "POLY",
+            "prefix": "POLY ",
             "title": "Polysphere",
             "eventsCount": 17,
             "registerEventTimeout": 3000,
@@ -70,7 +70,7 @@
         {
             "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
             "promoId": "8814a785-97fb-4177-9193-ca4180ff9da8",
-            "prefix": "RACE",
+            "prefix": "RACE ",
             "title": "Mud Racing",
             "eventsCount": 20,
             "registerEventTimeout": 20000,
@@ -80,7 +80,7 @@
         {
             "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
             "promoId": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
-            "prefix": "TRIM",
+            "prefix": "TRIM ",
             "title": "Mow and Trim",
             "eventsCount": 20,
             "registerEventTimeout": 20000,
