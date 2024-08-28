@@ -227,7 +227,6 @@ class HamsterKombatClicker:
         response.raise_for_status()
         promos = response.json().get('promos', [{}])
         states = response.json().get('states', [{}])
-        promo_results = []
         for promo in promos:
             for state in states:
                 if promo['promoId'] == state['promoId']:
@@ -235,10 +234,22 @@ class HamsterKombatClicker:
                     keys_today = state['receiveKeysToday']
                     remain_promo = remain_time(state['receiveKeysRefreshSec'])
                     is_claimed = True if keys_today == 4 else False
-                    promo_results.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
+                    result.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
 
-        result.append({'promo': promo_results})
         return result
+
+    def _get_minigames(self):
+        result = []
+
+        response = requests.post(f'{self.base_url}/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
+        response.raise_for_status()
+
+        games = response.json().get('dailyKeysMiniGames', [{}])
+        for game in games.values():
+            result.append(game)
+
+        return result
+
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:
@@ -512,28 +523,34 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def complete_daily_minigame(self):
+    def complete_daily_minigame(self, game_id):
         try:
             response = requests.post(f'{self.base_url}/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            minigame = response.json()['dailyKeysMiniGame']
+            minigame = response.json()['dailyKeysMiniGames'][game_id]
             remain = remain_time(minigame['remainSeconds'])
             next_minigame = f"Следующая миниигра будет доступна через: {remain}"
+            next_attempt = remain_time(minigame['remainSecondsToNextAttempt'])
 
             isClaimed = minigame['isClaimed']
             if not isClaimed:
-                start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN))
-                start_game.raise_for_status()
-                print(f"{minigame['levelConfig']}")
+                json_data = {'miniGameId': game_id}
+                start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                if 'error_code' in start_game.json():
+                    print(f"Миниигра не доступна. Подождите {next_attempt} до следующей пооытки")
+                else:
+                    start_game.raise_for_status()
+                    print(f"{minigame['levelConfig']}")
 
-                user_id = self._get_telegram_user_id()
-                unix_time_from_start_game = f"0{randint(12, 26)}{random.randint(10000000000, 99999999999)}"[:10]
-                cipher = base64.b64encode(f"{unix_time_from_start_game}|{user_id}".encode("utf-8")).decode("utf-8")
-                json_data = {'cipher': cipher}
-                end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-                end_game.raise_for_status()
-                print(f"✅  Миниигра пройдена. Получено ключей: {minigame['bonusKeys']}. {next_minigame}")
+                    user_id = self._get_telegram_user_id()
+                    unix_time_from_start_game = f"0{randint(12, 26)}{random.randint(10000000000, 99999999999)}"[:10]
+                    cipher = base64.b64encode(f"{unix_time_from_start_game}|{user_id}".encode("utf-8")).decode("utf-8")
+
+                    json_data = {'cipher': cipher, 'miniGameId': game_id}
+                    end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                    end_game.raise_for_status()
+                    print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {minigame['bonusKeys']}. {next_minigame}")
             else:
                 print(f"ℹ️  Миниигра сегодня уже пройдена. {next_minigame}")
 
