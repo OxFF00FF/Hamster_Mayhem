@@ -373,7 +373,7 @@ class HamsterKombatClicker:
         data = response.json()
         current_balance = int(data['clickerUser']['balanceCoins'])
         balance_increase = current_balance - initial_balance
-        print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный\n".replace(',', ' '))
+        print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный".replace(',', ' '))
 
     def daily_info(self):
         try:
@@ -577,7 +577,7 @@ class HamsterKombatClicker:
                     print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
                 else:
                     initial_balance = int(start_game.json()['clickerUser']['balanceCoins'])
-                    print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}\n".replace(',', ' '))
+                    print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
                     self._sync(initial_balance)
 
@@ -588,12 +588,11 @@ class HamsterKombatClicker:
 
                     data = end_game.json()
                     current_balance = int(data['clickerUser']['balanceCoins'])
-                    bonus = int(data['bonus'])
                     balance_increase = current_balance - initial_balance
 
-                    print(f"{YELLOW}Bonus:   {LIGHT_BLUE}{bonus:,}{WHITE}".replace(',', ' '))
-                    print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивынй + бонус\n".replace(',', ' '))
-
+                    bonus = f"{LIGHT_BLUE}+{int(data['bonus']):,}{WHITE}"
+                    balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
+                    print(f"{YELLOW}Balance: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
                     print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {minigame['bonusKeys']}. {next_minigame}")
             else:
                 print(f"ℹ️  Миниигра сегодня уже пройдена. {next_minigame}")
