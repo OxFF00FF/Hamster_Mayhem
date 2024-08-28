@@ -86,6 +86,26 @@
             "registerEventTimeout": 20000,
             "text": "\uD83C\uDF3E  Косим траву",
             "emoji": "\uD83C\uDF3E"
+        },
+        {
+            "appToken": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
+            "promoId": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
+            "prefix": "CAFE ",
+            "title": "Cafe Dash",
+            "eventsCount": 20,
+            "registerEventTimeout": 22000,
+            "text": "Cafe Dash",
+            "emoji": "\uD83C\uDF75"
+        }
+    ],
+    "minigames": [
+        {
+            "title": "Candles",
+            "emoji": "\uD83D\uDCCA"
+        },
+        {
+            "title": "Tiles",
+            "emoji": "\uD83D\uDCA0"
         }
     ]
 }
