@@ -48,7 +48,8 @@ def handle_main_menu_choice(choice):
 
     elif choice == 'a':
         line_after()
-        settings['account'] = choose_account()
+        account = choose_account()
+        settings['account'] = account
         save_settings(settings)
         hamster_client().login()
 

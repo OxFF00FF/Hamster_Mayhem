@@ -24,7 +24,6 @@ from Src.Settings import load_settings, save_settings
 from Src.utils import text_to_morse, remain_time, line_after, loading_v2, get_games_data
 
 load_dotenv()
-settings = load_settings()
 
 
 class HamsterKombatClicker:
@@ -809,6 +808,11 @@ class HamsterKombatClicker:
 
         promocodes = await __start_generate(count)
 
+        result = f"*{EMOJI} {TITLE}*\n\n" \
+                 f"*Промокоды: *\n"
+        for promocode in promocodes:
+            result += f"·  `{promocode}`\n"
+        print(result.replace('*', '').replace('`', ''))
 
         if apply_promo:
             send_to_group = False
@@ -819,11 +823,6 @@ class HamsterKombatClicker:
 
         if send_to_group:
             try:
-                result = f"*{EMOJI} {TITLE}*\n\n" \
-                         f"*Промокоды: *\n"
-                for promocode in promocodes:
-                    result += f"·  `{promocode}`\n"
-
                 telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "parse_mode": "Markdown", "text": result})
                 telegram_response.raise_for_status()
                 time.sleep(3)
@@ -835,16 +834,12 @@ class HamsterKombatClicker:
                 logging.error(f"🚫  Произошла ошибка: {e}")
 
         if save_to_file:
-            result = ""
             if not os.path.exists('generated keys'):
                 os.makedirs('generated keys')
 
-            for promocode in promocodes:
-                result += f"{promocode}\n"
-
             file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'generated keys', f'generated_keys ({TITLE}).txt')
             with open(file_path, 'w') as file:
-                file.write(result)
+                file.write(result.replace('*', '').replace('`', ''))
                 print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
 
     def evaluate_cards(self):
@@ -883,6 +878,7 @@ class HamsterKombatClicker:
             print(f"❌ Произошла ошибка: {e}")
 
     def login(self):
+        settings = load_settings()
         try:
             response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
