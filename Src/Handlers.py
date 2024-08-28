@@ -5,7 +5,7 @@ from Src.Colors import *
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
-from Src.Menu import main_menu, playground_menu
+from Src.Menu import main_menu, playground_menu, minigames_menu
 from Src.Settings import load_settings, save_settings
 from Src.utils import line_after, line_before, get_games_data
 
@@ -31,7 +31,7 @@ def handle_main_menu_choice(choice):
 
     elif choice == '4':
         line_after()
-        hamster_client().complete_daily_minigame()
+        handle_minigames_choice()
 
     elif choice == '5':
         line_after()
@@ -139,5 +139,33 @@ def handle_playground_menu_choice():
             print("Выход")
             line_before()
             exit(1)
+        else:
+            print("Такой опции нет")
+
+
+def handle_minigames_choice():
+    minigames = get_games_data()['minigames']
+
+    while True:
+        minigames_menu()
+        choices = [str(i + 1) for i in range(len(minigames))]
+        choice = input(f"\nВыберите действие\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
+        print()
+        line_before()
+
+        if choice in choices:
+            selected_index = int(choice) - 1
+            hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
+            line_before()
+
+        elif choice == '<':
+            print('Вы вышли в главное меню')
+            return
+
+        elif choice == '0':
+            print("Выход")
+            line_before()
+            exit(1)
+
         else:
             print("Такой опции нет")
