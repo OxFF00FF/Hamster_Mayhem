@@ -97,7 +97,7 @@ class HamsterKombatClicker:
             combo_block = hamster_block.select('span[class="font-medium text-[12px] md:text-[16px] lg:font-semibold"]')[:3]
             date_block = hamster_block.select('span[class="text-center font-light opacity-70 mb-[16px]"]')
 
-            date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.datetime.today().year}"
+            date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.today().year}"
             combo_from_site = [item.text.strip() for item in combo_block]
             print(f"⚙️  {combo_from_site}")
             combo_ids = []
@@ -383,7 +383,7 @@ class HamsterKombatClicker:
             morse = text_to_morse(cipher)
             combo = '\n'.join(card['description'] for card in upgrades_info['cards'])
 
-            result = {'date': f"📆  {datetime.datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']} (дата комбо)",
+            result = {'date': f"📆  {datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']} (дата комбо)",
                       'cipher': f"📇  {LIGHT_YELLOW}Шифр:{WHITE}  {cipher} | {morse} |",
                       'summary': f"{upgrades_info['summary']}",
                       'combo': combo}
