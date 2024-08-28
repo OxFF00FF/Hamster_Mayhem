@@ -1,6 +1,8 @@
 import asyncio
 import base64
 import datetime
+import hashlib
+from datetime import datetime
 import logging
 import os
 import random
@@ -250,6 +252,33 @@ class HamsterKombatClicker:
 
         return result
 
+    def _get_mini_game_cipher(self, mini_game: str):
+        max_points = mini_game.get('maxPoints', 0)
+        mini_game_id = mini_game.get('id')
+        startDate = mini_game.get('startDate')
+        user_id = self._get_telegram_user_id()
+
+        number = int(datetime.fromisoformat(startDate.replace("Z", "+00:00")).timestamp())
+        number_len = len(str(number))
+        index = (number % (number_len - 2)) + 1
+        res = ""
+        score_per_game = {
+            "Candles": 0,
+            "Tiles": random.randint(int(max_points * 0.1), max_points) if max_points > 300 else max_points,
+        }
+
+        for i in range(1, number_len + 1):
+            if i == index:
+                res += "0"
+            else:
+                res += str(randint(0, 9))
+
+        score_cipher = str(2 * (number + score_per_game[mini_game_id]))
+        sig = base64.b64encode(hashlib.sha256(f"415t1ng{score_cipher}0ra1cum5h0t".encode()).digest()).decode()
+        data_string = "|".join([res, user_id, mini_game_id, score_cipher, sig]).encode()
+        cipher = base64.b64encode(data_string).decode()
+
+        return cipher
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:
@@ -338,6 +367,13 @@ class HamsterKombatClicker:
 
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
+
+    def _sync(self, initial_balance):
+        response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
+        data = response.json()
+        current_balance = int(data['clickerUser']['balanceCoins'])
+        balance_increase = current_balance - initial_balance
+        print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный\n".replace(',', ' '))
 
     def daily_info(self):
         try:
@@ -538,18 +574,26 @@ class HamsterKombatClicker:
                 json_data = {'miniGameId': game_id}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 if 'error_code' in start_game.json():
-                    print(f"Миниигра не доступна. Подождите {next_attempt} до следующей пооытки")
+                    print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
                 else:
-                    start_game.raise_for_status()
-                    print(f"{minigame['levelConfig']}")
+                    initial_balance = int(start_game.json()['clickerUser']['balanceCoins'])
+                    print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}\n".replace(',', ' '))
 
-                    user_id = self._get_telegram_user_id()
-                    unix_time_from_start_game = f"0{randint(12, 26)}{random.randint(10000000000, 99999999999)}"[:10]
-                    cipher = base64.b64encode(f"{unix_time_from_start_game}|{user_id}".encode("utf-8")).decode("utf-8")
+                    self._sync(initial_balance)
 
+                    cipher = self._get_mini_game_cipher(minigame)
                     json_data = {'cipher': cipher, 'miniGameId': game_id}
                     end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                     end_game.raise_for_status()
+
+                    data = end_game.json()
+                    current_balance = int(data['clickerUser']['balanceCoins'])
+                    bonus = int(data['bonus'])
+                    balance_increase = current_balance - initial_balance
+
+                    print(f"{YELLOW}Bonus:   {LIGHT_BLUE}{bonus:,}{WHITE}".replace(',', ' '))
+                    print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивынй + бонус\n".replace(',', ' '))
+
                     print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {minigame['bonusKeys']}. {next_minigame}")
             else:
                 print(f"ℹ️  Миниигра сегодня уже пройдена. {next_minigame}")
@@ -805,7 +849,7 @@ class HamsterKombatClicker:
                 print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
 
     def evaluate_cards(self):
-        response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+        response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
         response.raise_for_status()
 
         evaluated_cards = []
