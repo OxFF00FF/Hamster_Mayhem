@@ -1,7 +1,7 @@
 from Src.Colors import *
 from Src.Login import hamster_client
 from Src.Settings import load_settings, load_setting
-from Src.utils import get_status, get_games_data
+from Src.utils import get_status, get_games_data, remain_time
 
 settings = load_settings()
 
@@ -41,7 +41,7 @@ def main_menu():
             f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown}\n"
             f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}     {task_status} · Осталось: {task_cooldown} \n"
             f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE}        {cipher_status} · Осталось: {cipher_cooldown} \n"
-            f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигра {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
+            f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигры {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
             f"  {LIGHT_YELLOW}5 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
             f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
             f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}Аккаунты {WHITE}     \n"
@@ -65,11 +65,12 @@ def main_menu():
 def playground_menu():
     promos = []
     if settings['hamster_token']:
-        promos = hamster_client()._get_promos()[0]['promo']
+        promos = hamster_client()._get_promos()
 
-    games_data = get_games_data()['apps']
     keys_per_day = 4
+    games_data = get_games_data()['apps']
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
+    max_width = max(len(game) for game in games_info)
 
     for promo in promos:
         game_name = promo['name']
@@ -80,10 +81,8 @@ def playground_menu():
                 "status": get_status(promo['isClaimed'])
             })
 
-    max_width = max(len(game) for game in games_info)
     print()
     menu = "🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
-
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         keys = game_data.get("keys", 'n/a')
         cooldown = game_data.get("cooldown", "n/a")
@@ -96,6 +95,41 @@ def playground_menu():
 
     menu += (
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} Для всех игр {WHITE} \n"
+        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
+    )
+
+    print(menu.strip())
+
+
+def minigames_menu():
+    minigames = []
+    if settings['hamster_token']:
+        minigames = hamster_client()._get_minigames()
+
+    games_data = get_games_data()['minigames']
+    games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
+    max_width = max(len(game) for game in games_info)
+
+    for minigame in minigames:
+        game_name = minigame['id']
+        if game_name in games_info:
+            games_info[game_name].update({
+                "cooldown": minigame['remainSeconds'],
+                "status": get_status(minigame['isClaimed'])
+            })
+
+    print()
+    menu = "🎮  Миниигры \n  Какую миниигру хотите пройти? \n"
+    for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
+        cooldown = remain_time(game_data.get("cooldown", "n/a"))
+        status = game_data.get("status", "n/a")
+        emoji = game_data["emoji"]
+        color = game_data["color"]
+
+        menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · Осталось: {cooldown} \n"
+
+    menu += (
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
     )
