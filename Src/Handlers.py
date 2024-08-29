@@ -15,19 +15,19 @@ settings = load_settings()
 def handle_main_menu_choice(choice):
     if choice == '#':
         line_after()
-        print(hamster_client().daily_info())
+        print(hamster_client.daily_info())
 
     elif choice == '1':
         line_after()
-        hamster_client().complete_taps()
+        hamster_client.complete_taps()
 
     elif choice == '2':
         line_after()
-        hamster_client().complete_daily_tasks()
+        hamster_client.complete_daily_tasks()
 
     elif choice == '3':
         line_after()
-        hamster_client().complete_daily_chipher()
+        hamster_client.complete_daily_chipher()
 
     elif choice == '4':
         line_after()
@@ -35,13 +35,13 @@ def handle_main_menu_choice(choice):
 
     elif choice == '5':
         line_after()
-        upgrades_info = hamster_client()._collect_upgrades_info()
+        upgrades_info = hamster_client._collect_upgrades_info()
         if all(card['available'] for card in upgrades_info['cards']):
-            hamster_client().complete_daily_combo()
+            hamster_client.complete_daily_combo()
         else:
             choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
             if str(choice.lower()) == 'y'.lower():
-                hamster_client().complete_daily_combo(buy_anyway=True)
+                hamster_client.complete_daily_combo(buy_anyway=True)
 
     elif choice == '6':
         handle_playground_menu_choice()
@@ -51,11 +51,11 @@ def handle_main_menu_choice(choice):
         account = choose_account()
         settings['account'] = account
         save_settings(settings)
-        hamster_client().login()
+        hamster_client.login()
 
     elif choice == '$':
         line_after()
-        top_10_cards = hamster_client().evaluate_cards()
+        top_10_cards = hamster_client.evaluate_cards()
         print(f"Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\n"
               f"прирост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n")
 
@@ -75,7 +75,7 @@ def handle_main_menu_choice(choice):
         match = re.search(pattern=r'\+(.*?)$', string=choice)
         if match:
             upgrade_id = match.group(1)
-            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
+            hamster_client._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
         line_after()
@@ -156,7 +156,7 @@ def handle_minigames_choice():
 
         if choice in choices:
             selected_index = int(choice) - 1
-            hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
+            hamster_client.complete_daily_minigame(minigames[selected_index]['title'])
             line_before()
 
         elif choice == '<':

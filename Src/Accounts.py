@@ -8,7 +8,7 @@ from Src.utils import line_after
 
 def choose_account():
     accounts = [{'key': key, 'token': value} for key, value in os.environ.items() if key.startswith('HAMSTER')]
-    current_account = hamster_client().get_account_info()
+    current_account = hamster_client.get_account_info()
 
     if len(accounts) > 1:
         print(f"Обнаружено аккаунтов {len(accounts)}: ")
