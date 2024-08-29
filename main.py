@@ -6,7 +6,7 @@ from Src.Colors import *
 from Src.Handlers import handle_main_menu_choice
 from Src.Login import hamster_client
 from Src.Menu import main_menu
-from Src.utils import line_before, banner, line_after
+from Src.utils import banner, line_after
 from Src.Settings import load_setting
 
 from dotenv import load_dotenv
