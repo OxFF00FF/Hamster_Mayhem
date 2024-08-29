@@ -2,9 +2,7 @@
 
 echo Getting updates...
 
-git fetch
-
-git checkout master
+git gull
 
 echo Project was updatet to latest version
 
