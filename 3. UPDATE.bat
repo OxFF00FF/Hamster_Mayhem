@@ -2,7 +2,7 @@
 
 echo Getting updates...
 
-git gull
+git pull
 
 echo Project was updatet to latest version
 
