@@ -572,6 +572,7 @@ class HamsterKombatClicker:
             remain = remain_time(minigame['remainSeconds'])
             next_minigame = f"Следующая миниигра будет доступна через: {remain}"
             next_attempt = remain_time(minigame['remainSecondsToNextAttempt'])
+            bonus_keys = minigame['bonusKeys']
 
             isClaimed = minigame['isClaimed']
             if not isClaimed:
@@ -597,7 +598,11 @@ class HamsterKombatClicker:
                     bonus = f"{LIGHT_BLUE}+{int(data['bonus']):,}{WHITE}"
                     balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                     print(f"{YELLOW}Balance: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
-                    print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {minigame['bonusKeys']}. {next_minigame}")
+
+                    if bonus_keys == 0:
+                        print(f"✅  Миниигра {game_id} пройдена. {next_minigame}")
+                    else:
+                        print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {bonus_keys}. {next_minigame}")
             else:
                 print(f"ℹ️  Миниигра {game_id} сегодня уже пройдена. {next_minigame}")
 
