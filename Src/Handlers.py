@@ -110,7 +110,7 @@ def handle_main_menu_choice(choice):
 
     elif choice.startswith('spinner'):
         line_after()
-        spinner_name = choice.split('_')[-1].lower()
+        spinner_name = choice.split('_')[-1]
         if spinner_name == 'list':
             print(f"\nСписок доступных индикаторов загрузки")
             print(spinners_table())

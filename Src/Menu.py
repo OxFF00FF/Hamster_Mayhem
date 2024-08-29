@@ -99,7 +99,7 @@ def playground_menu():
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
     )
-    print(menu.strip())
+    print(f"{menu.strip()} \n")
 
 
 def minigames_menu():
