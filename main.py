@@ -15,8 +15,6 @@ load_dotenv()
 
 logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.ERROR)
 
-def test():
-    pass
 
 if __name__ == '__main__':
     banner()
