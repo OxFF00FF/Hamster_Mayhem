@@ -1,12 +1,5 @@
 @echo off
 
-if not exist ".git" (
-    git init
-    git add .
-    git remote add origin https://github.com/OxFF00FF/Hamster_Mayhem.git
-)
-
-
 echo Creating virtual environment...
 python -m venv venv
 
