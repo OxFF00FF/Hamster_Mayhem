@@ -98,7 +98,7 @@ class HamsterKombatClicker:
 
             date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.today().year}"
             combo_from_site = [item.text.strip() for item in combo_block]
-            print(f"⚙️  {combo_from_site}")
+            logging.warning(f"⚙️  {combo_from_site}")
             combo_ids = []
 
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
@@ -113,6 +113,8 @@ class HamsterKombatClicker:
                     match = fuzz.ratio(name_from_site, name_from_hamster)
                     if match > 85:
                         combo_ids.append(upgrade['id'])
+
+            logging.warning(f"⚙️  {combo_ids}")
             return {'combo': combo_ids, 'date': date}
 
         except requests.exceptions.HTTPError as http_err:
@@ -128,6 +130,7 @@ class HamsterKombatClicker:
 
             encoded_cipher = response.json()['dailyCipher']['cipher']
             cipher = base64.b64decode(encoded_cipher[:3] + encoded_cipher[3 + 1:]).decode('utf-8')
+            logging.warning(cipher)
             return cipher
 
         except requests.exceptions.HTTPError as http_err:
@@ -355,8 +358,7 @@ class HamsterKombatClicker:
             summary = f"📊  {LIGHT_YELLOW}Общая прыбыль:{WHITE}  {MAGENTA}+{total_profit:,} в час {WHITE}\n" \
                       f"🌟  {LIGHT_YELLOW}Общая стоимость:{WHITE} {YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
 
-            print(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
-            line_before()
+            logging.warning(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
             return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
 
         except requests.exceptions.HTTPError as http_err:
@@ -390,13 +392,13 @@ class HamsterKombatClicker:
                       'summary': f"{upgrades_info['summary']}",
                       'combo': combo}
 
-            info = f"{result['date']} \n\n"
+            info = f"\n{result['date']} \n\n"
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}Баланс:{WHITE} {balance['balanceCoins']:,} \n"
             info += f"💰  {LIGHT_YELLOW}Всего: {WHITE} {balance['total']:,} \n"
-            info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,} \n"
+            info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,}\n"
             if '🚫' in result['combo']:
                 info += "\n⚠️  Сегодня вам не все карты доступны"
             time.sleep(1)
@@ -815,7 +817,8 @@ class HamsterKombatClicker:
 
         promocodes = await __start_generate(count)
 
-        result = f"\n*{EMOJI} {TITLE}*\n\n*Промокоды: *\n"
+        line_before()
+        result = f"\n*{EMOJI} {TITLE}*\n*Промокоды: *\n"
         for promocode in promocodes:
             result += f"·  `{promocode}`\n"
         print(result.replace('*', '').replace('`', ''))

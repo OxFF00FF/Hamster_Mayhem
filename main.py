@@ -6,7 +6,7 @@ from Src.Colors import *
 from Src.Handlers import handle_main_menu_choice
 from Src.Login import hamster_client
 from Src.Menu import main_menu
-from Src.utils import line_before, banner
+from Src.utils import line_before, banner, line_after
 from Src.Settings import load_setting
 
 from dotenv import load_dotenv
@@ -28,7 +28,7 @@ if __name__ == '__main__':
             else:
                 choice = input(f"Выберите действие\n{CYAN}(6/m/0):{RESET} ")
             handle_main_menu_choice(choice)
-            line_before()
+            line_after()
 
     except Exception as e:
         logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")

@@ -14,23 +14,23 @@ settings = load_settings()
 
 def handle_main_menu_choice(choice):
     if choice == '#':
-        line_after()
+        line_before()
         print(hamster_client().daily_info())
 
     elif choice == '1':
-        line_after()
+        line_before()
         hamster_client().complete_taps()
 
     elif choice == '2':
-        line_after()
+        line_before()
         hamster_client().complete_daily_tasks()
 
     elif choice == '3':
-        line_after()
+        line_before()
         hamster_client().complete_daily_chipher()
 
     elif choice == '4':
-        line_after()
+        line_before()
         upgrades_info = hamster_client()._collect_upgrades_info()
         if all(card['available'] for card in upgrades_info['cards']):
             hamster_client().complete_daily_combo()
@@ -40,21 +40,21 @@ def handle_main_menu_choice(choice):
                 hamster_client().complete_daily_combo(buy_anyway=True)
 
     elif choice == '5':
-        line_after()
+        line_before()
         handle_minigames_choice()
 
     elif choice == '6':
         handle_playground_menu_choice()
 
     elif choice == 'a':
-        line_after()
+        line_before()
         account = choose_account()
         settings['account'] = account
         save_settings(settings)
         hamster_client().login()
 
     elif choice == '$':
-        line_after()
+        line_before()
         top_10_cards = hamster_client().evaluate_cards()
         print(f"Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\n"
               f"прирост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n")
@@ -71,45 +71,45 @@ def handle_main_menu_choice(choice):
             print("-" * 30)
 
     elif choice.startswith('+'):
-        line_after()
+        line_before()
         match = re.search(pattern=r'\+(.*?)$', string=choice)
         if match:
             upgrade_id = match.group(1)
             hamster_client()._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
-        line_after()
+        line_before()
         main_menu()
 
     elif choice == '0':
-        line_after()
-        print("Выход")
         line_before()
+        print("Выход")
+        line_after()
         exit(1)
 
     elif choice == 'toggle_group':
-        line_after()
+        line_before()
         settings['send_to_group'] = not settings['send_to_group']
         save_settings(settings)
         status = 'включена' if settings['send_to_group'] else 'отключена'
         print(f'Отправка промокодов в группу {status}')
 
     elif choice == 'toggle_file':
-        line_after()
+        line_before()
         settings['save_to_file'] = not settings['save_to_file']
         save_settings(settings)
         status = 'включено' if settings['save_to_file'] else 'отключено'
         print(f'Сохранение в файл {status}')
 
     elif choice == 'toggle_apply':
-        line_after()
+        line_before()
         settings['apply_promo'] = not settings['apply_promo']
         status = 'включено' if settings['apply_promo'] else 'отключено'
         save_settings(settings)
         print(f'Применение промокодов по умолчанию {status}')
 
     elif choice.startswith('spinner'):
-        line_after()
+        line_before()
         spinner_name = choice.split('_')[-1]
         if spinner_name == 'list':
             print(f"\nСписок доступных индикаторов загрузки")
@@ -126,7 +126,7 @@ def handle_main_menu_choice(choice):
             print(f"Индикатор загрузки изменен на `{spinner_name}`")
 
     else:
-        line_after()
+        line_before()
         print("Такой опции нет")
 
 
@@ -137,20 +137,23 @@ def handle_playground_menu_choice():
     while True:
         playground_menu()
         choice = input(f"\nВыберите действие\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
-        line_after()
+        line_before()
 
         if choice in games_prefix:
             generate_for_game(games_prefix[choice])
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
-            line_before()
+            line_after()
+
         elif choice == '<':
             print('Вы вышли в главное меню')
             return
+
         elif choice == '0':
             print("Выход")
-            line_before()
+            line_after()
             exit(1)
+
         else:
             print("Такой опции нет")
 
@@ -162,13 +165,12 @@ def handle_minigames_choice():
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
         choice = input(f"\nВыберите действие\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
-        print()
         line_before()
 
         if choice in choices:
             selected_index = int(choice) - 1
             hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
-            line_before()
+            line_after()
 
         elif choice == '<':
             print('Вы вышли в главное меню')
@@ -176,7 +178,7 @@ def handle_minigames_choice():
 
         elif choice == '0':
             print("Выход")
-            line_before()
+            line_after()
             exit(1)
 
         else:

@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import os
 import time
 
@@ -92,7 +93,7 @@ async def loading_v2(event, spinner_name=None):
                             break
                         print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
                         await asyncio.sleep(0.3)
-        print(f'Spinner `{spinner_name}` not found')
+        logging.warning(f'Spinner `{spinner_name}` not found')
         await loading(event)
 
     else:
@@ -114,12 +115,12 @@ def clear_screen():
 
 
 def line_before():
-    time.sleep(1)
-    print(" " + "~" * 60 + "\n")
+    print("\n" + "~" * 60)
 
 
 def line_after():
-    print("\n " + "~" * 60)
+    time.sleep(1)
+    print("~" * 60 + "\n")
 
 
 def get_status(status):

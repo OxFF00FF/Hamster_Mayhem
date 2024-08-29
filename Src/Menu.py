@@ -28,7 +28,7 @@ def main_menu():
     if load_setting('hamster_token'):
         settings = load_settings()
 
-        memu = (
+        menu = (
             f"🛠  Настройки \n"
             f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
             f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
@@ -51,14 +51,14 @@ def main_menu():
         )
 
     else:
-        memu = (
+        menu = (
             f"Главное меню \n"
             f"  Какую активность хотите выполнить? \n"
             f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
             f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
             f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
         )
-    print(memu.strip())
+    print(f"{menu.strip()} \n")
 
 
 def playground_menu():
@@ -99,7 +99,7 @@ def playground_menu():
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
     )
-    print(f"{menu.strip()} \n")
+    print(menu.strip())
 
 
 def minigames_menu():
