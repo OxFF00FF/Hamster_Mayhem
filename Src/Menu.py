@@ -8,8 +8,8 @@ settings = load_settings()
 
 def main_menu():
     activities = hamster_client()._activity_cooldowns()
-    taps_status = task_status = cipher_status = combo_status = minigame_status = 'n/a'
-    taps_cooldown = task_cooldown = cipher_cooldown = combo_cooldown = minigame_cooldown = 'n/a'
+    taps_status = task_status = cipher_status = combo_status = 'n/a'
+    taps_cooldown = task_cooldown = cipher_cooldown = combo_cooldown = 'n/a'
 
     if activities:
         for activity in activities:
@@ -25,9 +25,7 @@ def main_menu():
             if 'combo' in activity:
                 combo_status = get_status(activity['combo']['isClaimed'])
                 combo_cooldown = activity['combo']['remain']
-            if 'minigame' in activity:
-                minigame_status = get_status(activity['minigame']['isClaimed'])
-                minigame_cooldown = activity['minigame']['remain']
+
     print()
     if load_setting('hamster_token'):
         memu = (
@@ -38,13 +36,13 @@ def main_menu():
             f"Главное меню \n"
             f"  Какую активность хотите выполнить? \n"
             f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
-            f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown}\n"
+            f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown} \n"
             f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}     {task_status} · Осталось: {task_cooldown} \n"
             f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE}        {cipher_status} · Осталось: {cipher_cooldown} \n"
-            f"  {LIGHT_YELLOW}4 |  {RESET}🔑 {YELLOW}Миниигры {WHITE}    {minigame_status} · Осталось: {minigame_cooldown} \n"
-            f"  {LIGHT_YELLOW}5 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
-            f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
-            f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}Аккаунты {WHITE}     \n"
+            f"  {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
+            f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}Миниигры {WHITE} \n"
+            f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE} \n"
+            f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}Аккаунты {WHITE} \n"
             f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
             f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
             f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"

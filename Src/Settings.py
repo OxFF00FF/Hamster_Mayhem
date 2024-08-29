@@ -16,7 +16,14 @@ def load_settings():
             settings = json.load(file)
             return settings
     except (FileNotFoundError, json.JSONDecodeError):
-        settings = {'send_to_group': False, 'save_to_file': False, 'apply_promo': False, 'hamster_token': None, 'account': 'HAMSTER_TOKEN_1'}
+        settings = {
+            'send_to_group': False,
+            'save_to_file': False,
+            'apply_promo': False,
+            'hamster_token': None,
+            'account': 'HAMSTER_TOKEN_1',
+            'spinner': 'default'
+         }
         save_settings(settings)
         return settings
 

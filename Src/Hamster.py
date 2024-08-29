@@ -183,9 +183,6 @@ class HamsterKombatClicker:
             cipher = config_data.get('dailyCipher', {})
             remain_cipher = remain_time(cipher.get('remainSeconds', 0))
             result.append({'cipher': {'remain': remain_cipher, 'isClaimed': cipher.get('isClaimed', False)}})
-            daily_minigame = config_data.get('dailyKeysMiniGame', {})
-            remain_minigame = remain_time(daily_minigame.get('remainSeconds', 0))
-            result.append({'minigame': {'remain': remain_minigame, 'isClaimed': daily_minigame.get('isClaimed', False)}})
 
             response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
@@ -224,7 +221,7 @@ class HamsterKombatClicker:
     def _get_promos(self):
         result = []
 
-        response = requests.post('https://api.hamsterkombatgame.io/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
+        response = requests.post(f'{self.base_url}/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
         response.raise_for_status()
         promos = response.json().get('promos', [{}])
         states = response.json().get('states', [{}])
