@@ -5,4 +5,4 @@ __pycache__
 venv
 /.cache
 tests
-settings.json
+Src/data/settings.json
