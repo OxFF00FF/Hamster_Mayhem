@@ -94,7 +94,6 @@ def handle_main_menu_choice(choice):
         status = 'включена' if settings['send_to_group'] else 'отключена'
         print(f'Отправка промокодов в группу {status}')
         line_before()
-        main_menu()
 
     elif choice == 'toggle_file':
         line_after()
@@ -103,7 +102,6 @@ def handle_main_menu_choice(choice):
         status = 'включено' if settings['save_to_file'] else 'отключено'
         print(f'Сохранение в файл {status}')
         line_before()
-        main_menu()
 
     elif choice == 'toggle_apply':
         line_after()
@@ -112,7 +110,6 @@ def handle_main_menu_choice(choice):
         save_settings(settings)
         print(f'Применение промокодов по умолчанию {status}')
         line_before()
-        main_menu()
 
     elif choice.startswith('spinner'):
         line_after()

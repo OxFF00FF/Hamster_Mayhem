@@ -3,8 +3,6 @@ from Src.Login import hamster_client
 from Src.Settings import load_settings, load_setting
 from Src.utils import get_status, get_games_data, remain_time
 
-settings = load_settings()
-
 
 def main_menu():
     activities = hamster_client._activity_cooldowns()
@@ -28,6 +26,8 @@ def main_menu():
 
     print()
     if load_setting('hamster_token'):
+        settings = load_settings()
+
         memu = (
             f"Настройки \n"
             f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
@@ -62,6 +62,8 @@ def main_menu():
 
 
 def playground_menu():
+    settings = load_settings()
+
     promos = []
     if settings['hamster_token']:
         promos = hamster_client._get_promos()
@@ -102,6 +104,8 @@ def playground_menu():
 
 
 def minigames_menu():
+    settings = load_settings()
+
     minigames = []
     if settings['hamster_token']:
         minigames = hamster_client._get_minigames()

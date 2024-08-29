@@ -599,7 +599,7 @@ class HamsterKombatClicker:
                     print(f"{YELLOW}Balance: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
                     print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {minigame['bonusKeys']}. {next_minigame}")
             else:
-                print(f"ℹ️  Миниигра сегодня уже пройдена. {next_minigame}")
+                print(f"ℹ️  Миниигра {game_id} сегодня уже пройдена. {next_minigame}")
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
