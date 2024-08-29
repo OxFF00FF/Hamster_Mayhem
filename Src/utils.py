@@ -130,3 +130,18 @@ def get_games_data():
     with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
         games_data = json.loads(f.read())
     return games_data
+
+
+def set_spinner():
+    pass
+
+
+# spinners_list()
+
+
+table = ("""
+    +-----------------------+-----------------------+
+    |          1            |          2            |
+    
+    
+""")

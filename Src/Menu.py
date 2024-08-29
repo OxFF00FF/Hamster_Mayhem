@@ -32,7 +32,8 @@ def main_menu():
             f"Настройки \n"
             f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
             f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
-            f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n\n"
+            f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n"
+            f"  ⚙️  Спиннер:              {get_status(settings['spinner'])} (spinner <spinner_name> · выбор индикатора загрузки)\n\n"
             f"Главное меню \n"
             f"  Какую активность хотите выполнить? \n"
             f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
@@ -63,7 +64,7 @@ def main_menu():
 def playground_menu():
     promos = []
     if settings['hamster_token']:
-        promos = hamster_client()._get_promos()
+        promos = hamster_client._get_promos()
 
     keys_per_day = 4
     games_data = get_games_data()['apps']
@@ -103,7 +104,7 @@ def playground_menu():
 def minigames_menu():
     minigames = []
     if settings['hamster_token']:
-        minigames = hamster_client()._get_minigames()
+        minigames = hamster_client._get_minigames()
 
     games_data = get_games_data()['minigames']
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}

@@ -31,10 +31,6 @@ def handle_main_menu_choice(choice):
 
     elif choice == '4':
         line_after()
-        handle_minigames_choice()
-
-    elif choice == '5':
-        line_after()
         upgrades_info = hamster_client._collect_upgrades_info()
         if all(card['available'] for card in upgrades_info['cards']):
             hamster_client.complete_daily_combo()
@@ -42,6 +38,10 @@ def handle_main_menu_choice(choice):
             choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
             if str(choice.lower()) == 'y'.lower():
                 hamster_client.complete_daily_combo(buy_anyway=True)
+
+    elif choice == '5':
+        line_after()
+        handle_minigames_choice()
 
     elif choice == '6':
         handle_playground_menu_choice()
@@ -113,6 +113,11 @@ def handle_main_menu_choice(choice):
         print(f'Применение промокодов по умолчанию {status}')
         line_before()
         main_menu()
+
+    elif choice.startswith('spinner'):
+        line_after()
+        pass
+        line_before()
 
     else:
         line_after()

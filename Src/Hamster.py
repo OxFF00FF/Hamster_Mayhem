@@ -888,9 +888,9 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             account_info = response.json()['accountInfo']['telegramUsers'][0]
-            username = account_info['username']
-            first_name = account_info['firstName']
-            last_name = account_info['lastName']
+            username = account_info.get('username', 'n/a')
+            first_name = account_info.get('firstName', 'n/a')
+            last_name = account_info.get('lastName', 'n/a')
             print(f"{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}")
             settings['hamster_token'] = True
             save_settings(settings)
