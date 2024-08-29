@@ -29,12 +29,12 @@ def main_menu():
         settings = load_settings()
 
         memu = (
-            f"Настройки \n"
+            f"🛠  Настройки \n"
             f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
             f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
             f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n"
-            f"  ⚙️  Спиннер:              {get_status(settings['spinner'])} (spinner <spinner_name> · выбор индикатора загрузки)\n\n"
-            f"Главное меню \n"
+            f"  ⚙️  Спиннер: {load_setting('spinner')}         (spinner_<name> · <name>/default/list)\n\n"
+            f"📚  Главное меню \n"
             f"  Какую активность хотите выполнить? \n"
             f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
             f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown} \n"
@@ -99,7 +99,6 @@ def playground_menu():
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
     )
-
     print(menu.strip())
 
 
@@ -136,5 +135,4 @@ def minigames_menu():
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
     )
-
     print(menu.strip())

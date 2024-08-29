@@ -21,7 +21,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         send_to_group = settings['send_to_group']
         save_to_file = settings['save_to_file']
         spinner = load_setting('spinner')
-        asyncio.run(hamster_client.get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
+        asyncio.run(hamster_client().get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
 
     except Exception:
         print(f"🚫  Произошла ошибка во время генерации. Попробуйте снова, если ошибки прололжаться, то попробуйте позже.")
@@ -64,5 +64,5 @@ async def genetare_for_all_games():
         logging.error(f"\nКоличество должно быть числом больше 0")
         exit(1)
 
-    tasks = [hamster_client.get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
+    tasks = [hamster_client().get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
     await asyncio.gather(*tasks)

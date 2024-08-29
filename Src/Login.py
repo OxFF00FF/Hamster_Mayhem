@@ -4,7 +4,7 @@ from Src.Hamster import HamsterKombatClicker
 from Src.Settings import load_settings
 
 
-def create_client():
+def hamster_client():
     settings = load_settings()
     try:
         HAMSTER_TOKEN = os.getenv(settings['account'])
@@ -12,6 +12,3 @@ def create_client():
 
     except Exception as e:
         logging.error(e)
-
-
-hamster_client = create_client()

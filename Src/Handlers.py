@@ -7,7 +7,7 @@ from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
 from Src.Menu import main_menu, playground_menu, minigames_menu
 from Src.Settings import load_settings, save_settings
-from Src.utils import line_after, line_before, get_games_data
+from Src.utils import line_after, line_before, get_games_data, spinners_table
 
 settings = load_settings()
 
@@ -15,29 +15,29 @@ settings = load_settings()
 def handle_main_menu_choice(choice):
     if choice == '#':
         line_after()
-        print(hamster_client.daily_info())
+        print(hamster_client().daily_info())
 
     elif choice == '1':
         line_after()
-        hamster_client.complete_taps()
+        hamster_client().complete_taps()
 
     elif choice == '2':
         line_after()
-        hamster_client.complete_daily_tasks()
+        hamster_client().complete_daily_tasks()
 
     elif choice == '3':
         line_after()
-        hamster_client.complete_daily_chipher()
+        hamster_client().complete_daily_chipher()
 
     elif choice == '4':
         line_after()
-        upgrades_info = hamster_client._collect_upgrades_info()
+        upgrades_info = hamster_client()._collect_upgrades_info()
         if all(card['available'] for card in upgrades_info['cards']):
-            hamster_client.complete_daily_combo()
+            hamster_client().complete_daily_combo()
         else:
             choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
             if str(choice.lower()) == 'y'.lower():
-                hamster_client.complete_daily_combo(buy_anyway=True)
+                hamster_client().complete_daily_combo(buy_anyway=True)
 
     elif choice == '5':
         line_after()
@@ -51,11 +51,11 @@ def handle_main_menu_choice(choice):
         account = choose_account()
         settings['account'] = account
         save_settings(settings)
-        hamster_client.login()
+        hamster_client().login()
 
     elif choice == '$':
         line_after()
-        top_10_cards = hamster_client.evaluate_cards()
+        top_10_cards = hamster_client().evaluate_cards()
         print(f"Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\n"
               f"прирост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n")
 
@@ -75,7 +75,7 @@ def handle_main_menu_choice(choice):
         match = re.search(pattern=r'\+(.*?)$', string=choice)
         if match:
             upgrade_id = match.group(1)
-            hamster_client._buy_upgrade(upgradeId=upgrade_id)
+            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
         line_after()
@@ -93,7 +93,6 @@ def handle_main_menu_choice(choice):
         save_settings(settings)
         status = 'включена' if settings['send_to_group'] else 'отключена'
         print(f'Отправка промокодов в группу {status}')
-        line_before()
 
     elif choice == 'toggle_file':
         line_after()
@@ -101,7 +100,6 @@ def handle_main_menu_choice(choice):
         save_settings(settings)
         status = 'включено' if settings['save_to_file'] else 'отключено'
         print(f'Сохранение в файл {status}')
-        line_before()
 
     elif choice == 'toggle_apply':
         line_after()
@@ -109,12 +107,23 @@ def handle_main_menu_choice(choice):
         status = 'включено' if settings['apply_promo'] else 'отключено'
         save_settings(settings)
         print(f'Применение промокодов по умолчанию {status}')
-        line_before()
 
     elif choice.startswith('spinner'):
         line_after()
-        pass
-        line_before()
+        spinner_name = choice.split('_')[-1].lower()
+        if spinner_name == 'list':
+            print(f"\nСписок доступных индикаторов загрузки")
+            print(spinners_table())
+
+        elif spinner_name == 'default':
+            settings['spinner'] = 'default'
+            save_settings(settings)
+            print(f"Индикатор загрузки установлен по умолчанию")
+
+        else:
+            settings['spinner'] = spinner_name
+            save_settings(settings)
+            print(f"Индикатор загрузки изменен на `{spinner_name}`")
 
     else:
         line_after()
@@ -158,7 +167,7 @@ def handle_minigames_choice():
 
         if choice in choices:
             selected_index = int(choice) - 1
-            hamster_client.complete_daily_minigame(minigames[selected_index]['title'])
+            hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
             line_before()
 
         elif choice == '<':

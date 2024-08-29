@@ -5,6 +5,10 @@ def load_setting(key=None):
     """Load settings from the JSON file and return the value for the specified key."""
     settings = load_settings()
     if key:
+        if key not in settings:
+            if key == 'spinner':
+                settings[key] = 'default'
+                save_settings(settings)
         return settings.get(key)
     return settings
 

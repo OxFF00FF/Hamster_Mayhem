@@ -136,12 +136,27 @@ def set_spinner():
     pass
 
 
-# spinners_list()
+def spinners_table(num_columns=3):
+    data = [spinner_name.name for spinner_name in Spinners]
 
+    if not data:
+        return ""
 
-table = ("""
-    +-----------------------+-----------------------+
-    |          1            |          2            |
-    
-    
-""")
+    num_rows = len(data) // num_columns + (len(data) % num_columns != 0)
+
+    max_widths = [0] * num_columns
+    for e, spiner in enumerate(data):
+        col_index = e % num_columns
+        max_widths[col_index] = max(max_widths[col_index], len(str(spiner)))
+
+    def row_format(row):
+        return " | ".join(f"{item:{max_widths[i]}}" for i, item in enumerate(row))
+
+    header = "".join(["_" * (width + 3) for width in max_widths])
+    table_ = [header]
+
+    for r in range(num_rows):
+        row_ = [data[r * num_columns + i] if r * num_columns + i < len(data) else "" for i in range(num_columns)]
+        table_.append(f"| {row_format(row_)} |")
+
+    return "\n".join(table_)
