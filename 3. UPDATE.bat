@@ -1,13 +1,15 @@
 @echo off
 
-echo Initialize Git repo...
 git init
 
-SET REMOTE_URL=https://github.com/OxFF00FF/Hamster_Mayhem.git
-git remote add origin %REMOTE_URL%
+git remote add origin https://github.com/OxFF00FF/Hamster_Mayhem.git
 
-echo Getting uodates...
-git pull origin main
+git add *
+
+echo Getting updates...
+
+git pull origin master
 
 echo Project was updatet to latest version
+
 pause
