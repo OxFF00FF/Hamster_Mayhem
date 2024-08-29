@@ -17,9 +17,9 @@ logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(
 
 
 if __name__ == '__main__':
-    # banner()
+    banner()
     hamster_client().login()
-    # main_menu()
+    main_menu()
 
     try:
         while True:
