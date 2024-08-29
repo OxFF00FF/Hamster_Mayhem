@@ -377,7 +377,7 @@ class HamsterKombatClicker:
         data = response.json()
         current_balance = int(data['clickerUser']['balanceCoins'])
         balance_increase = current_balance - initial_balance
-        print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный".replace(',', ' '))
+        print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный".replace(',', ' '))
 
     def daily_info(self) -> str:
         try:
@@ -582,7 +582,7 @@ class HamsterKombatClicker:
                     print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
                 else:
                     initial_balance = int(start_game.json()['clickerUser']['balanceCoins'])
-                    print(f"{YELLOW}Balance: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
+                    print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
                     self._sync(initial_balance)
 
@@ -597,7 +597,7 @@ class HamsterKombatClicker:
 
                     bonus = f"{LIGHT_BLUE}+{int(data['bonus']):,}{WHITE}"
                     balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
-                    print(f"{YELLOW}Balance: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
+                    print(f"{YELLOW}Баланс: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
 
                     if bonus_keys == 0:
                         print(f"✅  Миниигра {game_id} пройдена. {next_minigame}")
