@@ -2,7 +2,9 @@
 
 echo Getting updates...
 
-git pull origin master
+git fetch
+
+git checkout master
 
 echo Project was updatet to latest version
 
