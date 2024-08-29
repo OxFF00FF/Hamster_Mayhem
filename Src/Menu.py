@@ -66,7 +66,7 @@ def playground_menu():
 
     promos = []
     if settings['hamster_token']:
-        promos = hamster_client._get_promos()
+        promos = hamster_client()._get_promos()
 
     keys_per_day = 4
     games_data = get_games_data()['apps']
@@ -107,7 +107,7 @@ def minigames_menu():
 
     minigames = []
     if settings['hamster_token']:
-        minigames = hamster_client._get_minigames()
+        minigames = hamster_client()._get_minigames()
 
     games_data = get_games_data()['minigames']
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
