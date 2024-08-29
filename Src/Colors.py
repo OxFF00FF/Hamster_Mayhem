@@ -38,3 +38,4 @@ def colors_test():
           f"{LIGHT_WHITE}LIGHT_WHITE{RESET}\n"
           f"{LIGHT_GRAY}LIGHT_GRAY{RESET} · "
           f"{DARK_GRAY}DARK_GRAY{RESET}")
+colors_test()

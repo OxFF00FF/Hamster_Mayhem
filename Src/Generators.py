@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from Src.Login import hamster_client
-from Src.Settings import load_settings
+from Src.Settings import load_settings, load_setting
 from Src.utils import line_before, get_games_data
 
 settings = load_settings()
@@ -20,7 +20,8 @@ def generate_promocodes(prefix='', apply_promo=False):
     try:
         send_to_group = settings['send_to_group']
         save_to_file = settings['save_to_file']
-        asyncio.run(hamster_client().get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file))
+        spinner = load_setting('spinner')
+        asyncio.run(hamster_client().get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
 
     except Exception:
         print(f"🚫  Произошла ошибка во время генерации. Попробуйте снова, если ошибки прололжаться, то попробуйте позже.")

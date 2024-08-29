@@ -667,7 +667,7 @@ class HamsterKombatClicker:
                 response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
                 time.sleep(1)
-                print(f"{LIGHT_YELLOW}🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}{WHITE}")
+                print(f"{LIGHT_GREEN}🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}{WHITE}\n")
             time.sleep(1)
 
         except requests.exceptions.HTTPError as http_err:
@@ -805,8 +805,7 @@ class HamsterKombatClicker:
 
         promocodes = await __start_generate(count)
 
-        result = f"*{EMOJI} {TITLE}*\n\n" \
-                 f"*Промокоды: *\n"
+        result = f"\n*{EMOJI} {TITLE}*\n\n*Промокоды: *\n"
         for promocode in promocodes:
             result += f"·  `{promocode}`\n"
         print(result.replace('*', '').replace('`', ''))
@@ -814,7 +813,7 @@ class HamsterKombatClicker:
         if apply_promo:
             send_to_group = False
             save_to_file = False
-            print(f'Промокоды не будут отправленны в группу и не записаны в файл')
+            print(f'⚠️  {LIGHT_YELLOW}Промокоды не будут отправленны в группу и не записаны в файл{WHITE}\n')
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
 
