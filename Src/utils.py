@@ -115,7 +115,7 @@ def clear_screen():
 
 def line_before():
     time.sleep(1)
-    print(" " + "~" * 60)
+    print(" " + "~" * 60 + "\n")
 
 
 def line_after():

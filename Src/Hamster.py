@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 
 from Src.Colors import *
 from Src.Settings import load_settings, save_settings
-from Src.utils import text_to_morse, remain_time, line_after, loading_v2, get_games_data
+from Src.utils import text_to_morse, remain_time, line_after, loading_v2, get_games_data, line_before
 
 load_dotenv()
 
@@ -113,8 +113,6 @@ class HamsterKombatClicker:
                     match = fuzz.ratio(name_from_site, name_from_hamster)
                     if match > 85:
                         combo_ids.append(upgrade['id'])
-
-            print(f"⚙️  Combo: {combo_ids} · Date: {date}")
             return {'combo': combo_ids, 'date': date}
 
         except requests.exceptions.HTTPError as http_err:
@@ -130,7 +128,6 @@ class HamsterKombatClicker:
 
             encoded_cipher = response.json()['dailyCipher']['cipher']
             cipher = base64.b64decode(encoded_cipher[:3] + encoded_cipher[3 + 1:]).decode('utf-8')
-            print(f"⚙️  Cipher:  {cipher}")
             return cipher
 
         except requests.exceptions.HTTPError as http_err:
@@ -359,6 +356,7 @@ class HamsterKombatClicker:
                       f"🌟  {LIGHT_YELLOW}Общая стоимость:{WHITE} {YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
 
             print(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
+            line_before()
             return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
 
         except requests.exceptions.HTTPError as http_err:
@@ -402,7 +400,6 @@ class HamsterKombatClicker:
             if '🚫' in result['combo']:
                 info += "\n⚠️  Сегодня вам не все карты доступны"
             time.sleep(1)
-            line_after()
             return info.replace(',', ' ')
 
         except Exception as e:
