@@ -1,0 +1,8 @@
+{
+    "send_to_group": true,
+    "save_to_file": false,
+    "apply_promo": false,
+    "hamster_token": true,
+    "account": "HAMSTER_TOKEN_1",
+    "spinner": "circleQuarters"
+}
