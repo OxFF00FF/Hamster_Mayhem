@@ -7,7 +7,7 @@ settings = load_settings()
 
 
 def main_menu():
-    activities = hamster_client()._activity_cooldowns()
+    activities = hamster_client._activity_cooldowns()
     taps_status = task_status = cipher_status = combo_status = 'n/a'
     taps_cooldown = task_cooldown = cipher_cooldown = combo_cooldown = 'n/a'
 
