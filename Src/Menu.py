@@ -24,7 +24,6 @@ def main_menu():
                 combo_status = get_status(activity['combo']['isClaimed'])
                 combo_cooldown = activity['combo']['remain']
 
-    print()
     if load_setting('hamster_token'):
         settings = load_settings()
 
@@ -82,7 +81,6 @@ def playground_menu():
                 "status": get_status(promo['isClaimed'])
             })
 
-    print()
     menu = "🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         keys = game_data.get("keys", 'n/a')
@@ -121,7 +119,6 @@ def minigames_menu():
                 "status": get_status(minigame['isClaimed'])
             })
 
-    print()
     menu = "🎮  Миниигры \n  Какую миниигру хотите пройти? \n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         cooldown = remain_time(game_data.get("cooldown", "n/a"))

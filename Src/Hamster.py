@@ -2,26 +2,26 @@ import asyncio
 import base64
 import datetime
 import hashlib
-from datetime import datetime
 import logging
 import os
 import random
 import time
 import traceback
 import uuid
+from datetime import datetime
 from random import randint
 from typing import Any
 
 import aiohttp
 import requests
-from fake_useragent import UserAgent
 from bs4 import BeautifulSoup as BS
-from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
+from fake_useragent import UserAgent
+from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.Settings import load_settings, save_settings
-from Src.utils import text_to_morse, remain_time, line_after, loading_v2, get_games_data, line_before
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before
 
 load_dotenv()
 
@@ -342,7 +342,7 @@ class HamsterKombatClicker:
                             available = f"🚫  {RED}Карта недоступна для улучшения ({error}){WHITE}"
 
                         cards.append({'description': f"{available} \n"
-                                                     f"🏷  {CYAN}{upgrade['name']} • {upgrade['section']}{WHITE} \n"
+                                                     f"🏷  {LIGHT_YELLOW}{upgrade['name']} • {upgrade['section']}{WHITE} \n"
                                                      f"💰  {YELLOW}{upgrade['price']:,}{WHITE} \n"
                                                      f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} в час{WHITE} \n"
                                                      f"⭐️  {DARK_GRAY}{upgrade['level']} уровень{WHITE} \n".replace(',', ' '),
