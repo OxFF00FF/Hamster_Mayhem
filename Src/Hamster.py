@@ -268,7 +268,7 @@ class HamsterKombatClicker:
             unix_start_date = int(datetime.fromisoformat(start_date.replace("Z", "+00:00")).timestamp())
             number_len = len(str(unix_start_date))
             index = (unix_start_date % (number_len - 2)) + 1
-            score_per_game = {"Candles": 0, "Tiles": max_points}
+            score_per_game = {"Candles": 0, "Tiles": 1}
             score = str(2 * (unix_start_date + score_per_game[mini_game_id]))
 
             cipher = ""
@@ -602,55 +602,58 @@ class HamsterKombatClicker:
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
             bonus_keys = minigame.get('bonusKeys')
 
-
-
             isClaimed = minigame.get('isClaimed')
             if not isClaimed:
                 json_data = {'miniGameId': game_id}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                start_game.raise_for_status()
 
-                initial_balance = int(start_game.json()['clickerUser']['balanceCoins'])
+                initial_balance = int(start_game.json().get('clickerUser').get('balanceCoins'))
                 print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
-                if 'error_code' in start_game.json():
-                    print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
+                current_balance = self._sync()
+                balance_increase = current_balance - initial_balance
+                balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
+                print(f"{YELLOW}Баланс: {balance} | пассивный".replace(',', ' '))
+
+                cipher = self._get_mini_game_cipher(minigame)
+                json_data = {'cipher': cipher, 'miniGameId': game_id}
+                end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                end_game.raise_for_status()
+
+                end_game_data = end_game.json()
+                current_balance = self._sync()
+                balance_increase = current_balance - initial_balance
+                balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
+                bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
+                print(f"{YELLOW}Баланс: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
+
+                if bonus_keys == 0:
+                    print(f"✅  Миниигра {game_id} пройдена. {next_minigame}")
                 else:
-                    current_balance = self._sync()
-                    balance_increase = current_balance - initial_balance
-                    balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
-                    print(f"{YELLOW}Баланс: {balance} | пассивный".replace(',', ' '))
+                    print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {bonus_keys}. {next_minigame}")
 
-                    cipher = self._get_mini_game_cipher(minigame)
-                    json_data = {'cipher': cipher, 'miniGameId': game_id}
-                    end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-                    end_game.raise_for_status()
-
-                    end_game_data = end_game.json()
-                    current_balance = self._sync()
-                    balance_increase = current_balance - initial_balance
-                    balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
-                    bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
-                    print(f"{YELLOW}Баланс: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
-
-                    if bonus_keys == 0:
-                        print(f"✅  Миниигра {game_id} пройдена. {next_minigame}")
-                    else:
-                        print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {bonus_keys}. {next_minigame}")
             else:
                 print(f"ℹ️  Миниигра {game_id} сегодня уже пройдена. {next_minigame}")
 
         except requests.exceptions.HTTPError as http_err:
             if config_response.status_code == 400:
                 logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле\n🚫  {http_err}")
+
             elif config_response.status_code == 401:
                 logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле\n🚫  {http_err}")
+
+            elif end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
+                print(f"\n🚫  Не удалось пройти Миниигру {game_id}\n"
+                      f"⚠️  Кажется разрабы хомяка снова поменяли шифр. Обновите код с помощью файла `UPDATE.bat`\n"
+                      f"ℹ️  Если обновление не поможет, то подождите. Мы уже добываем для вас новый шифр  🫡\n")
+
+            elif start_game.json().get('error_code') == 'KEYS-MINIGAME_WAITING':
+                print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
+
             else:
-                if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
-                    print(f"🚫  Не удалось пройти Миниигру {game_id}\n"
-                          f"⚠️  Кажется разрабы хомяка снова поменяли шифр. Обновите код с помощью файла `UPDATE.bat`\n"
-                          f"ℹ️  Если обновление не поможет, то подождите. Мы уже добываем для вас новый шифр  🫡")
-                else:
-                    logging.error(f"🚫  HTTP ошибка: {http_err}")
+                logging.error(f"🚫  HTTP ошибка: {http_err}\n{traceback.format_exc()}")
+
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 

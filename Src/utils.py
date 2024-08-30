@@ -137,9 +137,14 @@ def get_games_data():
 
 
 def get_salt(salt):
-    with open('salt.json', 'r', encoding='utf-8') as f:
-        data = json.loads(f.read())
-    return data[salt]
+    try:
+        with open('Src/salt.json', 'r', encoding='utf-8') as f:
+            data = json.loads(f.read())
+        return data[salt]
+
+    except Exception as e:
+        logging.error(e)
+
 
 
 def spinners_table(num_columns=3):
