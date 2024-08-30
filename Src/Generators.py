@@ -3,7 +3,7 @@ import logging
 
 from Src.Login import hamster_client
 from Src.Settings import load_settings, load_setting
-from Src.utils import line_before, get_games_data
+from Src.utils import get_games_data
 
 settings = load_settings()
 
@@ -12,7 +12,7 @@ def generate_promocodes(prefix='', apply_promo=False):
     count = input(f"\nКакое количество промокодов генерировать?\nEnter(по умолчанию 1): ")
     if count == '':
         count = 1
-        print("Количество промокодов не указано. Генерируется 1 по умолчанию")
+        print(f"⚠️  Количество промокодов не указано. Генерируется 1 по умолчанию")
 
     if int(count) <= 0:
         logging.error(f"\nКоличество должно быть числом больше 0")
@@ -31,7 +31,7 @@ def generate_promocodes(prefix='', apply_promo=False):
 
 
 def generate_for_game(prefix):
-    choice_text = "Хотите применить промокоды после получения?\nY(да) / Enter(Нет): "
+    choice_text = "\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): "
     if settings.get('hamster_token'):
         if settings.get('apply_promo'):
             generate_promocodes(prefix=prefix, apply_promo=settings['apply_promo'])
@@ -45,7 +45,6 @@ def generate_for_game(prefix):
                 print("Такой опции нет")
     else:
         generate_promocodes(prefix=prefix)
-    line_before()
 
 
 async def genetare_for_all_games():
