@@ -119,12 +119,15 @@ def line_before():
 
 
 def line_after():
-    time.sleep(1)
     print("~" * 60 + "\n")
 
 
 def get_status(status):
     return f"{GREEN}✅{RESET}" if status else f"{RED}🚫{RESET}"
+
+
+def generation_status(status):
+    return f"{LIGHT_GREEN}Получен{WHITE}" if status else f"{RED}Не получен{WHITE}"
 
 
 def get_games_data():
