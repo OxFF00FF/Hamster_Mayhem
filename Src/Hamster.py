@@ -21,7 +21,7 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.Settings import load_settings, save_settings
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status
 
 load_dotenv()
 
@@ -73,7 +73,7 @@ class HamsterKombatClicker:
         try:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
-            return response.json()['clickerUser']['id']
+            return response.json().get('clickerUser').get('id')
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -104,15 +104,15 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            upgradesForBuy = response.json()['upgradesForBuy']
+            upgradesForBuy = response.json().get('upgradesForBuy')
             for upgrade in upgradesForBuy:
                 for upgrade_name in combo_from_site:
                     name_from_site = str(upgrade_name.strip().lower())
-                    name_from_hamster = str(upgrade['name'].strip().lower())
+                    name_from_hamster = str(upgrade.get('name').strip().lower())
 
                     match = fuzz.ratio(name_from_site, name_from_hamster)
                     if match > 85:
-                        combo_ids.append(upgrade['id'])
+                        combo_ids.append(upgrade.get('id'))
 
             logging.warning(f"⚙️  {combo_ids}")
             return {'combo': combo_ids, 'date': date}
@@ -149,12 +149,12 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            clicker = response.json()['clickerUser']
+            clicker = response.json().get('clickerUser')
             return {
-                'balanceCoins': int(clicker['balanceCoins']),
-                'total': int(clicker['totalCoins']),
-                'keys': int(clicker['balanceKeys']),
-                'date': int(clicker['lastSyncUpdate'])
+                'balanceCoins': int(clicker.get('balanceCoins')),
+                'total': int(clicker.get('totalCoins')),
+                'keys': int(clicker.get('balanceKeys')),
+                'date': int(clicker.get('lastSyncUpdate'))
             }
 
         except requests.exceptions.HTTPError as http_err:
@@ -173,12 +173,14 @@ class HamsterKombatClicker:
         try:
             response = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+
             combo = response.json().get('dailyCombo', {})
             remain_combo = remain_time(combo.get('remainSeconds', 0))
             result.append({'combo': {'remain': remain_combo, 'isClaimed': combo.get('isClaimed', False)}})
 
             response = requests.post('https://api.hamsterkombatgame.io/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+
             config_data = response.json()
             cipher = config_data.get('dailyCipher', {})
             remain_cipher = remain_time(cipher.get('remainSeconds', 0))
@@ -186,6 +188,7 @@ class HamsterKombatClicker:
 
             response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+
             tasks = response.json().get('tasks', [])
             for task in tasks:
                 if task.get('id') == 'streak_days':
@@ -223,8 +226,10 @@ class HamsterKombatClicker:
         try:
             response = requests.post(f'{self.base_url}/clicker/get-promos', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+
             promos = response.json().get('promos', [{}])
             states = response.json().get('states', [{}])
+
             for promo in promos:
                 for state in states:
                     if promo['promoId'] == state['promoId']:
@@ -286,26 +291,35 @@ class HamsterKombatClicker:
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:
-            response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
+            upgrades_for_buy_response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+            upgrades_for_buy_response.raise_for_status()
 
-            upgradesForBuy = response.json()['upgradesForBuy']
+            upgradesForBuy = upgrades_for_buy_response.json().get('upgradesForBuy')
             for upgrade in upgradesForBuy:
                 if upgradeId == upgrade['id']:
-                    if upgrade['isAvailable'] and not upgrade['isExpired']:
+                    if upgrade.get('isAvailable') and not upgrade.get('isExpired'):
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                         response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         response.raise_for_status()
-                        print(f"✅  Карта `{upgrade['name']}` улучшена · ⭐️ {upgrade['level'] + 1} уровень")
 
-                    elif upgrade['isAvailable'] and upgrade['isExpired']:
-                        logging.error(f"🚫  Карта `{upgrade['name']}` недоступна для улучшения. Время на покупку истекло")
+                        upgrade_name = upgrade.get('name')
+                        upgrade_level = upgrade.get('level')
+                        upgrade_available = upgrade.get('isAvailable')
+                        upgrade_expire = upgrade.get('isExpired')
 
-                    elif not upgrade['isAvailable']:
+                        print(f"✅  Карта `{upgrade_name}` улучшена · ⭐️ {upgrade_level + 1} уровень")
+
+                    elif upgrade_available and upgrade_expire:
+                        logging.error(f"🚫  Карта `{upgrade_name}` недоступна для улучшения. Время на покупку истекло")
+
+                    elif not upgrade_available:
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
-                        response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-                        logging.error(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. {response.json()['error_message']}")
-                        return response.json()['error_message']
+                        buy_upgrade_response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                        response.raise_for_status()
+
+                        error_message = buy_upgrade_response.json().get('error_message')
+                        logging.error(f"🚫  Не удалось улучшить карту `{upgrade_name}`. {error_message}")
+                        return error_message
 
         except requests.exceptions.HTTPError as http_err:
             if response.status_code == 400:
@@ -321,11 +335,11 @@ class HamsterKombatClicker:
 
     def _collect_upgrades_info(self) -> dict:
         try:
-            cipher = self._get_daily_cipher()
-            combo = self._get_daily_combo()
-
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+
+            cipher = self._get_daily_cipher()
+            combo = self._get_daily_combo()
 
             total_price, total_profit, cards, cards_info = 0, 0, [], ''
             upgradesForBuy = response.json()['upgradesForBuy']
@@ -373,23 +387,29 @@ class HamsterKombatClicker:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
     def _sync(self, initial_balance: int):
-        response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
-        data = response.json()
-        current_balance = int(data['clickerUser']['balanceCoins'])
-        balance_increase = current_balance - initial_balance
-        print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный".replace(',', ' '))
+        try:
+            response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            data = response.json()
+            current_balance = int(data.get('clickerUser').get('balanceCoins'))
+            balance_increase = current_balance - initial_balance
+            print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный".replace(',', ' '))
+
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f"🚫  HTTP ошибка: {http_err}")
 
     def daily_info(self) -> str:
         try:
             upgrades_info = self._collect_upgrades_info()
             balance = self._get_balance()
-            cipher = upgrades_info['cipher']
+            cipher = upgrades_info.get('cipher')
             morse = text_to_morse(cipher)
-            combo = '\n'.join(card['description'] for card in upgrades_info['cards'])
+            combo = '\n'.join(card['description'] for card in upgrades_info.get('cards'))
 
-            result = {'date': f"📆  {datetime.today().date()} (текущая дата)\n📆  {upgrades_info['combo_date']} (дата комбо)",
+            result = {'date': f"📆  {datetime.today().date()} (текущая дата)\n📆  {upgrades_info.get('combo_date')} (дата комбо)",
                       'cipher': f"📇  {LIGHT_YELLOW}Шифр:{WHITE}  {cipher} | {morse} |",
-                      'summary': f"{upgrades_info['summary']}",
+                      'summary': f"{upgrades_info.get('summary')}",
                       'combo': combo}
 
             info = f"\n{result['date']} \n\n"
@@ -400,9 +420,8 @@ class HamsterKombatClicker:
             info += f"💰  {LIGHT_YELLOW}Всего: {WHITE} {balance['total']:,} \n"
             info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,}\n"
             if '🚫' in result['combo']:
-                info += "\n⚠️  Сегодня вам не все карты доступны"
-            time.sleep(1)
-            return info.replace(',', ' ')
+                info += "\n⚠️  Сегодня вам не все карты доступны".replace(',', ' ')
+            return info
 
         except Exception as e:
             logging.error(e)
@@ -428,7 +447,9 @@ class HamsterKombatClicker:
                 json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                 taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 taps_response.raise_for_status()
+
                 print(f"✅  Тапы выполнены")
+
             else:
                 remain = remain_time(int(total_remain_time - current_remain_time))
                 print(f"🚫  Тапы еще не накопились. Следующие тапы через: {remain}")
@@ -441,13 +462,16 @@ class HamsterKombatClicker:
                         json_data = {'boostId': boost['id'], 'timestamp': int(time.time())}
                         boost_response = requests.post(f'{self.base_url}/clicker/buy-boost', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         boost_response.raise_for_status()
+
                         print(f"✅  Использован буст")
 
                         count = int(maxTaps / earnPerTap)
                         json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                         taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         taps_response.raise_for_status()
+
                         print(f"✅  Тапы выполнены")
+
                     else:
                         print(f"🚫  Буст еще не готов. Следующий буст через: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
 
@@ -468,17 +492,21 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            task_list = response.json()['tasks']
+            task_list = response.json().get('tasks')
             any_completed = False
             for task in task_list:
-                if not task['isCompleted']:
-                    json_data = {'taskId': task['id']}
+                if not task.get('isCompleted'):
+                    task_id = task.get('id')
+                    json_data = {'taskId': task_id}
                     check_task = requests.post(f'{self.base_url}/clicker/check-task', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                     check_task.raise_for_status()
-                    print(f"⭐️  Задание `{task['id']}` выполнено")
+
+                    print(f"⭐️  Задание `{task_id}` выполнено")
                     any_completed = True
+
             if any_completed:
                 print("✅  Все задания выполнены")
+
             else:
                 print("ℹ️  Все задания сегодня уже выполнены")
 
@@ -498,17 +526,19 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            cipher = response.json()['dailyCipher']
-            remain = remain_time(cipher['remainSeconds'])
+            cipher = response.json().get('dailyCipher')
+            remain = remain_time(cipher.get('remainSeconds'))
             next_cipher = f"Следующий шифр будет доступен через: {remain}"
 
-            isClaimed = cipher['isClaimed']
+            isClaimed = cipher.get('isClaimed')
             if not isClaimed:
                 cipher = self._get_daily_cipher().upper()
                 json_data = {'cipher': cipher}
                 claim_cipher = requests.post(f'{self.base_url}/clicker/claim-daily-cipher', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 claim_cipher.raise_for_status()
+
                 print(f"✅  Ежедневный шифр получен. {next_cipher}")
+
             else:
                 print(f"ℹ️  Шифр сегодня уже получен. {next_cipher}")
 
@@ -528,20 +558,21 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            combo = response.json()['dailyCombo']
-            remain = remain_time(combo['remainSeconds'])
+            combo = response.json().get('dailyCombo')
+            remain = remain_time(combo.get('remainSeconds'))
             next_combo = f"Следующее комбо через: {remain}"
 
-            isClaimed = combo['isClaimed']
+            isClaimed = combo.get('isClaimed')
             if not isClaimed:
                 upgrades_info = self._collect_upgrades_info()
-                cards = upgrades_info['cards']
+                cards = upgrades_info.get('cards')
 
                 if all(card['available'] for card in cards):
                     for upgrade in cards:
                         self._buy_upgrade(upgrade['id'])
                     claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
                     claim_combo.raise_for_status()
+
                     print(f"✅  Ежедневное комбо выполнено. {next_combo}")
 
                 if buy_anyway:
@@ -564,16 +595,17 @@ class HamsterKombatClicker:
 
     def complete_daily_minigame(self, game_id):
         try:
-            response = requests.post(f'{self.base_url}/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
+            config_response = requests.post(f'{self.base_url}/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
+            config_response.raise_for_status()
 
-            minigame = response.json()['dailyKeysMiniGames'][game_id]
-            remain = remain_time(minigame['remainSeconds'])
+            config_response_data = config_response.json()
+            minigame = config_response_data.get('dailyKeysMiniGames').get(game_id)
+            remain = remain_time(minigame.get('remainSeconds'))
             next_minigame = f"Следующая миниигра будет доступна через: {remain}"
-            next_attempt = remain_time(minigame['remainSecondsToNextAttempt'])
-            bonus_keys = minigame['bonusKeys']
+            next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
+            bonus_keys = minigame.get('bonusKeys')
 
-            isClaimed = minigame['isClaimed']
+            isClaimed = minigame.get('isClaimed')
             if not isClaimed:
                 json_data = {'miniGameId': game_id}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
@@ -590,12 +622,11 @@ class HamsterKombatClicker:
                     end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                     end_game.raise_for_status()
 
-                    data = end_game.json()
-                    current_balance = int(data['clickerUser']['balanceCoins'])
-                    balance_increase = current_balance - initial_balance
-
-                    bonus = f"{LIGHT_BLUE}+{int(data['bonus']):,}{WHITE}"
+                    end_game_data = end_game.json()
+                    current_balance = end_game_data.get('clickerUser').get('balanceCoins')
+                    balance_increase = int(current_balance) - initial_balance
                     balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
+                    bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
                     print(f"{YELLOW}Баланс: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
 
                     if bonus_keys == 0:
@@ -606,12 +637,17 @@ class HamsterKombatClicker:
                 print(f"ℹ️  Миниигра {game_id} сегодня уже пройдена. {next_minigame}")
 
         except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
+            if config_response.status_code == 400:
+                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле\n🚫  {http_err}")
+            elif config_response.status_code == 401:
+                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле\n🚫  {http_err}")
             else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
+                if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
+                    print(f"🚫  Не удалось пройти Миниигру {game_id}\n"
+                          f"⚠️  Кажется разрабы хомяка снова поменяли шифр. Обновите код с помощью файла `UPDATE.bat`\n"
+                          f"ℹ️  Если обновление не поможет, то подождите. Мы уже добываем для вас новый шифр  🫡")
+                else:
+                    logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
@@ -654,8 +690,7 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             keys_today = 0
-
-            states = response.json()['states']
+            states = response.json().get('states')
             for state in states:
                 try:
                     if state['promoId'] == promo_id:
@@ -734,7 +769,7 @@ class HamsterKombatClicker:
                 async with session.post(url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
-                    return data['clientToken']
+                    return data.get('clientToken')
 
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
@@ -750,7 +785,7 @@ class HamsterKombatClicker:
                 async with session.post(url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
-                    return data['hasCode']
+                    return data.get('hasCode')
 
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
@@ -771,7 +806,7 @@ class HamsterKombatClicker:
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                    return None
+                return None
 
         async def __key_generation(session, index, keys_count) -> str | None:
             client_id = await __generate_client_id()
@@ -790,14 +825,13 @@ class HamsterKombatClicker:
                 if has_code:
                     break
 
-            try:
-                promoCode = await __get_promocode(session, client_token)
-                print(f'{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {LIGHT_GREEN}Получен{WHITE}')
+            promoCode = await __get_promocode(session, client_token)
+            print(f'{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {generation_status(promoCode)}')
+            if promoCode:
                 return promoCode
+            else:
+                return 'None'
 
-            except Exception as error:
-                logging.warning(f'[{index}/{keys_count}] Key generation failed: {error}')
-                return None
 
         async def __start_generate(keys_count):
             remain = remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)
@@ -805,7 +839,6 @@ class HamsterKombatClicker:
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             loading_event = asyncio.Event()
-            # spinner_task = asyncio.create_task(loading(loading_event))
             spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
 
             async with aiohttp.ClientSession() as session:
