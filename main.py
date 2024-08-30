@@ -24,9 +24,9 @@ if __name__ == '__main__':
     try:
         while True:
             if load_setting('hamster_token'):
-                choice = input(f"Выберите действие\n{CYAN}(#/1/2/3/4/5/6/a/$/+/m/0):{RESET} ")
+                choice = input(f"{DARK_GRAY}Выберите действие:\n{CYAN}(#/1/2/3/4/5/6/a/$/+/m/0):{RESET} ")
             else:
-                choice = input(f"Выберите действие\n{CYAN}(6/m/0):{RESET} ")
+                choice = input(f"{DARK_GRAY}Выберите действие:\n{CYAN}(6/m/0):{RESET} ")
             handle_main_menu_choice(choice)
             line_after()
 
