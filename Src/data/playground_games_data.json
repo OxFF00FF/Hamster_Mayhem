@@ -80,7 +80,7 @@
         {
             "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
             "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
-            "prefix": "ZOO  ",
+            "prefix": "ZOO",
             "title": "Zoopolis",
             "eventsCount": 7,
             "registerEventTimeout": 22000,
@@ -92,7 +92,7 @@
             "promoId": "c7821fa7-6632-482c-9635-2bd5798585f9",
             "prefix": "GANGS",
             "title": "Gangs Wars",
-            "eventsCount": 10,
+            "eventsCount": 30,
             "registerEventTimeout": 40000,
             "text": "\uD83D\uDDE1  Кого задолбали новые игры ставьте + в чат, посмотрим сколько нас",
             "emoji": "\uD83D\uDDE1"
