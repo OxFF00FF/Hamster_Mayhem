@@ -746,9 +746,9 @@ class HamsterKombatClicker:
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
         """
 
-        games_data = get_games_data()
+        games_data = get_games_data()['apps']
 
-        for promo in games_data['apps']:
+        for promo in games_data:
             if promo['prefix'] == prefix:
                 APP_TOKEN = promo['appToken']
                 PROMO_ID = promo['promoId']
@@ -807,7 +807,10 @@ class HamsterKombatClicker:
                 async with session.post(url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
-                    return data['promoCode']
+                    if data['promoCode'] == "" or data['promoCode'] == " ":
+                        return None
+                    else:
+                        return data['promoCode']
 
             except requests.exceptions.HTTPError:
                 if response.status_code == 429:
@@ -831,13 +834,16 @@ class HamsterKombatClicker:
                 if has_code:
                     break
 
-            promoCode = await __get_promocode(session, client_token)
-            print(f'{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {generation_status(promoCode)}')
-            if promoCode:
-                return promoCode
-            else:
-                return 'None'
+            try:
+                promoCode = await __get_promocode(session, client_token)
+                print(f'{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {generation_status(promoCode)}')
+                if promoCode:
+                    return promoCode
+                else:
+                    return 'None'
 
+            except Exception as e:
+                logging.error(e)
 
         async def __start_generate(keys_count):
             remain = remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)
@@ -935,7 +941,7 @@ class HamsterKombatClicker:
             username = account_info.get('username', 'n/a')
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
-            print(f"{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}")
+            print(f"{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}\n")
             settings['hamster_token'] = True
             save_settings(settings)
 
