@@ -136,7 +136,7 @@ def handle_playground_menu_choice():
 
     while True:
         playground_menu()
-        choice = input(f"\nВыберите действие\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        choice = input(f"\n{DARK_GRAY}Выберите действие\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
         line_before()
 
         if choice in games_prefix:
@@ -167,7 +167,7 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(f"\nВыберите действие\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
+        choice = input(f"\n{DARK_GRAY}Выберите действие:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
         line_before()
 
         if choice in choices:
