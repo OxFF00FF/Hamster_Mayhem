@@ -83,7 +83,7 @@ def playground_menu():
 
     menu = "🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
-        keys = game_data.get("keys", 'n/a')
+        keys = game_data.get("keys", 0)
         cooldown = game_data.get("cooldown", "n/a")
         status = game_data.get("status", "n/a")
         emoji = game_data["emoji"]
