@@ -8,16 +8,6 @@
     },
     "apps": [
         {
-            "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
-            "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
-            "prefix": "BIKE ",
-            "title": "Bike Ride 3D",
-            "eventsCount": 17,
-            "registerEventTimeout": 20000,
-            "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)",
-            "emoji": "\uD83D\uDEB4"
-        },
-        {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
             "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
             "prefix": "CUBE ",
@@ -68,16 +58,6 @@
             "emoji": "\uD83D\uDC0B"
         },
         {
-            "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
-            "promoId": "8814a785-97fb-4177-9193-ca4180ff9da8",
-            "prefix": "RACE ",
-            "title": "Mud Racing",
-            "eventsCount": 20,
-            "registerEventTimeout": 20000,
-            "text": "\uD83D\uDE99  Едем за ключами вместо вас",
-            "emoji": "\uD83D\uDE99"
-        },
-        {
             "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
             "promoId": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
             "prefix": "TRIM ",
@@ -96,6 +76,60 @@
             "registerEventTimeout": 22000,
             "text": "Cafe Dash",
             "emoji": "\uD83C\uDF75"
+        },
+        {
+            "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
+            "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
+            "prefix": "ZOO  ",
+            "title": "Zoopolis",
+            "eventsCount": 7,
+            "registerEventTimeout": 22000,
+            "text": "\uD83E\uDD81  Уже незнаю что придумать",
+            "emoji": "\uD83E\uDD81"
+        },
+        {
+            "appToken": "b6de60a0-e030-48bb-a551-548372493523",
+            "promoId": "c7821fa7-6632-482c-9635-2bd5798585f9",
+            "prefix": "GANGS",
+            "title": "Gangs Wars",
+            "eventsCount": 10,
+            "registerEventTimeout": 40000,
+            "text": "\uD83D\uDDE1  Кого задолбали новые игры ставьте + в чат, посмотрим сколько нас",
+            "emoji": "\uD83D\uDDE1"
+        }
+    ],
+    "deleted_apps": [
+        {
+            "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
+            "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
+            "prefix": "BIKE ",
+            "title": "Bike Ride 3D",
+            "eventsCount": 17,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDEB4  Катаемся на велосипедах, чтобы вам не пришлось)",
+            "emoji": "\uD83D\uDEB4"
+        },
+        {
+            "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
+            "promoId": "8814a785-97fb-4177-9193-ca4180ff9da8",
+            "prefix": "RACE ",
+            "title": "Mud Racing",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDE99  Едем за ключами вместо вас",
+            "emoji": "\uD83D\uDE99"
+        }
+    ],
+    "template": [
+        {
+            "appToken": "",
+            "promoId": "",
+            "prefix": "",
+            "title": "",
+            "eventsCount": 7,
+            "registerEventTimeout": 20000,
+            "text": "",
+            "emoji": ""
         }
     ],
     "minigames": [
