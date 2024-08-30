@@ -136,8 +136,10 @@ def get_games_data():
     return games_data
 
 
-def set_spinner():
-    pass
+def get_salt(salt):
+    with open('salt.json', 'r', encoding='utf-8') as f:
+        data = json.loads(f.read())
+    return data[salt]
 
 
 def spinners_table(num_columns=3):
