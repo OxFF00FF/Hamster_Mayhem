@@ -21,7 +21,7 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.Settings import load_settings, save_settings
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt
 
 load_dotenv()
 
@@ -258,36 +258,34 @@ class HamsterKombatClicker:
             return result
 
     def _get_mini_game_cipher(self, mini_game: dict) -> str:
-        result = ''
+        minigame_cipher = ''
         try:
             max_points = mini_game.get('maxPoints', 0)
             mini_game_id = mini_game.get('id')
-            startDate = mini_game.get('startDate')
+            start_date = mini_game.get('startDate')
             user_id = self._get_telegram_user_id()
 
-            number = int(datetime.fromisoformat(startDate.replace("Z", "+00:00")).timestamp())
-            number_len = len(str(number))
-            index = (number % (number_len - 2)) + 1
-            res = ""
-            score_per_game = {
-                "Candles": 0,
-                "Tiles": random.randint(int(max_points * 0.1), max_points) if max_points > 300 else max_points,
-            }
+            unix_start_date = int(datetime.fromisoformat(start_date.replace("Z", "+00:00")).timestamp())
+            number_len = len(str(unix_start_date))
+            index = (unix_start_date % (number_len - 2)) + 1
+            score_per_game = {"Candles": 0, "Tiles": max_points}
+            score = str(2 * (unix_start_date + score_per_game[mini_game_id]))
 
+            cipher = ""
             for i in range(1, number_len + 1):
                 if i == index:
-                    res += "0"
+                    cipher += "0"
                 else:
-                    res += str(randint(0, 9))
+                    cipher += str(randint(0, 9))
 
-            score_cipher = str(2 * (number + score_per_game[mini_game_id]))
-            sig = base64.b64encode(hashlib.sha256(f"415t1ng{score_cipher}0ra1cum5h0t".encode()).digest()).decode()
-            data_string = "|".join([res, user_id, mini_game_id, score_cipher, sig]).encode()
-            cipher = base64.b64encode(data_string).decode()
-            return cipher
+            sig = base64.b64encode(hashlib.sha256(f"{get_salt('salt_')}{score}{get_salt('_salt')}".encode()).digest()).decode()
+
+            cipher_string = "|".join([cipher, user_id, mini_game_id, score, sig])
+            minigame_cipher = base64.b64encode(cipher_string.encode()).decode()
+            return minigame_cipher
 
         except:
-            return result
+            return minigame_cipher
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
         try:
@@ -386,15 +384,14 @@ class HamsterKombatClicker:
         except Exception as e:
             logging.error(f"🚫  Произошла ошибка: {e}")
 
-    def _sync(self, initial_balance: int):
+    def _sync(self):
         try:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
             data = response.json()
             current_balance = int(data.get('clickerUser').get('balanceCoins'))
-            balance_increase = current_balance - initial_balance
-            print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE}) | пассивный".replace(',', ' '))
+            return int(current_balance)
 
         except requests.exceptions.HTTPError as http_err:
             logging.error(f"🚫  HTTP ошибка: {http_err}")
@@ -605,17 +602,23 @@ class HamsterKombatClicker:
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
             bonus_keys = minigame.get('bonusKeys')
 
+
+
             isClaimed = minigame.get('isClaimed')
             if not isClaimed:
                 json_data = {'miniGameId': game_id}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+
+                initial_balance = int(start_game.json()['clickerUser']['balanceCoins'])
+                print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
+
                 if 'error_code' in start_game.json():
                     print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
                 else:
-                    initial_balance = int(start_game.json()['clickerUser']['balanceCoins'])
-                    print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
-
-                    self._sync(initial_balance)
+                    current_balance = self._sync()
+                    balance_increase = current_balance - initial_balance
+                    balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
+                    print(f"{YELLOW}Баланс: {balance} | пассивный".replace(',', ' '))
 
                     cipher = self._get_mini_game_cipher(minigame)
                     json_data = {'cipher': cipher, 'miniGameId': game_id}
@@ -623,8 +626,8 @@ class HamsterKombatClicker:
                     end_game.raise_for_status()
 
                     end_game_data = end_game.json()
-                    current_balance = end_game_data.get('clickerUser').get('balanceCoins')
-                    balance_increase = int(current_balance) - initial_balance
+                    current_balance = self._sync()
+                    balance_increase = current_balance - initial_balance
                     balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                     bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
                     print(f"{YELLOW}Баланс: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
