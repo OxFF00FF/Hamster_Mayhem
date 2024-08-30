@@ -257,10 +257,14 @@ class HamsterKombatClicker:
         except:
             return result
 
-    def _get_mini_game_cipher(self, mini_game: dict) -> str:
+    def _get_mini_game_cipher(self, mini_game: dict, one_point=False) -> str:
         minigame_cipher = ''
         try:
-            max_points = mini_game.get('maxPoints', 0)
+            if one_point:
+                max_points = 1
+            else:
+                max_points = mini_game.get('maxPoints', 0)
+
             mini_game_id = mini_game.get('id')
             start_date = mini_game.get('startDate')
             user_id = self._get_telegram_user_id()
@@ -268,7 +272,7 @@ class HamsterKombatClicker:
             unix_start_date = int(datetime.fromisoformat(start_date.replace("Z", "+00:00")).timestamp())
             number_len = len(str(unix_start_date))
             index = (unix_start_date % (number_len - 2)) + 1
-            score_per_game = {"Candles": 0, "Tiles": max_points}
+            score_per_game = {"Candles": 500, "Tiles": random.randint(int(max_points * 0.1), max_points) if max_points > 200 else max_points}
             score = str(2 * (unix_start_date + score_per_game[mini_game_id]))
 
             cipher = ""
@@ -388,10 +392,9 @@ class HamsterKombatClicker:
         try:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
+            clicker_user = response.json().get('clickerUser')
+            return clicker_user
 
-            data = response.json()
-            current_balance = int(data.get('clickerUser').get('balanceCoins'))
-            return int(current_balance)
 
         except requests.exceptions.HTTPError as http_err:
             logging.error(f"🚫  HTTP ошибка: {http_err}")
@@ -598,12 +601,22 @@ class HamsterKombatClicker:
             config_response_data = config_response.json()
             minigame = config_response_data.get('dailyKeysMiniGames').get(game_id)
             remain = remain_time(minigame.get('remainSeconds'))
+            max_points = int(config_response_data.get('dailyKeysMiniGames').get('Tiles').get('maxPoints'))
             next_minigame = f"Следующая миниигра будет доступна через: {remain}"
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
             bonus_keys = minigame.get('bonusKeys')
+            remain_points = minigame.get('remainPoints')
 
             isClaimed = minigame.get('isClaimed')
             if not isClaimed:
+                if minigame.get('id') == 'Tiles':
+                    bonus_for_one_point = self.bonus_for_one_point(minigame)
+                    max_coins = bonus_for_one_point * max_points
+                    claimed_points = max_points - remain_points
+                    available_points = max_points - claimed_points
+                    print(f"{YELLOW}За 1 балл вы получаете монет:  {LIGHT_BLUE}{bonus_for_one_point}{WHITE} | Портрачено: {claimed_points} | Осталось: {available_points}\n"
+                          f"{YELLOW}Максимальное количество монет: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
+
                 json_data = {'miniGameId': game_id}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 start_game.raise_for_status()
@@ -611,7 +624,7 @@ class HamsterKombatClicker:
                 initial_balance = int(start_game.json().get('clickerUser').get('balanceCoins'))
                 print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
-                current_balance = self._sync()
+                current_balance = int(self._sync().get('balanceCoins'))
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 print(f"{YELLOW}Баланс: {balance} | пассивный".replace(',', ' '))
@@ -622,7 +635,7 @@ class HamsterKombatClicker:
                 end_game.raise_for_status()
 
                 end_game_data = end_game.json()
-                current_balance = self._sync()
+                current_balance = int(self._sync().get('balanceCoins'))
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
@@ -652,10 +665,10 @@ class HamsterKombatClicker:
                 print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
 
             else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}\n{traceback.format_exc()}")
+                logging.error(f"🚫  HTTP ошибка: {http_err}\n")
 
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
 
     def send_balance_to_group(self, bot_token, update_time_sec=7200, chat_id=None):
         try:
@@ -842,8 +855,8 @@ class HamsterKombatClicker:
                 else:
                     return 'None'
 
-            except Exception as e:
-                logging.error(e)
+            except Exception as error:
+                logging.error(error)
 
         async def __start_generate(keys_count):
             remain = remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)
@@ -992,3 +1005,13 @@ class HamsterKombatClicker:
 
         except:
             return result
+
+    def bonus_for_one_point(self, mini_game):
+        json_data = {'miniGameId': mini_game.get('id')}
+        requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+
+        cipher = self._get_mini_game_cipher(mini_game, one_point=True)
+        json_data = {'cipher': cipher, 'miniGameId': mini_game.get('id')}
+        end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+        bonus = int(end_game.json().get('bonus'))
+        return bonus
