@@ -80,9 +80,9 @@
         {
             "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
             "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
-            "prefix": "ZOO",
+            "prefix": "ZOO  ",
             "title": "Zoopolis",
-            "eventsCount": 20,
+            "eventsCount": 10,
             "registerEventTimeout": 22000,
             "text": "\uD83E\uDD81  Уже незнаю что придумать",
             "emoji": "\uD83E\uDD81"
@@ -126,8 +126,8 @@
             "promoId": "",
             "prefix": "",
             "title": "",
-            "eventsCount": 7,
-            "registerEventTimeout": 20000,
+            "eventsCount": 0,
+            "registerEventTimeout": 0,
             "text": "",
             "emoji": ""
         }
