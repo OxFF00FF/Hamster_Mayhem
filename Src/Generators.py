@@ -18,10 +18,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         logging.error(f"\nКоличество должно быть числом больше 0")
 
     try:
-        send_to_group = settings['send_to_group']
-        save_to_file = settings['save_to_file']
-        spinner = load_setting('spinner')
-        asyncio.run(hamster_client().get_promocodes(int(count), send_to_group, apply_promo, prefix, save_to_file, spinner))
+        asyncio.run(hamster_client().get_promocodes(int(count), apply_promo, prefix, load_setting('spinner')))
 
     except Exception:
         print(f"🚫  Произошла ошибка во время генерации. Попробуйте снова, если ошибки прололжаться, то попробуйте позже.")
@@ -32,9 +29,9 @@ def generate_promocodes(prefix='', apply_promo=False):
 
 def generate_for_game(prefix):
     choice_text = "\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): "
-    if settings.get('hamster_token'):
+    if load_setting('hamster_token'):
         if settings.get('apply_promo'):
-            generate_promocodes(prefix=prefix, apply_promo=settings['apply_promo'])
+            generate_promocodes(prefix=prefix, apply_promo=load_setting('apply_promo'))
         else:
             choice = input(choice_text).lower()
             if choice == 'y':
@@ -50,7 +47,7 @@ def generate_for_game(prefix):
 async def genetare_for_all_games():
     apps = get_games_data()['apps']
 
-    if settings['hamster_token']:
+    if load_setting('hamster_token'):
         choice = input(f"\nХотите применить промокоды после получения?\nY(да) / Enter(Нет): ")
         apply_promo = str(choice.lower()) == 'y'.lower()
 
@@ -63,5 +60,5 @@ async def genetare_for_all_games():
         logging.error(f"\nКоличество должно быть числом больше 0")
         exit(1)
 
-    tasks = [hamster_client().get_promocodes(int(count), settings['send_to_group'], apply_promo, app["prefix"], settings['save_to_file']) for app in apps]
+    tasks = [hamster_client().get_promocodes(int(count), apply_promo, app["prefix"], load_setting('spinner')) for app in apps]
     await asyncio.gather(*tasks)
