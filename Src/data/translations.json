@@ -1,9 +1,11 @@
 {
     "ru": {
-        "sign_in": "{0}Вы вошли как `{1} {2}` ({3}){4}\n"
+        "sign_in": "{0}Вы вошли как `{1} {2}` ({3}){4}\n",
+        "main_menu_not_logged": "Главное меню \n  Какую активность хотите выполнить? \n{light_yellow}  6 |  {reset}🎁 {yellow}Промокоды {white}    \n{light_yellow}  m |  {reset}📝 {yellow}Показать меню {white} \n{light_yellow}  0 |  {reset}🔚 {yellow}Выйти{white}"
     },
 
     "en": {
-        "sign_in": "{0}You logged as `{1} {2}` ({3}){4}\n"
+        "sign_in": "{0}You logged as `{1} {2}` ({3}){4}\n",
+        "main_menu_not_logged": "Main menu \n  What activity do you want to do? \n{light_yellow}  6 |  {reset}🎁 {yellow}Promocodes {white}    \n{light_yellow}  m |  {reset}📝 {yellow}Show menu {white} \n{light_yellow}  0 |  {reset}🔚 {yellow}Exit{white}"
     }
 }
