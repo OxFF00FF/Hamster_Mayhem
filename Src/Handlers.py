@@ -44,6 +44,7 @@ def handle_main_menu_choice(choice):
         handle_minigames_choice()
 
     elif choice == '6':
+        line_before()
         handle_playground_menu_choice()
 
     elif choice == 'a':
