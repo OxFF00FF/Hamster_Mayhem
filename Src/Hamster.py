@@ -395,7 +395,6 @@ class HamsterKombatClicker:
             clicker_user = response.json().get('clickerUser')
             return clicker_user
 
-
         except requests.exceptions.HTTPError as http_err:
             logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -879,7 +878,8 @@ class HamsterKombatClicker:
         result = f"\n*{EMOJI} {TITLE}*\n*Промокоды: *\n"
         for promocode in promocodes:
             result += f"·  `{promocode}`\n"
-        print(result.replace('*', '').replace('`', ''))
+        formatted_text = result.replace('*', '').replace('`', '')
+        print(formatted_text)
 
         if apply_promo:
             send_to_group = False
@@ -905,8 +905,8 @@ class HamsterKombatClicker:
                 os.makedirs('generated keys')
 
             file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'generated keys', f'generated_keys ({TITLE}).txt')
-            with open(file_path, 'w') as file:
-                file.write(result.replace('*', '').replace('`', ''))
+            with open(file_path, 'w', encoding='utf-8') as file:
+                file.write(formatted_text.strip())
                 print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
 
     def evaluate_cards(self) -> list:
