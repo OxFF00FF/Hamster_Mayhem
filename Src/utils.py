@@ -178,10 +178,11 @@ def spinners_table(num_columns=3):
     return "\n".join(table_)
 
 
-def localized_text(key, lang, *args):
+def localized_text(key, lang, *args, **kwargs):
     with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
         translations = json.load(f)
 
+    # Перевод для указанного языка
     template = translations.get(lang, {}).get(key)
 
     if template is None:
@@ -194,5 +195,7 @@ def localized_text(key, lang, *args):
             logging.warning(f"No English definition found for key `{key}` in translations.json")
             return key  # Возвращаем ключ, если ни одного перевода нет
 
-    # Если шаблон найден, форматируем его с аргументами
-    return template.format(*args)
+    try:
+        return template.format(**kwargs)
+    except:
+        return template.format(*args)
