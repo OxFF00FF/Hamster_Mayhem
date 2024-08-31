@@ -6,3 +6,4 @@ venv
 /.cache
 tests
 Src/data/settings.json
+generated keys
