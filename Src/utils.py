@@ -63,18 +63,12 @@ def countdown_timer(seconds):
 
 
 def remain_time(seconds):
-    try:
-        m, s = divmod(int(seconds), 60)
-        h, m = divmod(m, 60)
-        h = str(h).zfill(2)
-        m = str(m).zfill(2)
-        s = str(s).zfill(2)
-        return f"{h}:{m}:{s}"
-
-    except Exception as e:
-        logging.error(e)
-        line_after()
-        return f"n/a"
+    m, s = divmod(int(seconds), 60)
+    h, m = divmod(m, 60)
+    h = str(h).zfill(2)
+    m = str(m).zfill(2)
+    s = str(s).zfill(2)
+    return f"{h}:{m}:{s}"
 
 
 async def loading(event):
