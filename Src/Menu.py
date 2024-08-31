@@ -62,10 +62,8 @@ def main_menu():
 
 
 def playground_menu():
-    settings = load_settings()
-
     promos = []
-    if settings['hamster_token']:
+    if load_setting('hamster_token'):
         promos = hamster_client()._get_promos()
 
     keys_per_day = 4
@@ -78,14 +76,14 @@ def playground_menu():
         if game_name in games_info:
             games_info[game_name].update({
                 "keys": promo['keys'],
-                "cooldown": promo['remain'],
+                "remain": promo['remain'],
                 "status": get_status(promo['isClaimed'])
             })
 
     menu = "🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         keys = game_data.get("keys", 0)
-        cooldown = game_data.get("cooldown", "n/a")
+        cooldown = game_data.get("remain", "n/a")
         status = game_data.get("status", "n/a")
         emoji = game_data["emoji"]
         color = game_data["color"]

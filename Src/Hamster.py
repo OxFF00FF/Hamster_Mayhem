@@ -878,7 +878,7 @@ class HamsterKombatClicker:
             result += f"·  `{promocode}`\n"
         print(result.replace('*', '').replace('`', ''))
 
-        if apply_promo:
+        if load_setting('apply_promo'):
             settings = load_settings()
             settings['send_to_group'] = False
             settings['save_to_file'] = False
