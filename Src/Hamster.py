@@ -20,8 +20,8 @@ from fake_useragent import UserAgent
 from fuzzywuzzy import fuzz
 
 from Src.Colors import *
-from Src.Settings import load_settings, save_settings
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt
+from Src.Settings import load_settings, save_settings, load_setting
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text
 
 load_dotenv()
 
@@ -395,7 +395,6 @@ class HamsterKombatClicker:
             clicker_user = response.json().get('clickerUser')
             return clicker_user
 
-
         except requests.exceptions.HTTPError as http_err:
             logging.error(f"🚫  HTTP ошибка: {http_err}")
 
@@ -749,13 +748,11 @@ class HamsterKombatClicker:
         except requests.exceptions.RequestException as e:
             print(f"❌ Произошла ошибка: {e}")
 
-    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
+    async def get_promocodes(self, count=1, apply_promo=False, prefix=None, spinner=None):
         """
         :param spinner:
-        :param save_to_file:
         :param prefix:
         :param count:  Количество промокодов для генерации
-        :param send_to_group: отправлять ли результат в вашу группу (необязательно)
         :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
         """
 
@@ -882,13 +879,16 @@ class HamsterKombatClicker:
         print(result.replace('*', '').replace('`', ''))
 
         if apply_promo:
-            send_to_group = False
-            save_to_file = False
+            settings = load_settings()
+            settings['send_to_group'] = False
+            settings['save_to_file'] = False
+            save_settings(settings)
+
             print(f'⚠️  {LIGHT_YELLOW}Промокоды не будут отправленны в группу и не записаны в файл{WHITE}\n')
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
 
-        if send_to_group:
+        if load_setting('send_to_group'):
             try:
                 telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "parse_mode": "Markdown", "text": result})
                 telegram_response.raise_for_status()
@@ -900,7 +900,7 @@ class HamsterKombatClicker:
             except Exception as e:
                 logging.error(f"🚫  Произошла ошибка: {e}")
 
-        if save_to_file:
+        if load_setting('save_to_file'):
             if not os.path.exists('generated keys'):
                 os.makedirs('generated keys')
 
@@ -946,6 +946,7 @@ class HamsterKombatClicker:
 
     def login(self):
         settings = load_settings()
+        lang = load_setting('lang').lower()
         try:
             response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
@@ -954,7 +955,9 @@ class HamsterKombatClicker:
             username = account_info.get('username', 'n/a')
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
-            print(f"{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}\n")
+
+            print(localized_text('sign_in', lang, LIGHT_GRAY, first_name, last_name, username, WHITE))
+
             settings['hamster_token'] = True
             save_settings(settings)
 
