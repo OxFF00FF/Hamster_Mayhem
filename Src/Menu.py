@@ -25,14 +25,7 @@ def main_menu():
                 combo_cooldown = activity['combo']['remain']
 
     if load_setting('hamster_token'):
-        settings = load_settings()
-
         menu = (
-            f"🛠  Настройки \n"
-            f"  ⚙️  Отправлять в группу:  {get_status(settings['send_to_group'])} (toggle_group · включить/отключить)\n"
-            f"  ⚙️  Применять промокоды:  {get_status(settings['apply_promo'])} (toggle_apply · включить/отключить)\n"
-            f"  ⚙️  Сохранять в файл:     {get_status(settings['save_to_file'])} (toggle_file  · включить/отключить)\n"
-            f"  ⚙️  Спиннер: {load_setting('spinner')}         (spinner_<name> · <name>/default/list)\n\n"
             f"📚  Главное меню \n"
             f"  Какую активность хотите выполнить? \n"
             f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
@@ -45,6 +38,7 @@ def main_menu():
             f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}Аккаунты {WHITE} \n"
             f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
             f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
+            f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}Настройки {WHITE} \n"
             f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
             f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
         )
@@ -85,7 +79,7 @@ def playground_menu():
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         keys = game_data.get("keys", 0)
         cooldown = game_data.get("cooldown", "n/a")
-        status = game_data.get("status", "n/a")
+        status = game_data.get("status", f"{RED}❌{WHITE}")
         emoji = game_data["emoji"]
         color = game_data["color"]
 
@@ -131,5 +125,21 @@ def minigames_menu():
     menu += (
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
+    )
+    print(menu.strip())
+
+
+def settings_menu():
+    send_to_group = get_status(load_setting('send_to_group'))
+    apply_promo = get_status(load_setting('apply_promo'))
+    save_to_file = get_status(load_setting('save_to_file'))
+    spinner = load_setting('spinner')
+
+    menu = (
+        f"🛠  Настройки \n"
+        f"  {LIGHT_YELLOW}1 | {RESET}{YELLOW} Отправлять в группу:  {send_to_group} (включить/отключить) {WHITE} \n"
+        f"  {LIGHT_YELLOW}2 | {RESET}{YELLOW} Применять промокоды:  {apply_promo} (включить/отключить) {WHITE} \n"
+        f"  {LIGHT_YELLOW}3 | {RESET}{YELLOW} Сохранять в файл:     {save_to_file} (включить/отключить) {WHITE} \n"
+        f"  {LIGHT_YELLOW}  | {RESET}{YELLOW} Спиннер:              {spinner}{WHITE} (spinner_<name> · <name>/default/list) \n"
     )
     print(menu.strip())

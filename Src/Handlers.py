@@ -5,11 +5,9 @@ from Src.Colors import *
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
-from Src.Menu import main_menu, playground_menu, minigames_menu
-from Src.Settings import load_settings, save_settings
+from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu
+from Src.Settings import load_settings, save_settings, load_setting
 from Src.utils import line_after, line_before, get_games_data, spinners_table
-
-settings = load_settings()
 
 
 def handle_main_menu_choice(choice):
@@ -46,7 +44,12 @@ def handle_main_menu_choice(choice):
     elif choice == '6':
         handle_playground_menu_choice()
 
+    elif choice == 's':
+        handle_settings_menu_choice()
+
     elif choice == 'a':
+        settings = load_setting('account')
+
         line_before()
         account = choose_account()
         settings['account'] = account
@@ -86,48 +89,6 @@ def handle_main_menu_choice(choice):
         print("Выход")
         line_after()
         exit(1)
-
-    elif choice == 'toggle_group':
-        line_before()
-        settings['send_to_group'] = not settings['send_to_group']
-        save_settings(settings)
-        status = 'включена' if settings['send_to_group'] else 'отключена'
-        print(f'Отправка промокодов в группу {status}')
-
-    elif choice == 'toggle_file':
-        line_before()
-        settings['save_to_file'] = not settings['save_to_file']
-        save_settings(settings)
-        status = 'включено' if settings['save_to_file'] else 'отключено'
-        print(f'Сохранение в файл {status}')
-
-    elif choice == 'toggle_apply':
-        line_before()
-        settings['apply_promo'] = not settings['apply_promo']
-        status = 'включено' if settings['apply_promo'] else 'отключено'
-        save_settings(settings)
-        print(f'Применение промокодов по умолчанию {status}')
-
-    elif choice.startswith('spinner'):
-        line_before()
-        spinner_name = choice.split('_')[-1]
-        if spinner_name == 'list':
-            print(f"\nСписок доступных индикаторов загрузки")
-            print(spinners_table())
-
-        elif spinner_name == 'default':
-            settings['spinner'] = 'default'
-            save_settings(settings)
-            print(f"Индикатор загрузки установлен по умолчанию")
-
-        else:
-            settings['spinner'] = spinner_name
-            save_settings(settings)
-            print(f"Индикатор загрузки изменен на `{spinner_name}`")
-
-    else:
-        line_before()
-        print("Такой опции нет")
 
 
 def handle_playground_menu_choice():
@@ -173,6 +134,66 @@ def handle_minigames_choice():
         if choice in choices:
             selected_index = int(choice) - 1
             hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
+            line_after()
+
+        elif choice == '<':
+            print('Вы вышли в главное меню')
+            return
+
+        elif choice == '0':
+            print("Выход")
+            line_after()
+            exit(1)
+
+        else:
+            print("Такой опции нет")
+            line_after()
+
+
+def handle_settings_menu_choice():
+    while True:
+        settings = load_settings()
+
+        settings_menu()
+        choice = input(f"\n{DARK_GRAY}Выберите действие\n{CYAN}(1/2/3/</0): {RESET}")
+        line_before()
+
+        if choice == '1':
+            settings['send_to_group'] = not settings['send_to_group']
+            save_settings(settings)
+            status = f'{GREEN}включена{WHITE}' if load_setting('send_to_group') else f'{RED}отключена{WHITE}'
+            print(f'Отправка промокодов в группу {status}')
+            line_after()
+
+        elif choice == '2':
+            settings['apply_promo'] = not settings['apply_promo']
+            status = f'{GREEN}включено{WHITE}' if load_setting('apply_promo') else f'{RED}отключено{WHITE}'
+            save_settings(settings)
+            print(f'Применение промокодов по умолчанию {status}')
+            line_after()
+
+        elif choice == '3':
+            settings['save_to_file'] = not settings['save_to_file']
+            save_settings(settings)
+            status = f'{GREEN}включено{WHITE}' if load_setting('save_to_file') else f'{RED}отключено{WHITE}'
+            print(f'Сохранение в файл {status}')
+            line_after()
+
+        elif choice.startswith('spinner'):
+            spinner_name = choice.split('_')[-1]
+            if spinner_name == 'list':
+                print(f"\nСписок доступных индикаторов загрузки")
+                print(spinners_table())
+
+            elif spinner_name == 'default':
+                settings['spinner'] = 'default'
+                save_settings(settings)
+                print(f"Индикатор загрузки установлен по умолчанию")
+
+            else:
+                settings['spinner'] = spinner_name
+                save_settings(settings)
+                print(f"Индикатор загрузки изменен на `{spinner_name}`")
             line_after()
 
         elif choice == '<':
