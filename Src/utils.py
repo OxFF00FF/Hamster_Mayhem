@@ -144,13 +144,12 @@ def get_games_data():
 
 def get_salt(salt):
     try:
-        with open('Src/salt.json', 'r', encoding='utf-8') as f:
+        with open('Src/data/salt.json', 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
         return data[salt]
 
     except Exception as e:
         logging.error(e)
-
 
 
 def spinners_table(num_columns=3):
@@ -177,3 +176,23 @@ def spinners_table(num_columns=3):
         table_.append(f"| {row_format(row_)} |")
 
     return "\n".join(table_)
+
+
+def localized_text(key, lang, *args):
+    with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
+        translations = json.load(f)
+
+    template = translations.get(lang, {}).get(key)
+
+    if template is None:
+        # Логирование отсутствующего перевода
+        logging.warning(f"No translation available for language code `{lang}` and key `{key}`")
+
+        # Проверка наличия английского перевода
+        template = translations.get('en', {}).get(key)
+        if template is None:
+            logging.warning(f"No English definition found for key `{key}` in translations.json")
+            return key  # Возвращаем ключ, если ни одного перевода нет
+
+    # Если шаблон найден, форматируем его с аргументами
+    return template.format(*args)
