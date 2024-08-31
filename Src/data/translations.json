@@ -1,0 +1,5 @@
+{
+    "ru": {
+        "sign_in": "{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}\\n"
+    }
+}
