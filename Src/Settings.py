@@ -9,6 +9,11 @@ def load_setting(key=None):
             if key == 'spinner':
                 settings[key] = 'default'
                 save_settings(settings)
+
+            elif key == 'lang':
+                settings[key] = 'ru'
+                save_settings(settings)
+
         return settings.get(key)
     return settings
 
@@ -26,7 +31,8 @@ def load_settings():
             'apply_promo': False,
             'hamster_token': None,
             'account': 'HAMSTER_TOKEN_1',
-            'spinner': 'default'
+            'spinner': 'default',
+            'lang': 'ru'
          }
         save_settings(settings)
         return settings
