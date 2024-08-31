@@ -1,5 +1,5 @@
 {
     "ru": {
-        "sign_in": "{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}\\n"
+        "sign_in": "{0}Вы вошли как `{1} {2}` ({3}){4}\n"
     }
 }
