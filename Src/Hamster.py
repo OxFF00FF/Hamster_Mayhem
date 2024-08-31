@@ -609,7 +609,14 @@ class HamsterKombatClicker:
             isClaimed = minigame.get('isClaimed')
             if not isClaimed:
                 if minigame.get('id') == 'Tiles':
-                    bonus_for_one_point = self.bonus_for_one_point(minigame)
+                    settings = load_settings()
+                    try:
+                        bonus_for_one_point = self.bonus_for_one_point(minigame)
+                        settings['bonus_for_one_point'] = bonus_for_one_point
+                        save_settings(settings)
+                    except:
+                        bonus_for_one_point = settings['bonus_for_one_point']
+
                     max_coins = bonus_for_one_point * max_points
                     claimed_points = max_points - remain_points
                     available_points = max_points - claimed_points
