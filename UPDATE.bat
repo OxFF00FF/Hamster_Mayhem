@@ -14,8 +14,8 @@ if not exist ".git" (
 
 echo Getting updates...
 
-git pull
+git pull %REMOTE% master
 
-echo Project was updatet to latest version
+echo Project was updated to latest version
 
 pause
