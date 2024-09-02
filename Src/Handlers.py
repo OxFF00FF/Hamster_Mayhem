@@ -154,7 +154,7 @@ def handle_settings_menu_choice():
 
     while True:
         settings_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/</0): {RESET}")
         line_before()
 
         if choice == '1':
