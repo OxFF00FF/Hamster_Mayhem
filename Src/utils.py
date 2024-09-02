@@ -171,3 +171,29 @@ def spinners_table(num_columns=3):
         table_.append(f"| {row_format(row_)} |")
 
     return "\n".join(table_)
+
+
+def localized_text(key, lang, *args, **kwargs):
+    with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
+        translations = json.load(f)
+
+    # Перевод для указанного языка
+    template = translations.get(lang, {}).get(key)
+
+    if template is None:
+        # Логирование отсутствующего перевода
+        logging.warning(f"No translation available for language code `{lang}` and key `{key}`")
+
+        # Проверка наличия английского перевода
+        template = translations.get('en', {}).get(key)
+        if template is None:
+            logging.warning(f"No English definition found for key `{key}` in translations.json")
+            return key  # Возвращаем ключ, если ни одного перевода нет
+
+    try:
+        return template.format(**kwargs)
+    except:
+        return template.format(*args)
+
+
+print(localized_text('sign_in', lang, LIGHT_GRAY, first_name, last_name, username, WHITE))
