@@ -1,9 +1,9 @@
 import logging
+import os
 import sqlite3
+from Src.Colors import *
 
-from dotenv import load_dotenv
-
-load_dotenv()
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}", level=logging.ERROR)
 
 
 class ConfigDB:
@@ -20,23 +20,32 @@ class ConfigDB:
                            `account` VARCHAR(20),
                            `spinner` VARCHAR(20),
                            'lang' VARCHAR(10),
-                           'bonus_for_one_point' VARCHAR(10)
+                           'bonus_for_one_point' INTEGER,
+                           'group_url' VARCHAR(50)
+                           'group_id' VARCHAR(10)
                            )''')
         self.con.commit()
         self._default_config()
 
     def _default_config(self):
+        group_url = os.getenv('GROUP_URL')
+        group_id = os.getenv('GROUP_ID')
+
+
         self.cur.execute('SELECT COUNT(*) FROM config')
         count = self.cur.fetchone()[0]
         if count == 0:
-            self.cur.execute('''INSERT INTO `config` (`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`)
-                                VALUES (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru', 0)''')
+            self.cur.execute("INSERT INTO `config`"
+                             "(`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`, `group_url`, `group_id`)"
+                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                             (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru', 0, group_url, group_id))
+
             self.con.commit()
             logging.info(f"default_config Created")
 
     def set(self, field_name, value):
         try:
-            self.cur.execute(f'''UPDATE `config` SET `{field_name}` = ? WHERE `id` = 1''', (value,))
+            self.cur.execute(f"UPDATE `config` SET `{field_name}` = ? WHERE `id` = 1", (value,))
             self.con.commit()
             logging.info(f"Значение `{field_name}` обновлено на `{value}`")
 
@@ -120,3 +129,19 @@ class ConfigDB:
     @bonus_for_one_point.setter
     def bonus_for_one_point(self, value):
         self.set('bonus_for_one_point', value)
+
+    @property
+    def group_id(self):
+        return self.get('group_id')
+
+    @group_id.setter
+    def group_id(self, value):
+        self.set('group_id', value)
+
+    @property
+    def group_url(self):
+        return self.get('group_url')
+
+    @group_url.setter
+    def group_url(self, value):
+        self.set('group_url', value)
