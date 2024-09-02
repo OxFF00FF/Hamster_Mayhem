@@ -5,8 +5,11 @@ import os
 import time
 
 from spinners import Spinners
-
+from Src.db_SQlite import ConfigDB
 from Src.Colors import *
+
+config = ConfigDB()
+lang = config.lang
 
 
 def banner():
@@ -146,7 +149,6 @@ def get_salt(salt):
         logging.error(e)
 
 
-
 def spinners_table(num_columns=3):
     data = [spinner_name.name for spinner_name in Spinners]
 
@@ -173,9 +175,13 @@ def spinners_table(num_columns=3):
     return "\n".join(table_)
 
 
-def localized_text(key, lang, *args, **kwargs):
-    with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
-        translations = json.load(f)
+def localized_text(key, *args, **kwargs):
+    try:
+        with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
+            translations = json.load(f)
+    except json.JSONDecodeError:
+        logging.error(f"Не удалось корректно декодировать файл `translations.json`")
+        exit(1)
 
     # Перевод для указанного языка
     message = translations.get(lang, {}).get(key)
@@ -188,13 +194,12 @@ def localized_text(key, lang, *args, **kwargs):
         message = translations.get('en', {}).get(key)
         if message is None:
             logging.warning(f"No English definition found for key `{key}` in translations.json")
-            print(key)
-            # return key
+            # print(key)
+            return key
 
     try:
-        print(message.format(**kwargs))
-        # return message.format(**kwargs)
+        # print(message.format(**kwargs))
+        return message.format(**kwargs)
     except:
-        print(message.format(*args))
-        # return message.format(*args)
-
+        # print(message.format(*args))
+        return message.format(*args)
