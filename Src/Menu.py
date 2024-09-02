@@ -124,13 +124,21 @@ def settings_menu():
     send_to_group = get_status(config.send_to_group)
     apply_promo = get_status(config.apply_promo)
     save_to_file = get_status(config.save_to_file)
-    spinner = config.spinner
 
-    menu = (
-        f"🛠  Настройки \n"
-        f"  {LIGHT_YELLOW}1 | {RESET}{YELLOW} {localized_text('setting_send_to_group')}:      {send_to_group} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}2 | {RESET}{YELLOW} {localized_text('setting_apply_promo')}:   {apply_promo} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}3 | {RESET}{YELLOW} {localized_text('setting_save_to_file')}:       {save_to_file} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}  | {RESET}{YELLOW} {localized_text('setting_loading_indicator')}:  {spinner}{WHITE} (spinner_<name> · <name>/default/list) \n"
+    max_length = max(
+        len(localized_text('setting_send_to_group')),
+        len(localized_text('setting_apply_promo')),
+        len(localized_text('setting_save_to_file')),
+        len(localized_text('setting_language')),
+        len(localized_text('setting_loading_indicator'))
+    )
+
+    menu = f"🛠  {localized_text('settings_menu_header')}"
+    menu += (
+        f"  {LIGHT_YELLOW}1 | {YELLOW} {localized_text('setting_send_to_group').ljust(max_length)} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}2 | {YELLOW} {localized_text('setting_apply_promo').ljust(max_length)} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}3 | {YELLOW} {localized_text('setting_save_to_file').ljust(max_length)} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}4 | {YELLOW} {localized_text('setting_language').ljust(max_length)} · {WHITE}{config.lang} (ru/en) \n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_loading_indicator').ljust(max_length)} · {WHITE}{config.spinner} (spinner_<name>/default/list) \n"
     )
     print(menu)
