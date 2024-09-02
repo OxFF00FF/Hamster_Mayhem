@@ -138,7 +138,7 @@ def get_games_data():
 
 def get_salt(salt):
     try:
-        with open('Src/salt.json', 'r', encoding='utf-8') as f:
+        with open('Src/data/salt.json', 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
         return data[salt]
 
