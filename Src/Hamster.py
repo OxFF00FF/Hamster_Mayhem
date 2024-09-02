@@ -274,7 +274,7 @@ class HamsterKombatClicker:
             unix_start_date = int(datetime.fromisoformat(start_date.replace("Z", "+00:00")).timestamp())
             number_len = len(str(unix_start_date))
             index = (unix_start_date % (number_len - 2)) + 1
-            score_per_game = {"Candles": 500, "Tiles": random.randint(int(max_points * 0.1), max_points) if max_points > 200 else max_points}
+            score_per_game = {"Candles": 500, "Tiles": max_points}
             score = str(2 * (unix_start_date + score_per_game[mini_game_id]))
 
             cipher = ""
