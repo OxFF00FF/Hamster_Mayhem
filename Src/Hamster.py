@@ -961,8 +961,7 @@ class HamsterKombatClicker:
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
             config.hamster_token = True
-
-            localized_text('sign_in', lang, LIGHT_GRAY, first_name, last_name, username, WHITE)
+            print(f"{DARK_GRAY}{localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
 
         except requests.exceptions.HTTPError as http_err:
             print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
