@@ -1,5 +1,4 @@
 import logging
-
 import traceback
 
 from Src.Colors import *
@@ -9,7 +8,6 @@ from Src.Login import hamster_client
 from Src.Menu import main_menu, main_menu_not_logged
 from Src.utils import banner, line_after, localized_text
 
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{RESET}", level=logging.ERROR)
 
 config = ConfigDB()
 lang = config.lang
