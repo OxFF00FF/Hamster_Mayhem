@@ -118,11 +118,11 @@ def clear_screen():
 
 
 def line_before():
-    print("\n" + "~" * 60)
+    print("\nbefore" + "~" * 60)
 
 
 def line_after():
-    print("~" * 60 + "\n")
+    print("~" * 60 + "after\n")
 
 
 def get_status(status):
@@ -194,12 +194,9 @@ def localized_text(key, *args, **kwargs):
         message = translations.get('en', {}).get(key)
         if message is None:
             logging.warning(f"No English definition found for key `{key}` in translations.json")
-            # print(key)
             return key
 
     try:
-        # print(message.format(**kwargs))
         return message.format(**kwargs)
     except:
-        # print(message.format(*args))
         return message.format(*args)
