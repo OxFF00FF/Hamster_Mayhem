@@ -1,9 +1,13 @@
 import logging
 import os
 import sqlite3
+
+from dotenv import load_dotenv
+
 from Src.Colors import *
 
 logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}", level=logging.ERROR)
+load_dotenv()
 
 
 class ConfigDB:
@@ -21,7 +25,7 @@ class ConfigDB:
                            `spinner` VARCHAR(20),
                            'lang' VARCHAR(10),
                            'bonus_for_one_point' INTEGER,
-                           'group_url' VARCHAR(50)
+                           'group_url' VARCHAR(50),
                            'group_id' VARCHAR(10)
                            )''')
         self.con.commit()
@@ -30,7 +34,6 @@ class ConfigDB:
     def _default_config(self):
         group_url = os.getenv('GROUP_URL')
         group_id = os.getenv('GROUP_ID')
-
 
         self.cur.execute('SELECT COUNT(*) FROM config')
         count = self.cur.fetchone()[0]
