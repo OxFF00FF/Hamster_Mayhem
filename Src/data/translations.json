@@ -42,7 +42,14 @@
         "per_hour": "в час",
         "total_profit": "Общая прыбыль",
         "total_price": "Общая стоимость",
-        "change_lang": "Язык интерфейса изменен. Чтобы изменения применились, перезапустите программу"
+        "change_lang": "Язык интерфейса изменен. Чтобы изменения применились, перезапустите программу",
+
+        "detected_accounts": "Detected accounts",
+        "choose_account": "Which account do you want to use?",
+        "choose_number": "Choose number",
+        "one_account_detected": "Обнаружен только 1 аккаунт в вашем .env файле. Используется `HAMSTER_TOKEN_1`",
+        "error_dont_recieved_account_data": "Не удалось получить данные аккаунта для `{0}`. Неверно указан токен",
+        "logged_in": "вход выполнен"
     },
 
     "en": {
@@ -88,6 +95,13 @@
         "per_hour": "per hour",
         "total_profit": "Total profit",
         "total_price": "Total price",
-        "change_lang": "Interface language has been changed. For changes to take effect, restart the program"
+        "change_lang": "Interface language has been changed. For changes to take effect, restart the program",
+
+        "detected_accounts": "Detected accounts",
+        "choose_account": "Which account do you want to use?",
+        "choose_number": "Choose number",
+        "one_account_detected": "Only 1 account found in your .env file. Used `HAMSTER_TOKEN_1",
+        "error_dont_recieved_account_data": "Failed to retrieve account information for `{0}`. Incorrect token specified",
+        "logged_in": "logged in"
     }
 }
