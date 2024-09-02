@@ -7,7 +7,7 @@ from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu
-from Src.utils import line_after, line_before, get_games_data, spinners_table
+from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text
 
 config = ConfigDB()
 lang = config.lang
@@ -96,7 +96,7 @@ def handle_playground_menu_choice():
 
     while True:
         playground_menu()
-        choice = input(f"\n{DARK_GRAY}Выберите действие\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        choice = input(f"\n{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
         line_before()
 
         if choice in games_prefix:
@@ -127,7 +127,7 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(f"\n{DARK_GRAY}Выберите действие:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
+        choice = input(f"\n{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
         line_before()
 
         if choice in choices:
@@ -150,9 +150,11 @@ def handle_minigames_choice():
 
 
 def handle_settings_menu_choice():
+    line_before()
+
     while True:
         settings_menu()
-        choice = input(f"\n{DARK_GRAY}Выберите действие\n{CYAN}(1/2/3/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/</0): {RESET}")
         line_before()
 
         if choice == '1':
@@ -171,6 +173,16 @@ def handle_settings_menu_choice():
             config.save_to_file = not config.save_to_file
             status = f'{GREEN}включено{WHITE}' if config.save_to_file else f'{RED}отключено{WHITE}'
             print(f'Сохранение в файл {status}')
+            line_after()
+
+        elif choice == '4':
+            if config.lang == 'ru':
+                config.lang = 'en'
+
+            elif config.lang == 'en':
+                config.lang = 'ru'
+
+            print(localized_text('change_lang'))
             line_after()
 
         elif choice.startswith('spinner'):
