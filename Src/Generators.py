@@ -7,6 +7,7 @@ from Src.Login import hamster_client
 from Src.utils import get_games_data
 
 config = ConfigDB()
+lang = config.lang
 
 
 def generate_promocodes(prefix='', apply_promo=False):

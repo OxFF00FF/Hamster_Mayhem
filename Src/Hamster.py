@@ -20,10 +20,12 @@ from fake_useragent import UserAgent
 from fuzzywuzzy import fuzz
 
 from Src.Colors import *
-from Src.Settings import load_settings, save_settings
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt
+from Src.db_SQlite import ConfigDB
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text
 
 load_dotenv()
+config = ConfigDB()
+lang = config.lang
 
 
 class HamsterKombatClicker:
@@ -609,18 +611,16 @@ class HamsterKombatClicker:
             isClaimed = minigame.get('isClaimed')
             if not isClaimed:
                 if minigame.get('id') == 'Tiles':
-                    settings = load_settings()
                     try:
-                        bonus_for_one_point = self.bonus_for_one_point(minigame)
-                        settings['bonus_for_one_point'] = bonus_for_one_point
-                        save_settings(settings)
+                        one_point_bonus = self.bonus_for_one_point(minigame)
+                        config.bonus_for_one_point = one_point_bonus
                     except:
-                        bonus_for_one_point = settings['bonus_for_one_point']
+                        one_point_bonus = config.bonus_for_one_point
 
-                    max_coins = bonus_for_one_point * max_points
+                    max_coins = one_point_bonus * max_points
                     claimed_points = max_points - remain_points
                     available_points = max_points - claimed_points
-                    print(f"{YELLOW}За 1 балл вы получаете монет:  {LIGHT_BLUE}{bonus_for_one_point}{WHITE} | Портрачено: {claimed_points} | Осталось: {available_points}\n"
+                    print(f"{YELLOW}За 1 балл вы получаете монет:  {LIGHT_BLUE}{one_point_bonus}{WHITE} | Портрачено: {claimed_points} | Осталось: {available_points}\n"
                           f"{YELLOW}Максимальное количество монет: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
 
                 json_data = {'miniGameId': game_id}
@@ -952,7 +952,6 @@ class HamsterKombatClicker:
             print(f"❌ Произошла ошибка: {e}")
 
     def login(self):
-        settings = load_settings()
         try:
             response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
@@ -961,15 +960,14 @@ class HamsterKombatClicker:
             username = account_info.get('username', 'n/a')
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
-            print(f"{LIGHT_GRAY}Вы вошли как `{first_name} {last_name}` ({username}){WHITE}\n")
-            settings['hamster_token'] = True
-            save_settings(settings)
+            config.hamster_token = True
+
+            localized_text('sign_in', lang, LIGHT_GRAY, first_name, last_name, username, WHITE)
 
         except requests.exceptions.HTTPError as http_err:
             print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
                   f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}")
-            settings['hamster_token'] = False
-            save_settings(settings)
+            config.hamster_token = False
 
             logging.warning(http_err)
         except Exception as e:

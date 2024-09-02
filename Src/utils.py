@@ -178,22 +178,23 @@ def localized_text(key, lang, *args, **kwargs):
         translations = json.load(f)
 
     # Перевод для указанного языка
-    template = translations.get(lang, {}).get(key)
+    message = translations.get(lang, {}).get(key)
 
-    if template is None:
+    if message is None:
         # Логирование отсутствующего перевода
         logging.warning(f"No translation available for language code `{lang}` and key `{key}`")
 
         # Проверка наличия английского перевода
-        template = translations.get('en', {}).get(key)
-        if template is None:
+        message = translations.get('en', {}).get(key)
+        if message is None:
             logging.warning(f"No English definition found for key `{key}` in translations.json")
-            return key  # Возвращаем ключ, если ни одного перевода нет
+            print(key)
+            # return key
 
     try:
-        return template.format(**kwargs)
+        print(message.format(**kwargs))
+        # return message.format(**kwargs)
     except:
-        return template.format(*args)
+        print(message.format(*args))
+        # return message.format(*args)
 
-
-print(localized_text('sign_in', lang, LIGHT_GRAY, first_name, last_name, username, WHITE))

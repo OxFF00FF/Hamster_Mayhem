@@ -10,6 +10,7 @@ from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu
 from Src.utils import line_after, line_before, get_games_data, spinners_table
 
 config = ConfigDB()
+lang = config.lang
 
 
 def handle_main_menu_choice(choice):

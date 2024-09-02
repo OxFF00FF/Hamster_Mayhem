@@ -19,7 +19,9 @@ class ConfigDB:
                            `hamster_token` INTEGER,
                            `account` VARCHAR(20),
                            `spinner` VARCHAR(20),
-                           'lang' VARCHAR(10))''')
+                           'lang' VARCHAR(10),
+                           'bonus_for_one_point' VARCHAR(10)
+                           )''')
         self.con.commit()
         self._default_config()
 
@@ -27,8 +29,8 @@ class ConfigDB:
         self.cur.execute('SELECT COUNT(*) FROM config')
         count = self.cur.fetchone()[0]
         if count == 0:
-            self.cur.execute('''INSERT INTO `config` (`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`)
-                                VALUES (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru')''')
+            self.cur.execute('''INSERT INTO `config` (`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`)
+                                VALUES (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru', 0)''')
             self.con.commit()
             logging.info(f"default_config Created")
 
@@ -102,3 +104,19 @@ class ConfigDB:
     @spinner.setter
     def spinner(self, value):
         self.set('spinner', value)
+
+    @property
+    def lang(self):
+        return self.get('lang')
+
+    @lang.setter
+    def lang(self, value):
+        self.set('lang', value)
+
+    @property
+    def bonus_for_one_point(self):
+        return self.get('bonus_for_one_point')
+
+    @bonus_for_one_point.setter
+    def bonus_for_one_point(self, value):
+        self.set('bonus_for_one_point', value)

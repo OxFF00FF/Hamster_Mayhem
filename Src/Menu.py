@@ -1,9 +1,10 @@
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Login import hamster_client
-from Src.utils import get_status, get_games_data, remain_time
+from Src.utils import get_status, get_games_data, remain_time, localized_text
 
 config = ConfigDB()
+lang = config.lang
 
 
 def main_menu():
@@ -46,13 +47,14 @@ def main_menu():
         )
 
     else:
-        menu = (
-            f"Главное меню \n"
-            f"  Какую активность хотите выполнить? \n"
-            f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
-            f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
-            f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
-        )
+        menu = localized_text('main_menu_not_logged', lang, light_yellow=LIGHT_YELLOW, reset=RESET, yellow=YELLOW, white=WHITE)
+        # menu = (
+        #     f"Главное меню \n"
+        #     f"  Какую активность хотите выполнить? \n"
+        #     f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
+        #     f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
+        #     f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
+        # )
     print(f"{menu.strip()} \n")
 
 
