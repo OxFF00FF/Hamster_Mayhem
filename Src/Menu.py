@@ -4,58 +4,49 @@ from Src.Login import hamster_client
 from Src.utils import get_status, get_games_data, remain_time, localized_text
 
 config = ConfigDB()
-lang = config.lang
 
 
 def main_menu():
     activities = hamster_client()._activity_cooldowns()
-    taps_status = task_status = cipher_status = combo_status = 'n/a'
-    taps_cooldown = task_cooldown = cipher_cooldown = combo_cooldown = 'n/a'
+
+    status_dict = {'taps': ('n/a', 'n/a'), 'tasks': ('n/a', 'n/a'), 'cipher': ('n/a', 'n/a'), 'combo': ('n/a', 'n/a')}
 
     if activities:
         for activity in activities:
-            if 'taps' in activity:
-                taps_status = get_status(activity['taps']['isClaimed'])
-                taps_cooldown = activity['taps']['remain']
-            if 'tasks' in activity:
-                task_status = get_status(activity['tasks']['isClaimed'])
-                task_cooldown = activity['tasks']['remain']
-            if 'cipher' in activity:
-                cipher_status = get_status(activity['cipher']['isClaimed'])
-                cipher_cooldown = activity['cipher']['remain']
-            if 'combo' in activity:
-                combo_status = get_status(activity['combo']['isClaimed'])
-                combo_cooldown = activity['combo']['remain']
+            for key in status_dict.keys():
+                if key in activity:
+                    status_dict[key] = (get_status(activity[key]['isClaimed']), activity[key]['remain'])
 
-    if config.hamster_token:
-        menu = (
-            f"📚  Главное меню \n"
-            f"  Какую активность хотите выполнить? \n"
-            f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}Информация {WHITE} \n"
-            f"  {LIGHT_YELLOW}1 |  {RESET}👆 {YELLOW}Клики {WHITE}       {taps_status} · Осталось: {taps_cooldown} \n"
-            f"  {LIGHT_YELLOW}2 |  {RESET}📑 {YELLOW}Задания {WHITE}     {task_status} · Осталось: {task_cooldown} \n"
-            f"  {LIGHT_YELLOW}3 |  {RESET}🔍 {YELLOW}Шифр {WHITE}        {cipher_status} · Осталось: {cipher_cooldown} \n"
-            f"  {LIGHT_YELLOW}4 |  {RESET}💰 {YELLOW}Комбо {WHITE}       {combo_status} · Осталось: {combo_cooldown} \n"
-            f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}Миниигры {WHITE} \n"
-            f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE} \n"
-            f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}Аккаунты {WHITE} \n"
-            f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}Список самых выгодных карт {WHITE} \n"
-            f"  {LIGHT_YELLOW}+ |  {RESET}⭐️ {YELLOW}Купить карту `+ID_Карты` (напрмиер +dao) {WHITE} \n"
-            f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}Настройки {WHITE} \n"
-            f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
-            f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
-        )
+    def activity_line(index, emoji, label, status, cooldown):
+        return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
-    else:
-        menu = localized_text('main_menu_not_logged', lang, light_yellow=LIGHT_YELLOW, reset=RESET, yellow=YELLOW, white=WHITE)
-        # menu = (
-        #     f"Главное меню \n"
-        #     f"  Какую активность хотите выполнить? \n"
-        #     f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}Промокоды {WHITE}    \n"
-        #     f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}Показать меню {WHITE} \n"
-        #     f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}Выйти{WHITE}"
-        # )
-    print(f"{menu.strip()} \n")
+    menu = f"📚  {localized_text('main_menu_header')}"
+    menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
+    menu += activity_line(1, '👆', f"{localized_text('main_menu_taps')}    ", *status_dict['taps'])
+    menu += activity_line(2, '📑', f"{localized_text('main_menu_tasks')}   ", *status_dict['tasks'])
+    menu += activity_line(3, '🔍', f"{localized_text('main_menu_cipher')}  ", *status_dict['cipher'])
+    menu += activity_line(4, '💰', f"{localized_text('main_menu_combo')}   ", *status_dict['combo'])
+    menu += (
+        f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}{localized_text('main_menu_minigames')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}{localized_text('main_menu_accounts')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}{localized_text('main_menu_most_profitable_cards')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}+ |  {RESET}📥 {YELLOW}{localized_text('main_menu_buy_card')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
+    )
+    print(menu)
+
+
+def main_menu_not_logged():
+    menu = localized_text('main_menu_header')
+    menu += (
+        f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
+    )
+    print(menu)
 
 
 def playground_menu():
@@ -77,7 +68,7 @@ def playground_menu():
                 "status": get_status(promo['isClaimed'])
             })
 
-    menu = "🎮  Игровая площадка \n  Для какой игры хотите получить промокоды? \n"
+    menu = f"🎮  {localized_text('playground_menu_header')}"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         keys = game_data.get("keys", 0)
         cooldown = game_data.get("cooldown", "n/a")
@@ -86,14 +77,14 @@ def playground_menu():
         color = game_data["color"]
 
         menu += (f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  "
-                 f"{keys}/{keys_per_day}  {status} · Осталось: {cooldown} \n")
+                 f"{keys}/{keys_per_day}  {status} · {localized_text('left')}: {cooldown} \n")
 
     menu += (
-        f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} Для всех игр {WHITE} \n"
-        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
+        f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE} \n"
     )
-    print(menu.strip())
+    print(menu)
 
 
 def minigames_menu():
@@ -113,20 +104,20 @@ def minigames_menu():
                 "status": get_status(minigame['isClaimed'])
             })
 
-    menu = "🎮  Миниигры \n  Какую миниигру хотите пройти? \n"
+    menu = f"🎮  {localized_text('minigames_menu_header')}\n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         cooldown = remain_time(game_data.get("cooldown", "n/a"))
         status = game_data.get("status", "n/a")
         emoji = game_data["emoji"]
         color = game_data["color"]
 
-        menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · Осталось: {cooldown} \n"
+        menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · {localized_text('exit')}: {cooldown} \n"
 
     menu += (
-        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} В главное меню {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} Выйти {WHITE} \n"
+        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE} \n"
     )
-    print(menu.strip())
+    print(menu)
 
 
 def settings_menu():
@@ -137,9 +128,9 @@ def settings_menu():
 
     menu = (
         f"🛠  Настройки \n"
-        f"  {LIGHT_YELLOW}1 | {RESET}{YELLOW} Отправлять в группу:  {send_to_group} (включить/отключить) {WHITE} \n"
-        f"  {LIGHT_YELLOW}2 | {RESET}{YELLOW} Применять промокоды:  {apply_promo} (включить/отключить) {WHITE} \n"
-        f"  {LIGHT_YELLOW}3 | {RESET}{YELLOW} Сохранять в файл:     {save_to_file} (включить/отключить) {WHITE} \n"
-        f"  {LIGHT_YELLOW}  | {RESET}{YELLOW} Спиннер:              {spinner}{WHITE} (spinner_<name> · <name>/default/list) \n"
+        f"  {LIGHT_YELLOW}1 | {RESET}{YELLOW} {localized_text('setting_send_to_group')}:  {send_to_group} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}2 | {RESET}{YELLOW} {localized_text('setting_apply_promo')}:  {apply_promo} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}3 | {RESET}{YELLOW} {localized_text('setting_save_to_file')}:     {save_to_file} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}  | {RESET}{YELLOW} {localized_text('setting_loading_indicator')}:              {spinner}{WHITE} (spinner_<name> · <name>/default/list) \n"
     )
-    print(menu.strip())
+    print(menu)
