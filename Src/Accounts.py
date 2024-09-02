@@ -1,9 +1,13 @@
+import logging
 import os
 
 from Src.Colors import *
+from Src.db_SQlite import ConfigDB
 from Src.Hamster import HamsterKombatClicker
 from Src.Login import hamster_client
-from Src.utils import line_after
+from Src.utils import line_after, localized_text
+
+config = ConfigDB()
 
 
 def choose_account():
@@ -11,7 +15,7 @@ def choose_account():
     current_account = hamster_client().get_account_info()
 
     if len(accounts) > 1:
-        print(f"Обнаружено аккаунтов {len(accounts)}: ")
+        print(f"{localized_text('detected_accounts')} {len(accounts)}: ")
         account_dict = {}
 
         for e, account in enumerate(accounts):
@@ -26,17 +30,18 @@ def choose_account():
                 last_name = account_info.get('lastName', 'n/a')
 
                 if username == current_account.get('username', 'n/a'):
-                    print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} (вход выполнен)")
+                    print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} ({localized_text('logged_in')})")
                 else:
                     print(f"[{e + 1}] · {first_name} {last_name} ({username})")
-
                 account_dict[str(e + 1)] = token
-            except Exception:
-                print(f"[X] · {LIGHT_RED}Не удалось получить данные аккаунта для `{key}`. Неверно указан токен{WHITE}")
 
-        account_choice = input(f"\n{DARK_GRAY}Какой аккаунт хотите использовать?{WHITE}\n{CYAN}Выберите номер: {WHITE}")
+            except Exception as e:
+                print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}{WHITE}")
+                logging.error(e)
+
+        account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}{localized_text('choose_number')}: {WHITE}")
         line_after()
         return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
     else:
-        print(f"Обнаружен только 1 аккаунт в вашем .env файле. Используется `HAMSTER_TOKEN_1`")
+        print(localized_text('one_account_detected'))
         return "HAMSTER_TOKEN_1"
