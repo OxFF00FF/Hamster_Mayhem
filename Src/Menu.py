@@ -1,7 +1,9 @@
 from Src.Colors import *
+from Src.db_SQlite import ConfigDB
 from Src.Login import hamster_client
-from Src.Settings import load_settings, load_setting
 from Src.utils import get_status, get_games_data, remain_time
+
+config = ConfigDB()
 
 
 def main_menu():
@@ -24,7 +26,7 @@ def main_menu():
                 combo_status = get_status(activity['combo']['isClaimed'])
                 combo_cooldown = activity['combo']['remain']
 
-    if load_setting('hamster_token'):
+    if config.hamster_token:
         menu = (
             f"📚  Главное меню \n"
             f"  Какую активность хотите выполнить? \n"
@@ -55,10 +57,8 @@ def main_menu():
 
 
 def playground_menu():
-    settings = load_settings()
-
     promos = []
-    if settings['hamster_token']:
+    if config.hamster_token:
         promos = hamster_client()._get_promos()
 
     keys_per_day = 4
@@ -95,10 +95,8 @@ def playground_menu():
 
 
 def minigames_menu():
-    settings = load_settings()
-
     minigames = []
-    if settings['hamster_token']:
+    if config.hamster_token:
         minigames = hamster_client()._get_minigames()
 
     games_data = get_games_data()['minigames']
@@ -130,10 +128,10 @@ def minigames_menu():
 
 
 def settings_menu():
-    send_to_group = get_status(load_setting('send_to_group'))
-    apply_promo = get_status(load_setting('apply_promo'))
-    save_to_file = get_status(load_setting('save_to_file'))
-    spinner = load_setting('spinner')
+    send_to_group = get_status(config.send_to_group)
+    apply_promo = get_status(config.apply_promo)
+    save_to_file = get_status(config.save_to_file)
+    spinner = config.spinner
 
     menu = (
         f"🛠  Настройки \n"
