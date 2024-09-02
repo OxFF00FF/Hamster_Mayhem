@@ -1,13 +1,14 @@
 import logging
 import os
+from Src.db_SQlite import ConfigDB
 from Src.Hamster import HamsterKombatClicker
-from Src.Settings import load_settings
+
+config = ConfigDB()
 
 
 def hamster_client():
-    settings = load_settings()
     try:
-        HAMSTER_TOKEN = os.getenv(settings['account'])
+        HAMSTER_TOKEN = os.getenv(config.account)
         return HamsterKombatClicker(HAMSTER_TOKEN)
 
     except Exception as e:
