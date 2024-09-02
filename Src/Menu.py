@@ -1,3 +1,5 @@
+import os
+
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Login import hamster_client
@@ -124,6 +126,8 @@ def settings_menu():
     send_to_group = get_status(config.send_to_group)
     apply_promo = get_status(config.apply_promo)
     save_to_file = get_status(config.save_to_file)
+    group_id = os.getenv('GROUP_ID')
+    group_url = os.getenv('GROUP_URL')
 
     max_length = max(
         len(localized_text('setting_send_to_group')),
@@ -139,8 +143,13 @@ def settings_menu():
         f"  {LIGHT_YELLOW}2 | {YELLOW} {localized_text('setting_apply_promo').ljust(max_length)} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}3 | {YELLOW} {localized_text('setting_save_to_file').ljust(max_length)} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}4 | {YELLOW} {localized_text('setting_language').ljust(max_length)} · {WHITE}{config.lang} (ru/en) \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_groul_url').ljust(max_length)} · {WHITE}{config.group_url} \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_chat_id').ljust(max_length)} · {WHITE}{config.group_id} \n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_loading_indicator').ljust(max_length)} · {WHITE}{config.spinner} (spinner_<name>/default/list) \n"
     )
+
+    if group_id:
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_chat_id').ljust(max_length)} · {WHITE}{group_id} \n"
+
+    if group_url:
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_group_url').ljust(max_length)} · {WHITE}{group_url} \n"
+
     print(menu)
