@@ -5,6 +5,7 @@
         "main_menu_header": "Главное меню \n  Какую активность хотите выполнить?\n",
         "playground_menu_header": "Игровая площадка \n  Для какой игры хотите получить промокоды?\n",
         "minigames_menu_header": "Миниигры \\n  Какую миниигру хотите пройти?",
+        "settings_menu_header": "Настройки \n",
         "main_menu_info": "Информация",
         "left": "Осталось",
         "main_menu_taps": "Клики",
@@ -27,7 +28,7 @@
         "setting_save_to_file": "Сохранять в файл",
         "setting_loading_indicator": "Спиннер",
         "setting_on_off": "(вкл/откл)",
-
+        "setting_language": "Язык",
         "current_date": "Текущая дата",
         "combo_date": "Дата комбо",
         "cipher": "Шифр",
@@ -40,7 +41,8 @@
         "level": "уровень",
         "per_hour": "в час",
         "total_profit": "Общая прыбыль",
-        "total_price": "Общая стоимость"
+        "total_price": "Общая стоимость",
+        "change_lang": "Язык интерфейса изменен. Чтобы изменения применились, перезапустите программу"
     },
 
     "en": {
@@ -49,6 +51,7 @@
         "main_menu_header": "Main menu \n  What activity do you want to do?\n",
         "playground_menu_header": "Playground \n  For which game do you want to receive promocodes?\n",
         "minigames_menu_header": "Миниигры \n  Which minigame you want complete?",
+        "settings_menu_header": "Settings \n",
         "main_menu_info": "Information",
         "left": "Remain",
         "main_menu_taps": "Taps",
@@ -71,7 +74,7 @@
         "setting_save_to_file": "Save to file",
         "setting_loading_indicator": "Loading indicator",
         "setting_on_off": "(on/off)",
-
+        "setting_language": "Language",
         "current_date": "Current date",
         "combo_date": "Combo date",
         "cipher": "Cipher",
@@ -84,6 +87,7 @@
         "level": "level",
         "per_hour": "per hour",
         "total_profit": "Total profit",
-        "total_price": "Total price"
+        "total_price": "Total price",
+        "change_lang": "Interface language has been changed. For changes to take effect, restart the program"
     }
 }
