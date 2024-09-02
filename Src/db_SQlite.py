@@ -17,8 +17,9 @@ class ConfigDB:
                            `save_to_file` INTEGER,
                            `apply_promo` INTEGER,
                            `hamster_token` INTEGER,
-                           `account` VARCHAR(100),
-                           `spinner` VARCHAR(100))''')
+                           `account` VARCHAR(20),
+                           `spinner` VARCHAR(20),
+                           'lang' VARCHAR(10))''')
         self.con.commit()
         self._default_config()
 
@@ -26,8 +27,8 @@ class ConfigDB:
         self.cur.execute('SELECT COUNT(*) FROM config')
         count = self.cur.fetchone()[0]
         if count == 0:
-            self.cur.execute('''INSERT INTO `config` (`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`)
-                                VALUES (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default')''')
+            self.cur.execute('''INSERT INTO `config` (`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`)
+                                VALUES (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru')''')
             self.con.commit()
             logging.info(f"default_config Created")
 
