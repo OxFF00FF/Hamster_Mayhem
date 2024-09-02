@@ -26,7 +26,21 @@
         "setting_apply_promo": "Применять промокоды",
         "setting_save_to_file": "Сохранять в файл",
         "setting_loading_indicator": "Спиннер",
-        "setting_on_off": "(вкл/откл)"
+        "setting_on_off": "(вкл/откл)",
+
+        "current_date": "Текущая дата",
+        "combo_date": "Дата комбо",
+        "cipher": "Шифр",
+        "balance": "Баланс",
+        "total": "Всего",
+        "keys": "Ключей",
+        "no_combo_today": "Сегодня вам не все карты доступны",
+        "available_to_buy": "Карта доступна для улучшения",
+        "not_available_to_buy": "Карта недоступна для улучшения",
+        "level": "уровень",
+        "per_hour": "в час",
+        "total_profit": "Общая прыбыль",
+        "total_price": "Общая стоимость"
     },
 
     "en": {
@@ -56,6 +70,20 @@
         "setting_apply_promo": "Apply promocodes",
         "setting_save_to_file": "Save to file",
         "setting_loading_indicator": "Loading indicator",
-        "setting_on_off": "(on/off)"
+        "setting_on_off": "(on/off)",
+
+        "current_date": "Current date",
+        "combo_date": "Combo date",
+        "cipher": "Cipher",
+        "balance": "Balance",
+        "total": "Total",
+        "keys": "Keys",
+        "no_combo_today": "Not all cards are available to you today",
+        "available_to_buy": "Card is available for improvement",
+        "not_available_to_buy": "Card is not available for improvement",
+        "level": "level",
+        "per_hour": "per hour",
+        "total_profit": "Total profit",
+        "total_price": "Total price"
     }
 }
