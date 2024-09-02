@@ -9,8 +9,11 @@ call venv\Scripts\activate
 echo Installing dependencies...
 pip install -r requirements.txt
 
-echo Copying .env.example to .env...
-copy .env.example .env
+if not exist ".env" (
+    echo Copying .env.example to .env...
+    copy .env.example .env
+)
+
 
 echo Please edit the .env file to add your HAMSTER_TOKEN
 
