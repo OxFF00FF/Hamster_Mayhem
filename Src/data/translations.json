@@ -48,7 +48,9 @@
         "choose_number": "Choose number",
         "one_account_detected": "Обнаружен только 1 аккаунт в вашем .env файле. Используется `HAMSTER_TOKEN_1`",
         "error_dont_recieved_account_data": "Не удалось получить данные аккаунта для `{0}`. Неверно указан токен",
-        "logged_in": "вход выполнен"
+        "logged_in": "вход выполнен",
+        "setting_group_url": "Url группы",
+        "setting_chat_id": "ID группы"
     },
 
     "en": {
@@ -100,6 +102,8 @@
         "choose_number": "Choose number",
         "one_account_detected": "Only 1 account found in your .env file. Used `HAMSTER_TOKEN_1",
         "error_dont_recieved_account_data": "Failed to retrieve account information for `{0}`. Incorrect token specified",
-        "logged_in": "logged in"
+        "logged_in": "logged in",
+        "setting_group_url": "Group url",
+        "setting_chat_id": "Group id"
     }
 }
