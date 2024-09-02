@@ -139,6 +139,8 @@ def settings_menu():
         f"  {LIGHT_YELLOW}2 | {YELLOW} {localized_text('setting_apply_promo').ljust(max_length)} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}3 | {YELLOW} {localized_text('setting_save_to_file').ljust(max_length)} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}4 | {YELLOW} {localized_text('setting_language').ljust(max_length)} · {WHITE}{config.lang} (ru/en) \n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_groul_url').ljust(max_length)} · {WHITE}{config.group_url} \n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_chat_id').ljust(max_length)} · {WHITE}{config.group_id} \n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_loading_indicator').ljust(max_length)} · {WHITE}{config.spinner} (spinner_<name>/default/list) \n"
     )
     print(menu)
