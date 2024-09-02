@@ -2,12 +2,14 @@ import asyncio
 import re
 
 from Src.Colors import *
+from Src.db_SQlite import ConfigDB
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu
-from Src.Settings import load_settings, save_settings, load_setting
 from Src.utils import line_after, line_before, get_games_data, spinners_table
+
+config = ConfigDB()
 
 
 def handle_main_menu_choice(choice):
@@ -48,12 +50,8 @@ def handle_main_menu_choice(choice):
         handle_settings_menu_choice()
 
     elif choice == 'a':
-        settings = load_settings()
-
         line_before()
-        account = choose_account()
-        settings['account'] = account
-        save_settings(settings)
+        config.account = choose_account()
         hamster_client().login()
 
     elif choice == '$':
@@ -152,30 +150,25 @@ def handle_minigames_choice():
 
 def handle_settings_menu_choice():
     while True:
-        settings = load_settings()
-
         settings_menu()
         choice = input(f"\n{DARK_GRAY}Выберите действие\n{CYAN}(1/2/3/</0): {RESET}")
         line_before()
 
         if choice == '1':
-            settings['send_to_group'] = not settings['send_to_group']
-            save_settings(settings)
-            status = f'{GREEN}включена{WHITE}' if load_setting('send_to_group') else f'{RED}отключена{WHITE}'
+            config.send_to_group = not config.send_to_group
+            status = f'{GREEN}включена{WHITE}' if config.send_to_group else f'{RED}отключена{WHITE}'
             print(f'Отправка промокодов в группу {status}')
             line_after()
 
         elif choice == '2':
-            settings['apply_promo'] = not settings['apply_promo']
-            status = f'{GREEN}включено{WHITE}' if load_setting('apply_promo') else f'{RED}отключено{WHITE}'
-            save_settings(settings)
+            config.apply_promo = not config.apply_promo
+            status = f'{GREEN}включено{WHITE}' if config.apply_promo else f'{RED}отключено{WHITE}'
             print(f'Применение промокодов по умолчанию {status}')
             line_after()
 
         elif choice == '3':
-            settings['save_to_file'] = not settings['save_to_file']
-            save_settings(settings)
-            status = f'{GREEN}включено{WHITE}' if load_setting('save_to_file') else f'{RED}отключено{WHITE}'
+            config.save_to_file = not config.save_to_file
+            status = f'{GREEN}включено{WHITE}' if config.save_to_file else f'{RED}отключено{WHITE}'
             print(f'Сохранение в файл {status}')
             line_after()
 
@@ -186,13 +179,11 @@ def handle_settings_menu_choice():
                 print(spinners_table())
 
             elif spinner_name == 'default':
-                settings['spinner'] = 'default'
-                save_settings(settings)
+                config.spinner = 'default'
                 print(f"Индикатор загрузки установлен по умолчанию")
 
             else:
-                settings['spinner'] = spinner_name
-                save_settings(settings)
+                config.spinner = spinner_name
                 print(f"Индикатор загрузки изменен на `{spinner_name}`")
             line_after()
 
