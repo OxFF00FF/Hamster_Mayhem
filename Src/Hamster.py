@@ -621,9 +621,7 @@ class HamsterKombatClicker:
                         one_point_bonus = config.bonus_for_one_point
 
                     max_coins = one_point_bonus * max_points
-                    claimed_points = max_points - remain_points
-                    available_points = max_points - claimed_points
-                    print(f"{YELLOW}За 1 балл вы получаете монет:  {LIGHT_BLUE}{one_point_bonus}{WHITE} | Портрачено: {claimed_points} | Осталось: {available_points}\n"
+                    print(f"{YELLOW}За 1 балл вы получаете монет:  {LIGHT_BLUE}{one_point_bonus}{WHITE} \n"
                           f"{YELLOW}Максимальное количество монет: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
 
                 json_data = {'miniGameId': game_id}
