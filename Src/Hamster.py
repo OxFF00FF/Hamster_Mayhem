@@ -352,18 +352,18 @@ class HamsterKombatClicker:
                     if upgradeId == upgrade['id']:
                         available = upgrade['isAvailable']
                         if available:
-                            available = f"✅  {GREEN}Карта доступна для улучшения{WHITE}"
+                            available = f"✅  {GREEN}{localized_text('available_to_buy')}{WHITE}"
                             total_price += upgrade['price']
                             total_profit += upgrade['profitPerHourDelta']
                         else:
                             error = self._buy_upgrade(upgrade['id'])
-                            available = f"🚫  {RED}Карта недоступна для улучшения ({error}){WHITE}"
+                            available = f"🚫  {RED}{localized_text('not_available_to_buy')} ({error}){WHITE}"
 
                         cards.append({'description': f"{available} \n"
                                                      f"🏷  {LIGHT_YELLOW}{upgrade['name']} • {upgrade['section']}{WHITE} \n"
                                                      f"💰  {YELLOW}{upgrade['price']:,}{WHITE} \n"
-                                                     f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} в час{WHITE} \n"
-                                                     f"⭐️  {DARK_GRAY}{upgrade['level']} уровень{WHITE} \n".replace(',', ' '),
+                                                     f"📈  {MAGENTA}+{upgrade['profitPerHourDelta']:,} {localized_text('per_hour')}{WHITE} \n"
+                                                     f"⭐️  {DARK_GRAY}{upgrade['level']} {localized_text('level')}{WHITE} \n".replace(',', ' '),
                                       'id': upgrade['id'],
                                       'available': upgrade['isAvailable']})
 
@@ -373,8 +373,8 @@ class HamsterKombatClicker:
                             available = f"{RED}{upgrade['isAvailable']}{WHITE}"
                         cards_info += f"{upgrade['name']} · {available} | "
 
-            summary = f"📊  {LIGHT_YELLOW}Общая прыбыль:{WHITE}  {MAGENTA}+{total_profit:,} в час {WHITE}\n" \
-                      f"🌟  {LIGHT_YELLOW}Общая стоимость:{WHITE} {YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
+            summary = f"📊  {LIGHT_YELLOW}{localized_text('total_profit')}:{WHITE}  {MAGENTA}+{total_profit:,} {localized_text('per_hour')} {WHITE}\n" \
+                      f"🌟  {LIGHT_YELLOW}{localized_text('total_price')}:{WHITE} {YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
 
             logging.warning(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
             return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
@@ -408,20 +408,23 @@ class HamsterKombatClicker:
             morse = text_to_morse(cipher)
             combo = '\n'.join(card['description'] for card in upgrades_info.get('cards'))
 
-            result = {'date': f"📆  {datetime.today().date()} (текущая дата)\n📆  {upgrades_info.get('combo_date')} (дата комбо)",
-                      'cipher': f"📇  {LIGHT_YELLOW}Шифр:{WHITE}  {cipher} | {morse} |",
-                      'summary': f"{upgrades_info.get('summary')}",
-                      'combo': combo}
+            result = {
+                'date': f"📆  {datetime.today().date()} ({localized_text('current_date')})\n"
+                        f"📆  {upgrades_info.get('combo_date')} ({localized_text('combo_date')})",
+                'cipher': f"📇  {LIGHT_YELLOW}{localized_text('cipher')}:{WHITE}  {cipher} | {morse} |",
+                'summary': f"{upgrades_info.get('summary')}",
+                'combo': combo
+            }
 
             info = f"\n{result['date']} \n\n"
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
-            info += f"💰  {LIGHT_YELLOW}Баланс:{WHITE} {balance['balanceCoins']:,} \n"
-            info += f"💰  {LIGHT_YELLOW}Всего: {WHITE} {balance['total']:,} \n"
-            info += f"🔑  {LIGHT_YELLOW}Ключей:{WHITE} {balance['keys']:,}\n"
+            info += f"💰  {LIGHT_YELLOW}{localized_text('balance')}:{WHITE} {balance['balanceCoins']:,} \n"
+            info += f"💰  {LIGHT_YELLOW}{localized_text('total')}: {WHITE} {balance['total']:,} \n"
+            info += f"🔑  {LIGHT_YELLOW}{localized_text('keys')}:{WHITE} {balance['keys']:,}\n"
             if '🚫' in result['combo']:
-                info += "\n⚠️  Сегодня вам не все карты доступны".replace(',', ' ')
+                info += f"\n⚠️  {localized_text('no_combo_today')}".replace(',', ' ')
             return info
 
         except Exception as e:
