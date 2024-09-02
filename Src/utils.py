@@ -118,11 +118,11 @@ def clear_screen():
 
 
 def line_before():
-    print("\nbefore" + "~" * 60)
+    print("\n" + "~" * 60)
 
 
 def line_after():
-    print("~" * 60 + "after\n")
+    print("~" * 60 + "\n")
 
 
 def get_status(status):
