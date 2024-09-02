@@ -48,7 +48,7 @@ def handle_main_menu_choice(choice):
         handle_settings_menu_choice()
 
     elif choice == 'a':
-        settings = load_setting('account')
+        settings = load_settings()
 
         line_before()
         account = choose_account()
