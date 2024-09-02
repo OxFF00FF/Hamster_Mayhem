@@ -128,9 +128,9 @@ def settings_menu():
 
     menu = (
         f"🛠  Настройки \n"
-        f"  {LIGHT_YELLOW}1 | {RESET}{YELLOW} {localized_text('setting_send_to_group')}:  {send_to_group} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}2 | {RESET}{YELLOW} {localized_text('setting_apply_promo')}:  {apply_promo} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}3 | {RESET}{YELLOW} {localized_text('setting_save_to_file')}:     {save_to_file} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}  | {RESET}{YELLOW} {localized_text('setting_loading_indicator')}:              {spinner}{WHITE} (spinner_<name> · <name>/default/list) \n"
+        f"  {LIGHT_YELLOW}1 | {RESET}{YELLOW} {localized_text('setting_send_to_group')}:      {send_to_group} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}2 | {RESET}{YELLOW} {localized_text('setting_apply_promo')}:   {apply_promo} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}3 | {RESET}{YELLOW} {localized_text('setting_save_to_file')}:       {save_to_file} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}  | {RESET}{YELLOW} {localized_text('setting_loading_indicator')}:  {spinner}{WHITE} (spinner_<name> · <name>/default/list) \n"
     )
     print(menu)
