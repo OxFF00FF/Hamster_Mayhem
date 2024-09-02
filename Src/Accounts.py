@@ -34,7 +34,7 @@ def choose_account():
             except Exception:
                 print(f"[X] · {LIGHT_RED}Не удалось получить данные аккаунта для `{key}`. Неверно указан токен{WHITE}")
 
-        account_choice = input(f"\nКакой аккаунт хотите использовать?\nВыберите номер: ")
+        account_choice = input(f"\n{DARK_GRAY}Какой аккаунт хотите использовать?{WHITE}\n{CYAN}Выберите номер: {WHITE}")
         line_after()
         return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
     else:
