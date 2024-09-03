@@ -49,8 +49,17 @@
         "one_account_detected": "Обнаружен только 1 аккаунт в вашем .env файле. Используется `HAMSTER_TOKEN_1`",
         "error_dont_recieved_account_data": "Не удалось получить данные аккаунта для `{0}`. Неверно указан токен",
         "logged_in": "вход выполнен",
-        "setting_group_url": "Url группы",
-        "setting_chat_id": "ID группы"
+        "setting_group_url": "URL группы",
+        "setting_chat_id": "ID группы",
+        "count_promocodes_to_generate": "Какое количество промокодов генерировать?",
+        "enter_one": "Enter(1)",
+        "count_not_specified": "⚠️  Количество промокодов не указано.\nГенерируется 1 по умолчанию",
+        "count_must_great_0": "\nКоличество должно быть числом больше 0",
+        "error_generate_failed": "Произошла ошибка во время генерации, попробуйте снова.\nEсли ошибки прололжаться, то попробуйте позже.",
+        "apply_promo_after_generate": "Хотите применить промокоды после получения?",
+        "yes_enter": "Y(да) / Enter(Нет)",
+        "no_such_option": "Такой опции нет",
+        "count_promocodes_to_generate_all_games": "Количество промокодов для всех игр"
     },
 
     "en": {
@@ -103,7 +112,16 @@
         "one_account_detected": "Only 1 account found in your .env file. Used `HAMSTER_TOKEN_1",
         "error_dont_recieved_account_data": "Failed to retrieve account information for `{0}`. Incorrect token specified",
         "logged_in": "logged in",
-        "setting_group_url": "Group url",
-        "setting_chat_id": "Group id"
+        "setting_group_url": "Group URL",
+        "setting_chat_id": "Group ID",
+        "count_promocodes_to_generate": "How many promcodes generate?",
+        "enter_one": "Enter(1)",
+        "count_not_specified": "The number of promocodes is not specified.\nGenerate 1 by default",
+        "count_must_great_0": "\nCount must be greater then 0",
+        "error_generate_failed": "An error occurred during generation, try again.\nIf errors continue, try again later.",
+        "apply_promo_after_generate": "Do you want to apply promocodes after receiving?",
+        "yes_enter": "Y(yes) / Enter(no)",
+        "no_such_option": "No such option",
+        "count_promocodes_to_generate_all_games": "Number of promocodes for all games"
     }
 }
