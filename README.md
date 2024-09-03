@@ -84,11 +84,11 @@
 3. Чтобы установить зависимости, запустите файл `INSTALL.bat`.
 4. Для запуска используйте файл `1. START.bat`. Если установлен **Windows Terminal** то `2. START_WT.bat`
 5. Настройте `.env` файл. Укажите свой `HAMSTER_TOKEN` и другие значения, если необходимо.
-6. Для обновления используйте файл `UPDATE.bat` (если установлен гит)
+6. Для обновления используйте файл `UPDATE.bat` (если установлен [git](https://git-scm.com/downloads) )
 
 В обычном cmd терминале windows у вас скорее всего не будут работать цвета в консоли и эмоджи.
-Для красивого отображения можете скачать и установить
-[windows terminal](https://apps.microsoft.com/detail/9n0dx20hk701?hl=en-US&gl=US)
+Для красивого отображения установите 
+[windows terminal](https://apps.microsoft.com/detail/9n0dx20hk701?hl=en-US&gl=US) или из папки `Windows Terminal setup`
 
 
 
