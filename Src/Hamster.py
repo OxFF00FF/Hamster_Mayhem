@@ -260,19 +260,18 @@ class HamsterKombatClicker:
             upgrades_for_buy_response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             upgrades_for_buy_response.raise_for_status()
 
-            upgrade_available = ''
             upgradesForBuy = upgrades_for_buy_response.json().get('upgradesForBuy')
             for upgrade in upgradesForBuy:
+                upgrade_name = upgrade.get('name')
+                upgrade_level = upgrade.get('level') + 1
+                upgrade_available = upgrade.get('isAvailable')
+                upgrade_expire = upgrade.get('isExpired')
+
                 if upgradeId == upgrade['id']:
                     if upgrade.get('isAvailable') and not upgrade.get('isExpired'):
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                         response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         response.raise_for_status()
-
-                        upgrade_name = upgrade.get('name')
-                        upgrade_level = upgrade.get('level') + 1
-                        upgrade_available = upgrade.get('isAvailable')
-                        upgrade_expire = upgrade.get('isExpired')
 
                         print(f"✅  {localized_text('info_card_upgraded'), upgrade_name, upgrade_level}")
 
@@ -284,7 +283,7 @@ class HamsterKombatClicker:
                         buy_upgrade_response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
 
                         error_message = buy_upgrade_response.json().get('error_message')
-                        logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}")
+                        logging.warning(f"🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}")
                         return error_message
 
         except Exception as e:
@@ -369,10 +368,10 @@ class HamsterKombatClicker:
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}{localized_text('balance')}:{WHITE} {balance['balanceCoins']:,} \n"
-            info += f"💰  {LIGHT_YELLOW}{localized_text('total')}: {WHITE} {balance['total']:,} \n"
+            info += f"💰  {LIGHT_YELLOW}{localized_text('total')}:{WHITE} {balance['total']:,} \n"
             info += f"🔑  {LIGHT_YELLOW}{localized_text('keys')}:{WHITE} {balance['keys']:,}"
             if '🚫' in result['combo']:
-                info += f"\n⚠️  {localized_text('no_combo_today')}".replace(',', ' ')
+                info += f"\n\n⚠️  {localized_text('no_combo_today')}".replace(',', ' ')
             return info
 
         except Exception as e:

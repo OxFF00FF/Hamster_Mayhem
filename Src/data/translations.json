@@ -240,6 +240,9 @@
         "info_no_accumulate_yet": "The taps haven't accumulated yet. Next taps after",
         "info_boost_used": "Boost used",
         "info_boost_not_ready": "Boost is not ready yet. Next boost after",
-        "available": "available"
+        "available": "available",
+        "error_upgrade_not_avaialble_time_expired": "Card `{0}` not available for improvement. Time to buy has expired",
+        "info_card_upgraded": "Card `{0}` upgraded · ⭐️ {1} level",
+        "error_upgrade_not_avaialble": "Failed to upgrade card"
     }
 }
