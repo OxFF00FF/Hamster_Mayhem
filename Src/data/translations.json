@@ -235,7 +235,7 @@
         "info_cipher_completed": "Cipher completed",
         "info_cipher_already_complete": "Cipher has already been received today",
         "info_task_completed": "Task `{0}` completed",
-        "info_all_tasks_complete": "All tasks completed\n",
+        "info_all_tasks_complete": "All tasks completed",
         "info_all_tasks_already_complete": "All tasks have already been completed today",
         "info_taps_completed": "Taps completed",
         "info_no_accumulate_yet": "The taps haven't accumulated yet. Next taps after",
