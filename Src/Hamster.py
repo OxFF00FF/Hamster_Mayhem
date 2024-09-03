@@ -906,8 +906,8 @@ class HamsterKombatClicker:
                 time.sleep(3)
                 print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
 
-            except Exception as e:
-                print(f"🚫  Ошибкка во время запроса к телеграм API\n{e}")
+            except Exception as error:
+                print(f"🚫  Ошибкка во время запроса к телеграм API\n{error}")
                 logging.error(traceback.format_exc())
 
         if save_to_file:
