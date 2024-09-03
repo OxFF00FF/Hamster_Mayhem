@@ -167,7 +167,7 @@ class HamsterKombatClicker:
 
             current_remain_time = int(availableTaps / tapsRecoverPerSec)
             total_remain_time = int(maxTaps / tapsRecoverPerSec)
-            remain = remain_time(total_remain_time - current_remain_time)
+            remain = remain_time(int(total_remain_time - current_remain_time))
 
             if availableTaps == maxTaps:
                 result.append({'taps': {'remain': 'n/a', 'isClaimed': True}})
@@ -405,13 +405,13 @@ class HamsterKombatClicker:
                 print(f"✅  {localized_text('info_taps_completed')}")
 
             else:
-                remain = remain_time(int(total_remain_time - current_remain_time))
+                remain = f"{LIGHT_MAGENTA}{remain_time(int(total_remain_time - current_remain_time))}{WHITE}"
                 print(f"🚫  {localized_text('info_no_accumulate_yet')}: {remain}")
 
             boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
             for boost in boostsForBuy:
                 if boost['id'] == 'BoostFullAvailableTaps':
-                    remain = boost['cooldownSeconds']
+                    remain = f"{LIGHT_MAGENTA}{remain_time(boost['cooldownSeconds'])}{WHITE}"
                     if remain == 0:
                         json_data = {'boostId': boost['id'], 'timestamp': int(time.time())}
                         boost_response = requests.post(f'{self.base_url}/clicker/buy-boost', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
@@ -427,7 +427,8 @@ class HamsterKombatClicker:
                         print(f"✅  {localized_text('info_taps_completed')}")
 
                     else:
-                        print(f"🚫  {localized_text('info_boost_not_ready')}: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}")
+                        available_boost = f"{boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}"
+                        print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain)}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -466,7 +467,7 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             cipher = response.json().get('dailyCipher')
-            remain = remain_time(cipher.get('remainSeconds'))
+            remain = f"{LIGHT_MAGENTA}{remain_time(cipher.get('remainSeconds'))}{WHITE}"
             next_cipher = f"{localized_text('info_next_cipher_after')}: {remain}"
 
             isClaimed = cipher.get('isClaimed')
@@ -491,7 +492,7 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             combo = response.json().get('dailyCombo')
-            remain = remain_time(combo.get('remainSeconds'))
+            remain = f"{LIGHT_MAGENTA}{remain_time(combo.get('remainSeconds'))}{WHITE}"
             next_combo = f"{localized_text('info_next_combo_after')}: {remain}"
 
             isClaimed = combo.get('isClaimed')
@@ -525,7 +526,7 @@ class HamsterKombatClicker:
 
             config_response_data = config_response.json()
             minigame = config_response_data.get('dailyKeysMiniGames').get(game_id)
-            remain = remain_time(minigame.get('remainSeconds'))
+            remain = f"{LIGHT_MAGENTA}{remain_time(minigame.get('remainSeconds'))}{WHITE}"
             max_points = int(config_response_data.get('dailyKeysMiniGames').get('Tiles').get('maxPoints'))
             next_minigame = f"{localized_text('info_next_minigame_after')}: {remain}"
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
@@ -625,7 +626,7 @@ class HamsterKombatClicker:
                 try:
                     if state['promoId'] == promo_id:
                         keys_today = state['receiveKeysToday']
-                        remain = remain_time(state['receiveKeysRefreshSec'])
+                        remain = f"{LIGHT_MAGENTA}{remain_time(state['receiveKeysRefreshSec'])}{WHITE}"
                         next_keys = f"{localized_text('info_next_keys_after')}: {remain}"
                 except:
                     keys_today = 0
@@ -882,7 +883,7 @@ class HamsterKombatClicker:
                 return promo_code
 
         async def __start_generate(keys_count: int) -> list:
-            remain = remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)
+            remain = f"{YELLOW}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
             print(f"\n{LIGHT_YELLOW}`{TITLE}` · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
