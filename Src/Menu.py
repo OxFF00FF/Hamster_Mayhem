@@ -19,17 +19,15 @@ def main_menu():
                 if key in activity:
                     status_dict[key] = (get_status(activity[key]['isClaimed']), activity[key]['remain'])
 
-
-
-    def activity_line(index, emoji, label, status, cooldown):
+    def line(index, emoji, label, status, cooldown):
         return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu = f"📚  {localized_text('main_menu_header')}"
     menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
-    menu += activity_line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
-    menu += activity_line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
-    menu += activity_line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
-    menu += activity_line(4, '💰', f"{align_main_menu(localized_text('main_menu_combo'))}", *status_dict['combo'])
+    menu += line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
+    menu += line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
+    menu += line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
+    menu += line(4, '💰', f"{align_main_menu(localized_text('main_menu_combo'))}", *status_dict['combo'])
     menu += (
         f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}{localized_text('main_menu_minigames')} {WHITE} \n"
         f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
