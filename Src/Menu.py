@@ -24,7 +24,7 @@ def main_menu():
         len(localized_text('main_menu_tasks')),
         len(localized_text('main_menu_cipher')),
         len(localized_text('main_menu_combo')),
-    )
+    ) + 3
 
     def activity_line(index, emoji, label, status, cooldown):
         return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"

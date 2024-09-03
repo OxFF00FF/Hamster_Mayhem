@@ -116,7 +116,10 @@
         "info_no_accumulate_yet": "Тапы еще не накопились. Следующие тапы через",
         "info_boost_used": "Использован буст",
         "info_boost_not_ready": "Буст еще не готов. Следующий буст через",
-        "available": "доступно"
+        "available": "доступно",
+        "error_upgrade_not_avaialble_time_expired": "Карта `{0}` недоступна для улучшения. Время на покупку истекло",
+        "info_card_upgraded": "Карта `{0}` улучшена · ⭐️ {1} уровень",
+        "error_upgrade_not_avaialble": "Не удалось улучшить карту"
 
     },
 
