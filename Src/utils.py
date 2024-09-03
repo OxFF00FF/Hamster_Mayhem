@@ -207,6 +207,8 @@ def align_daily_info(text):
         len(localized_text('balance')),
         len(localized_text('total')),
         len(localized_text('keys')),
+        len(localized_text('total_purhased_upgraqdes_count')),
+        len(localized_text('total_purhased_cards_count'))
     )
     formatted_text = f"{text}: ".replace(',', ' ')
     return formatted_text.ljust(max_length + 2)

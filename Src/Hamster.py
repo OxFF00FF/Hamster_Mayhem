@@ -273,10 +273,10 @@ class HamsterKombatClicker:
                         response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         response.raise_for_status()
 
-                        print(f"✅  {localized_text('info_card_upgraded'), upgrade_name, upgrade_level}")
+                        print(f"✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level)}")
 
                     elif upgrade_available and upgrade_expire:
-                        logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired'), upgrade_name}")
+                        logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade_name)}")
 
                     elif not upgrade_available:
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
@@ -351,6 +351,7 @@ class HamsterKombatClicker:
         try:
             upgrades_info = self._collect_upgrades_info()
             balance = self._get_balance()
+            purhase_counts = self.get_purhase_count()
             cipher = upgrades_info.get('cipher')
             morse = text_to_morse(cipher)
             combo = '\n'.join(card['description'] for card in upgrades_info.get('cards'))
@@ -368,10 +369,12 @@ class HamsterKombatClicker:
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('balance'))}{WHITE}{balance['balanceCoins']:,}\n"
             info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('total'))}{WHITE}{balance['total']:,}\n"
-            info += f"🔑  {LIGHT_YELLOW}{align_daily_info(localized_text('keys'))}{WHITE}{balance['keys']:,}"
+            info += f"🔑  {LIGHT_YELLOW}{align_daily_info(localized_text('keys'))}{WHITE}{balance['keys']:,}\n"
+            info += f"🔥  {LIGHT_YELLOW}{align_daily_info(localized_text('total_purhased_cards_count'))}{WHITE}{purhase_counts['cards_count']}\n"
+            info += f"🔥  {LIGHT_YELLOW}{align_daily_info(localized_text('total_purhased_upgraqdes_count'))}{WHITE}{purhase_counts['upgrades_count']}"
             if '🚫' in result['combo']:
                 info += f"\n\n⚠️  {localized_text('no_combo_today')}".replace(',', ' ')
-            return info
+            return info.replace(',', ' ')
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -444,7 +447,7 @@ class HamsterKombatClicker:
                     check_task = requests.post(f'{self.base_url}/clicker/check-task', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                     check_task.raise_for_status()
 
-                    print(f"⭐️  {localized_text('info_task_completed'), task_id}")
+                    print(f"⭐️  {localized_text('info_task_completed', task_id)}")
                     any_completed = True
 
             if any_completed:
@@ -566,16 +569,16 @@ class HamsterKombatClicker:
                 print(f"{YELLOW}{localized_text('balance')}: {balance} [{bonus}] | {localized_text('passive_and_bonus')}\n".replace(',', ' '))
 
                 if bonus_keys == 0:
-                    print(f"✅  {localized_text('info_minigame_complete'), game_id}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete', game_id)}. {next_minigame}")
                 else:
-                    print(f"✅  {localized_text('info_minigame_complete_2'), game_id}: {bonus_keys}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete_2',game_id)}: {bonus_keys}. {next_minigame}")
 
             else:
-                print(f"ℹ️  {localized_text('info_minigame_already_completed'), game_id}. {next_minigame}")
+                print(f"ℹ️  {localized_text('info_minigame_already_completed', game_id)}. {next_minigame}")
 
         except requests.exceptions.HTTPError as e:
             if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
-                print(localized_text('error_wrong_minigame_cipher'), game_id)
+                print(localized_text('error_wrong_minigame_cipher', game_id))
 
             elif start_game.json().get('error_code') == 'KEYS-MINIGAME_WAITING':
                 print(f"🚫  {localized_text('error_next_minigame_attempt')}: {next_attempt}")
@@ -634,7 +637,7 @@ class HamsterKombatClicker:
                     promo_title = promo['title']['en']
 
             if keys_today == keys_limit:
-                print(f"ℹ️  {localized_text('info_all_keys_in_game_claimed'), promo_title}. {next_keys}")
+                print(f"ℹ️  {localized_text('info_all_keys_in_game_claimed', promo_title)}. {next_keys}")
             else:
                 print(f"{LIGHT_YELLOW}🔄  {localized_text('info_activating_promocode')} `{promoCode}`...{WHITE}")
                 json_data = {'promoCode': promoCode}
@@ -752,6 +755,24 @@ class HamsterKombatClicker:
 
             config.hamster_token = False
             print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}\n")
+
+    def get_purhase_count(self):
+        result = {}
+        try:
+            response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            upgrades = response.json().get('clickerUser').get('upgrades')
+            result = {
+                'upgrades_count': sum(item["level"] for item in upgrades.values()),
+                'cards_count': sum(1 for item in upgrades.values() if item["level"] > 0)
+            }
+            return result
+
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
+            return result
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         games_data = get_games_data()['apps']

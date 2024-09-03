@@ -119,15 +119,16 @@
         "available": "доступно",
         "error_upgrade_not_avaialble_time_expired": "Карта `{0}` недоступна для улучшения. Время на покупку истекло",
         "info_card_upgraded": "Карта `{0}` улучшена · ⭐️ {1} уровень",
-        "error_upgrade_not_avaialble": "Не удалось улучшить карту"
-
+        "error_upgrade_not_avaialble": "Не удалось улучшить карту",
+        "total_purhased_cards_count": "Куплено карт",
+        "total_purhased_upgraqdes_count": "Куплено улучшений"
     },
 
     "en": {
         "sign_in": "You logged as",
         "main_menu_header": "Main menu \n  What activity do you want to do?\n",
         "playground_menu_header": "Playground \n  For which game do you want to receive promocodes?\n",
-        "minigames_menu_header": "Миниигры \n  Which minigame you want complete?",
+        "minigames_menu_header": "Minigames \n  Which minigame you want complete?",
         "settings_menu_header": "Settings \n",
         "main_menu_info": "Information",
         "left": "Remain",
@@ -163,7 +164,7 @@
         "not_available_to_buy": "Card is not available for improvement",
         "level": "level",
         "per_hour": "per hour",
-        "per_hour_after_buy": "в час (после покупки)",
+        "per_hour_after_buy": "per hour (after buy)",
         "total_profit": "Total profit",
         "total_price": "Total price",
         "change_lang": "Interface language has been changed. For changes to take effect, restart the program",
@@ -243,6 +244,8 @@
         "available": "available",
         "error_upgrade_not_avaialble_time_expired": "Card `{0}` not available for improvement. Time to buy has expired",
         "info_card_upgraded": "Card `{0}` upgraded · ⭐️ {1} level",
-        "error_upgrade_not_avaialble": "Failed to upgrade card"
+        "error_upgrade_not_avaialble": "Failed to upgrade card",
+        "total_purhased_cards_count": "Cards purchased",
+        "total_purhased_upgraqdes_count": "Upgrades purchased"
     }
 }
