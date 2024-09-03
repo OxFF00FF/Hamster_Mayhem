@@ -33,7 +33,6 @@ class HamsterKombatClicker:
         self.BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
         self.GROUP_ID = os.getenv('GROUP_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
-
         self.base_url = 'https://api.hamsterkombatgame.io'
 
     def _get_headers(self, hamster_token: str) -> dict:
@@ -177,9 +176,8 @@ class HamsterKombatClicker:
 
             return result
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
+        except:
+            return result
 
     def _get_promos(self) -> list:
         result = []
@@ -738,23 +736,30 @@ class HamsterKombatClicker:
     def login(self):
         try:
             response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
+            if response.status_code == 401:
+                print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. Сheck your `{config.account}` for correct")
+                exit(1)
 
-            account_info = response.json()['accountInfo']['telegramUsers'][0]
-            username = account_info.get('username', 'n/a')
-            first_name = account_info.get('firstName', 'n/a')
-            last_name = account_info.get('lastName', 'n/a')
-            config.hamster_token = True
-            print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
+            else:
+                data = response.json()
+                account_info = data['accountInfo']['telegramUsers'][0]
+                username = account_info.get('username', 'n/a')
+                first_name = account_info.get('firstName', 'n/a')
+                last_name = account_info.get('lastName', 'n/a')
+                config.hamster_token = True
+                print(f"{DARK_GRAY}{localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
 
         except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
+            if data['error_code'] == 'BAD_AUTH_TOKEN':
+                print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
+                      f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
+            else:
+                print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}\n")
+                logging.error(e)
 
-            error = response.json()
-            if error['error_code'] == 'BAD_AUTH_TOKEN':
-                print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n")
-            #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
             config.hamster_token = False
+            print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}\n")
+
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         games_data = get_games_data()['apps']
