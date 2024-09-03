@@ -401,11 +401,11 @@ class HamsterKombatClicker:
                 taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 taps_response.raise_for_status()
 
-                print(f"✅  Тапы выполнены")
+                print(f"✅  {localized_text('info_taps_completed')}")
 
             else:
                 remain = remain_time(int(total_remain_time - current_remain_time))
-                print(f"🚫  Тапы еще не накопились. Следующие тапы через: {remain}")
+                print(f"🚫  {localized_text('info_no_accumulate_yet')}: {remain}")
 
             boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
             for boost in boostsForBuy:
@@ -416,17 +416,17 @@ class HamsterKombatClicker:
                         boost_response = requests.post(f'{self.base_url}/clicker/buy-boost', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         boost_response.raise_for_status()
 
-                        print(f"✅  Использован буст")
+                        print(f"✅  {localized_text('info_boost_used')}")
 
                         count = int(maxTaps / earnPerTap)
                         json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                         taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         taps_response.raise_for_status()
 
-                        print(f"✅  Тапы выполнены")
+                        print(f"✅  {localized_text('info_taps_completed')}")
 
                     else:
-                        print(f"🚫  Буст еще не готов. Следующий буст через: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
+                        print(f"🚫  {localized_text('info_boost_not_ready')}: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -446,14 +446,14 @@ class HamsterKombatClicker:
                     check_task = requests.post(f'{self.base_url}/clicker/check-task', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                     check_task.raise_for_status()
 
-                    print(f"⭐️  Задание `{task_id}` выполнено")
+                    print(f"⭐️  {localized_text('info_task_completed'), task_id}")
                     any_completed = True
 
             if any_completed:
-                print("✅  Все задания выполнены")
+                print(f"✅  {localized_text('info_all_tasks_complete')}")
 
             else:
-                print("ℹ️  Все задания сегодня уже выполнены")
+                print(f"ℹ️  {localized_text('info_all_tasks_already_complete')}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -466,7 +466,7 @@ class HamsterKombatClicker:
 
             cipher = response.json().get('dailyCipher')
             remain = remain_time(cipher.get('remainSeconds'))
-            next_cipher = f"Следующий шифр будет доступен через: {remain}"
+            next_cipher = f"{localized_text('info_next_cipher_after')}: {remain}"
 
             isClaimed = cipher.get('isClaimed')
             if not isClaimed:
@@ -475,10 +475,10 @@ class HamsterKombatClicker:
                 claim_cipher = requests.post(f'{self.base_url}/clicker/claim-daily-cipher', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 claim_cipher.raise_for_status()
 
-                print(f"✅  Ежедневный шифр получен. {next_cipher}")
+                print(f"✅  {localized_text('info_cipher_completed')}. {next_cipher}")
 
             else:
-                print(f"ℹ️  Шифр сегодня уже получен. {next_cipher}")
+                print(f"ℹ️  {localized_text('info_cipher_already_complete')}. {next_cipher}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -491,7 +491,7 @@ class HamsterKombatClicker:
 
             combo = response.json().get('dailyCombo')
             remain = remain_time(combo.get('remainSeconds'))
-            next_combo = f"Следующее комбо через: {remain}"
+            next_combo = f"{localized_text('info_next_combo_after')}: {remain}"
 
             isClaimed = combo.get('isClaimed')
             if not isClaimed:
@@ -504,14 +504,14 @@ class HamsterKombatClicker:
                     claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
                     claim_combo.raise_for_status()
 
-                    print(f"✅  Ежедневное комбо выполнено. {next_combo}")
+                    print(f"✅  {localized_text('info_combo_completed')}. {next_combo}")
 
                 if buy_anyway:
                     for upgrade in cards:
                         self._buy_upgrade(upgrade['id'])
-                    print(f"🚫  Ежедневное комбо не выполнено. Были куплены только доступные карты")
+                    print(f"🚫  {localized_text('warning_combo_not_complete')}")
             else:
-                print(f"ℹ️  Комбо сегодня уже получено. {next_combo}")
+                print(f"ℹ️  {localized_text('info_combo_already_complete')}. {next_combo}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -526,7 +526,7 @@ class HamsterKombatClicker:
             minigame = config_response_data.get('dailyKeysMiniGames').get(game_id)
             remain = remain_time(minigame.get('remainSeconds'))
             max_points = int(config_response_data.get('dailyKeysMiniGames').get('Tiles').get('maxPoints'))
-            next_minigame = f"Следующая миниигра будет доступна через: {remain}"
+            next_minigame = f"{localized_text('info_next_minigame_after')}: {remain}"
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
             bonus_keys = minigame.get('bonusKeys')
 
@@ -540,20 +540,20 @@ class HamsterKombatClicker:
                         one_point_bonus = config.bonus_for_one_point
 
                     max_coins = one_point_bonus * max_points
-                    print(f"{YELLOW}За 1 балл вы получаете монет:  {LIGHT_BLUE}{one_point_bonus}{WHITE} \n"
-                          f"{YELLOW}Максимальное количество монет: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
+                    print(f"{YELLOW}{localized_text('info_coinf_for_one_point')}:  {LIGHT_BLUE}{one_point_bonus}{WHITE} \n"
+                          f"{YELLOW}{localized_text('info_max_coins')}: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
 
                 json_data = {'miniGameId': game_id}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 start_game.raise_for_status()
 
                 initial_balance = int(start_game.json().get('clickerUser').get('balanceCoins'))
-                print(f"{YELLOW}Баланс: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
+                print(f"{YELLOW}{localized_text('balance')}: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
                 current_balance = int(self._sync().get('balanceCoins'))
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
-                print(f"{YELLOW}Баланс: {balance} | пассивный".replace(',', ' '))
+                print(f"{YELLOW}{localized_text('balance')}: {balance} | {localized_text('passive')}".replace(',', ' '))
 
                 cipher = self._get_mini_game_cipher(minigame)
                 json_data = {'cipher': cipher, 'miniGameId': game_id}
@@ -565,31 +565,26 @@ class HamsterKombatClicker:
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
-                print(f"{YELLOW}Баланс: {balance} [{bonus}] | пассивынй + бонус\n".replace(',', ' '))
+                print(f"{YELLOW}{localized_text('balance')}: {balance} [{bonus}] | {localized_text('passive_and_bonus')}\n".replace(',', ' '))
 
                 if bonus_keys == 0:
-                    print(f"✅  Миниигра {game_id} пройдена. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete'), game_id}. {next_minigame}")
                 else:
-                    print(f"✅  Миниигра {game_id} пройдена. Получено ключей: {bonus_keys}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete_2'), game_id}: {bonus_keys}. {next_minigame}")
 
             else:
-                print(f"ℹ️  Миниигра {game_id} сегодня уже пройдена. {next_minigame}")
+                print(f"ℹ️  {localized_text('info_minigame_already_completed'), game_id}. {next_minigame}")
 
-        except requests.exceptions.HTTPError as http_err:
+        except requests.exceptions.HTTPError as e:
             if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
-                print(f"\n🚫  Не удалось пройти Миниигру {game_id}\n"
-                      f"⚠️  Кажется разрабы хомяка снова поменяли шифр. Обновите код с помощью файла `UPDATE.bat`\n"
-                      f"ℹ️  Если обновление не поможет, то подождите. Мы уже добываем для вас новый шифр  🫡\n")
+                print(localized_text('error_wrong_minigame_cipher'))
 
             elif start_game.json().get('error_code') == 'KEYS-MINIGAME_WAITING':
-                print(f"🚫  Миниигра не доступна. До следующей попытки осталось: {next_attempt}")
+                print(f"🚫  {localized_text('error_next_minigame_attempt')}: {next_attempt}")
 
             else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}\n")
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
 
     def send_balance_to_group(self, bot_token, update_time_sec=7200, chat_id=None):
         try:
@@ -630,7 +625,7 @@ class HamsterKombatClicker:
                     if state['promoId'] == promo_id:
                         keys_today = state['receiveKeysToday']
                         remain = remain_time(state['receiveKeysRefreshSec'])
-                        next_keys = f"Следующие ключи будут доступны через: {remain}"
+                        next_keys = f"{localized_text('info_next_keys_after')}: {remain}"
                 except:
                     keys_today = 0
 
@@ -641,14 +636,14 @@ class HamsterKombatClicker:
                     promo_title = promo['title']['en']
 
             if keys_today == keys_limit:
-                print(f"ℹ️  Все ключи в игре `{promo_title}` сегодня уже получены. {next_keys}")
+                print(f"ℹ️  {localized_text('info_all_keys_in_game_claimed'), promo_title}. {next_keys}")
             else:
-                print(f"{LIGHT_YELLOW}🔄  Активация промокода `{promoCode}`...{WHITE}")
+                print(f"{LIGHT_YELLOW}🔄  {localized_text('info_activating_promocode')} `{promoCode}`...{WHITE}")
                 json_data = {'promoCode': promoCode}
                 response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
                 time.sleep(1)
-                print(f"{LIGHT_GREEN}🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}{WHITE}\n")
+                print(f"{LIGHT_GREEN}🎉  {localized_text('info_promocode_activated')}: {keys_today + 1}/{keys_limit}{WHITE}\n")
             time.sleep(1)
 
         except Exception as e:
@@ -759,7 +754,6 @@ class HamsterKombatClicker:
 
             config.hamster_token = False
             print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}\n")
-
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         games_data = get_games_data()['apps']
@@ -899,9 +893,12 @@ class HamsterKombatClicker:
         print(formatted_text)
 
         if apply_promo:
-            send_to_group = False
-            save_to_file = False
-            print(f'⚠️  {LIGHT_YELLOW}Промокоды не будут отправленны в группу и не записаны в файл{WHITE}\n')
+            config.send_to_group = False
+            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}\n")
+
+            config.save_to_file = False
+            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_saved_to_file')}{WHITE}\n")
+
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
 
@@ -910,10 +907,10 @@ class HamsterKombatClicker:
                 telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "parse_mode": "Markdown", "text": result})
                 telegram_response.raise_for_status()
                 time.sleep(3)
-                print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
+                print(f"✅  {GREEN}{localized_text('main_menu_promocodes')} `{TITLE}` {localized_text('sent_to_group')}{WHITE}")
 
             except Exception as error:
-                print(f"🚫  Ошибкка во время запроса к телеграм API\n{error}")
+                print(f"🚫  Error during request to telegram API\n{error}")
                 logging.error(traceback.format_exc())
 
         if save_to_file:
@@ -923,4 +920,4 @@ class HamsterKombatClicker:
             file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'generated keys', f'generated_keys ({TITLE}).txt')
             with open(file_path, 'w', encoding='utf-8') as file:
                 file.write(formatted_text.strip())
-                print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
+                print(f"✅  {GREEN}{localized_text('main_menu_promocodes')} `{TITLE}` {localized_text('saved_to_file')}{WHITE}\n`{file_path}`")
