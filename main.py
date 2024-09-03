@@ -10,7 +10,6 @@ from Src.utils import banner, line_after, localized_text
 
 
 config = ConfigDB()
-lang = config.lang
 
 
 if __name__ == '__main__':

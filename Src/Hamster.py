@@ -25,7 +25,6 @@ from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, li
 
 load_dotenv()
 config = ConfigDB()
-lang = config.lang
 
 
 class HamsterKombatClicker:
@@ -609,7 +608,6 @@ class HamsterKombatClicker:
             next_minigame = f"Следующая миниигра будет доступна через: {remain}"
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
             bonus_keys = minigame.get('bonusKeys')
-            remain_points = minigame.get('remainPoints')
 
             isClaimed = minigame.get('isClaimed')
             if not isClaimed:
