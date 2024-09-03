@@ -75,7 +75,9 @@
         "info_save_to_file": "Сохранение в файл",
         "spinners_list": "\nСписок доступных индикаторов загрузки",
         "info_default_spinner": "Индикатор загрузки установлен по умолчанию",
-        "info_spinner_changed_to": "Индикатор загрузки изменен на"
+        "info_spinner_changed_to": "Индикатор загрузки изменен на",
+        "received": "Получен",
+        "not_recieved": "Не получен"
     },
 
     "en": {
@@ -154,6 +156,8 @@
         "info_save_to_file": "Saving to file",
         "spinners_list": "\nList of available loading indicators",
         "info_default_spinner": "Loading indicator set by default",
-        "info_spinner_changed_to": "Loading indicator changed to"
+        "info_spinner_changed_to": "Loading indicator changed to",
+        "received": "Received",
+        "not_recieved": "Not recieved"
     }
 }

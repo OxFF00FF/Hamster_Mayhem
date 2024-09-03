@@ -130,7 +130,7 @@ def get_status(status):
 
 
 def generation_status(status):
-    return f"{LIGHT_GREEN}Получен{WHITE}" if status else f"{RED}Не получен{WHITE}"
+    return f"{LIGHT_GREEN}{localized_text('received')}{WHITE}" if status else f"{RED}{localized_text('not_recieved')}{WHITE}"
 
 
 def get_games_data():
@@ -180,7 +180,7 @@ def localized_text(key, *args, **kwargs):
         with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
             translations = json.load(f)
     except json.JSONDecodeError:
-        logging.error(f"Не удалось корректно декодировать файл `translations.json`")
+        logging.error(f"Failed to decode file `translations.json`")
         exit(1)
 
     # Перевод для указанного языка
