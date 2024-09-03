@@ -14,7 +14,7 @@ config = ConfigDB()
 
 if __name__ == '__main__':
     try:
-        # banner()
+        banner()
         hamster_client().login()
         main_menu()
 

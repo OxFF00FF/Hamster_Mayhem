@@ -577,7 +577,7 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as e:
             if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
-                print(localized_text('error_wrong_minigame_cipher'))
+                print(localized_text('error_wrong_minigame_cipher'), game_id)
 
             elif start_game.json().get('error_code') == 'KEYS-MINIGAME_WAITING':
                 print(f"🚫  {localized_text('error_next_minigame_attempt')}: {next_attempt}")
