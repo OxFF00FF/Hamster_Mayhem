@@ -13,11 +13,11 @@ config = ConfigDB()
 
 
 if __name__ == '__main__':
-    # banner()
-    hamster_client().login()
-    main_menu()
-
     try:
+        # banner()
+        hamster_client().login()
+        main_menu()
+
         while True:
             if config.hamster_token:
                 choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(#/1/2/3/4/5/6/a/$/+/s/m/0):{RESET} ")
@@ -30,4 +30,6 @@ if __name__ == '__main__':
             line_after()
 
     except Exception as e:
-        logging.error(f"{e}\n{traceback.format_exc()}\n")
+        print(f"🚫  {localized_text('error_occured')}: {e}")
+        logging.error(traceback.format_exc())
+        exit(1)
