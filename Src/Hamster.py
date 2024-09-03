@@ -416,13 +416,13 @@ class HamsterKombatClicker:
                 'combo': combo
             }
 
-            info = f"\n{result['date']} \n\n"
+            info = f"{result['date']} \n\n"
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
             info += f"💰  {LIGHT_YELLOW}{localized_text('balance')}:{WHITE} {balance['balanceCoins']:,} \n"
             info += f"💰  {LIGHT_YELLOW}{localized_text('total')}: {WHITE} {balance['total']:,} \n"
-            info += f"🔑  {LIGHT_YELLOW}{localized_text('keys')}:{WHITE} {balance['keys']:,}\n"
+            info += f"🔑  {LIGHT_YELLOW}{localized_text('keys')}:{WHITE} {balance['keys']:,}"
             if '🚫' in result['combo']:
                 info += f"\n⚠️  {localized_text('no_combo_today')}".replace(',', ' ')
             return info
@@ -962,7 +962,7 @@ class HamsterKombatClicker:
             first_name = account_info.get('firstName', 'n/a')
             last_name = account_info.get('lastName', 'n/a')
             config.hamster_token = True
-            print(f"{DARK_GRAY}{localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
+            print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
 
         except requests.exceptions.HTTPError as http_err:
             print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"

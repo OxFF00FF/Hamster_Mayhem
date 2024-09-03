@@ -53,6 +53,8 @@ def handle_main_menu_choice(choice):
     elif choice == 'a':
         line_before()
         config.account = choose_account()
+
+        line_before()
         hamster_client().login()
 
     elif choice == '$':
@@ -85,18 +87,23 @@ def handle_main_menu_choice(choice):
 
     elif choice == '0':
         line_before()
-        print("Выход")
+        print(localized_text('exit'))
         line_after()
         exit(1)
+
+    else:
+        line_before()
+        print(localized_text('no_such_option'))
 
 
 def handle_playground_menu_choice():
     games_data = get_games_data()['apps']
     games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
+    line_before()
 
     while True:
         playground_menu()
-        choice = input(f"\n{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
         line_before()
 
         if choice in games_prefix:
@@ -127,7 +134,7 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(f"\n{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
         line_before()
 
         if choice in choices:

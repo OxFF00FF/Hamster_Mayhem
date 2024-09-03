@@ -40,7 +40,6 @@ def choose_account():
                 logging.error(e)
 
         account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}{localized_text('choose_number')}: {WHITE}")
-        line_after()
         return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
     else:
         print(localized_text('one_account_detected'))

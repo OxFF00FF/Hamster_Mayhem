@@ -16,11 +16,11 @@ lang = config.lang
 if __name__ == '__main__':
     # banner()
     hamster_client().login()
+    main_menu()
 
     try:
         while True:
             if config.hamster_token:
-                main_menu()
                 choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(#/1/2/3/4/5/6/a/$/+/s/m/0):{RESET} ")
             else:
                 main_menu_not_logged()
