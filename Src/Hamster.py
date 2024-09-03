@@ -657,6 +657,104 @@ class HamsterKombatClicker:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             logging.error(traceback.format_exc())
 
+    def evaluate_cards(self) -> list:
+        response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+        response.raise_for_status()
+
+        evaluated_cards = []
+        upgrades = response.json()['upgradesForBuy']
+        for card in upgrades:
+            if card['isAvailable'] and not card['isExpired']:
+                if card["profitPerHourDelta"] != 0:
+                    payback_seconds = int(card["price"] / card["profitPerHour"]) * 3600
+                    card["payback_period"] = remain_time(payback_seconds)
+                    card["payback_days"] = f"{payback_seconds / 86400:.0f}"
+                    card["profitability_ratio"] = (card["profitPerHour"] / card["price"]) * 100
+                else:
+                    card["payback_period"] = float('inf')
+                    card["profitability_ratio"] = 0
+
+                evaluated_cards.append(card)
+        sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
+        return sorted_cards[:20]
+
+    def get_account_info(self):
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            account_info = response.json()['accountInfo']['telegramUsers'][0]
+            return account_info
+
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
+
+    def login(self):
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            account_info = response.json()['accountInfo']['telegramUsers'][0]
+            username = account_info.get('username', 'n/a')
+            first_name = account_info.get('firstName', 'n/a')
+            last_name = account_info.get('lastName', 'n/a')
+            config.hamster_token = True
+            print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
+
+        except Exception as e:
+            print(e)
+            print(traceback.format_exc())
+            print(response.json())
+            # print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
+            #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
+            config.hamster_token = False
+
+    def get_cooldowns(self) -> dict:
+        result = {}
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            clickerUser = response.json().get('clickerUser')
+            availableTaps = int(clickerUser.get('availableTaps'))
+            maxTaps = int(clickerUser.get('maxTaps'))
+            tapsRecoverPerSec = clickerUser.get('tapsRecoverPerSec')
+            total_remain_time = (maxTaps / tapsRecoverPerSec) / 60
+            current_remain_time = (availableTaps / tapsRecoverPerSec) / 60
+            remain_taps = total_remain_time - current_remain_time
+            if remain_taps == 0:
+                result['taps'] = True
+            else:
+                result['taps'] = False
+                result['taps_remain'] = f"{remain_taps:.0f}"
+
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
+            result['cipher'] = response.json()['dailyCipher']['isClaimed']
+            result['key'] = response.json().get('dailyKeysMiniGame').get('isClaimed')
+            result['combo'] = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json()['dailyCombo']['isClaimed']
+
+            response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
+            task_list = response.json().get('tasks', [])
+            if all(task['isCompleted'] for task in task_list):
+                result['tasks'] = True
+            else:
+                result['tasks'] = False
+            return result
+
+        except:
+            return result
+
+    def bonus_for_one_point(self, mini_game: dict) -> int:
+        json_data = {'miniGameId': mini_game.get('id')}
+        requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+
+        cipher = self._get_mini_game_cipher(mini_game, one_point=True)
+        json_data = {'cipher': cipher, 'miniGameId': mini_game.get('id')}
+        end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+        bonus = int(end_game.json().get('bonus'))
+        return bonus
+
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         games_data = get_games_data()['apps']
 
@@ -820,101 +918,3 @@ class HamsterKombatClicker:
             with open(file_path, 'w', encoding='utf-8') as file:
                 file.write(formatted_text.strip())
                 print(f"Промокоды `{TITLE}` сохранены в файл:\n`{file_path}`")
-
-    def evaluate_cards(self) -> list:
-        response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
-        response.raise_for_status()
-
-        evaluated_cards = []
-        upgrades = response.json()['upgradesForBuy']
-        for card in upgrades:
-            if card['isAvailable'] and not card['isExpired']:
-                if card["profitPerHourDelta"] != 0:
-                    payback_seconds = int(card["price"] / card["profitPerHour"]) * 3600
-                    card["payback_period"] = remain_time(payback_seconds)
-                    card["payback_days"] = f"{payback_seconds / 86400:.0f}"
-                    card["profitability_ratio"] = (card["profitPerHour"] / card["price"]) * 100
-                else:
-                    card["payback_period"] = float('inf')
-                    card["profitability_ratio"] = 0
-
-                evaluated_cards.append(card)
-        sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
-        return sorted_cards[:20]
-
-    def get_account_info(self):
-        try:
-            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
-
-            account_info = response.json()['accountInfo']['telegramUsers'][0]
-            return account_info
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-
-    def login(self):
-        try:
-            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
-
-            account_info = response.json()['accountInfo']['telegramUsers'][0]
-            username = account_info.get('username', 'n/a')
-            first_name = account_info.get('firstName', 'n/a')
-            last_name = account_info.get('lastName', 'n/a')
-            config.hamster_token = True
-            print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
-
-        except Exception as e:
-            print(e)
-            print(traceback.format_exc())
-            print(response.json())
-            # print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
-            #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
-            config.hamster_token = False
-
-    def get_cooldowns(self) -> dict:
-        result = {}
-        try:
-            response = requests.post('https://api.hamsterkombatgame.io/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
-
-            clickerUser = response.json().get('clickerUser')
-            availableTaps = int(clickerUser.get('availableTaps'))
-            maxTaps = int(clickerUser.get('maxTaps'))
-            tapsRecoverPerSec = clickerUser.get('tapsRecoverPerSec')
-            total_remain_time = (maxTaps / tapsRecoverPerSec) / 60
-            current_remain_time = (availableTaps / tapsRecoverPerSec) / 60
-            remain_taps = total_remain_time - current_remain_time
-            if remain_taps == 0:
-                result['taps'] = True
-            else:
-                result['taps'] = False
-                result['taps_remain'] = f"{remain_taps:.0f}"
-
-            response = requests.post('https://api.hamsterkombatgame.io/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
-            result['cipher'] = response.json()['dailyCipher']['isClaimed']
-            result['key'] = response.json().get('dailyKeysMiniGame').get('isClaimed')
-            result['combo'] = requests.post('https://api.hamsterkombatgame.io/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json()['dailyCombo']['isClaimed']
-
-            response = requests.post('https://api.hamsterkombatgame.io/clicker/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
-            task_list = response.json().get('tasks', [])
-            if all(task['isCompleted'] for task in task_list):
-                result['tasks'] = True
-            else:
-                result['tasks'] = False
-            return result
-
-        except:
-            return result
-
-    def bonus_for_one_point(self, mini_game: dict) -> int:
-        json_data = {'miniGameId': mini_game.get('id')}
-        requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-
-        cipher = self._get_mini_game_cipher(mini_game, one_point=True)
-        json_data = {'cipher': cipher, 'miniGameId': mini_game.get('id')}
-        end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-        bonus = int(end_game.json().get('bonus'))
-        return bonus
