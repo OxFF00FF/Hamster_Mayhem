@@ -10,7 +10,6 @@ import traceback
 import uuid
 from datetime import datetime
 from random import randint
-from typing import Any
 
 import aiohttp
 import requests
@@ -63,8 +62,8 @@ class HamsterKombatClicker:
             return response.json().get('clickerUser').get('id')
 
         except Exception as e:
-            print(f"🚫  Произошла ошибка: {e} | status code {response.status_code}")
-            logging.error(f"{e}\n{traceback.format_exc()}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _get_daily_combo(self) -> dict:
         try:
@@ -97,11 +96,9 @@ class HamsterKombatClicker:
             logging.warning(f"⚙️  {combo_ids}")
             return {'combo': combo_ids, 'date': date}
 
-        except requests.exceptions.HTTPError as http_err:
-            logging.error(http_err)
-
         except Exception as e:
-            logging.error(e)
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _get_daily_cipher(self) -> str:
         try:
@@ -110,19 +107,12 @@ class HamsterKombatClicker:
 
             encoded_cipher = response.json()['dailyCipher']['cipher']
             cipher = base64.b64decode(encoded_cipher[:3] + encoded_cipher[3 + 1:]).decode('utf-8')
-            logging.warning(cipher)
+            logging.info(cipher)
             return cipher
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _get_balance(self) -> dict:
         try:
@@ -137,16 +127,9 @@ class HamsterKombatClicker:
                 'date': int(clicker.get('lastSyncUpdate'))
             }
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _activity_cooldowns(self) -> list:
         result = []
@@ -194,12 +177,9 @@ class HamsterKombatClicker:
 
             return result
 
-        except requests.exceptions.HTTPError as http_err:
-            logging.warning(f"🚫  HTTP ошибка: {http_err}")
-            return result
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _get_promos(self) -> list:
         result = []
@@ -220,7 +200,9 @@ class HamsterKombatClicker:
                         result.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
             return result
 
-        except:
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
             return result
 
     def _get_minigames(self) -> list:
@@ -234,7 +216,9 @@ class HamsterKombatClicker:
                 result.append(game)
             return result
 
-        except:
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
             return result
 
     def _get_mini_game_cipher(self, mini_game: dict, one_point=False) -> str:
@@ -268,7 +252,9 @@ class HamsterKombatClicker:
             minigame_cipher = base64.b64encode(cipher_string.encode()).decode()
             return minigame_cipher
 
-        except:
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
             return minigame_cipher
 
     def _buy_upgrade(self, upgradeId: str) -> dict:
@@ -303,17 +289,9 @@ class HamsterKombatClicker:
                         logging.error(f"🚫  Не удалось улучшить карту `{upgrade_name}`. {error_message}")
                         return error_message
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                remain = remain_time(upgrade['cooldownSeconds'])
-                print(f"🚫  Не удалось улучшить карту `{upgrade['name']}`. Карта будет доступна для улучшения через: {remain}")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _collect_upgrades_info(self) -> dict:
         try:
@@ -357,16 +335,9 @@ class HamsterKombatClicker:
             logging.warning(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
             return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def _sync(self):
         try:
@@ -375,8 +346,9 @@ class HamsterKombatClicker:
             clicker_user = response.json().get('clickerUser')
             return clicker_user
 
-        except requests.exceptions.HTTPError as http_err:
-            logging.error(f"🚫  HTTP ошибка: {http_err}")
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def daily_info(self) -> str:
         try:
@@ -406,7 +378,8 @@ class HamsterKombatClicker:
             return info
 
         except Exception as e:
-            logging.error(e)
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def complete_taps(self):
         try:
@@ -457,17 +430,9 @@ class HamsterKombatClicker:
                     else:
                         print(f"🚫  Буст еще не готов. Следующий буст через: {remain_time(remain)}. {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} доступно")
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-                logging.error(traceback.format_exc())
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def complete_daily_tasks(self):
         try:
@@ -492,16 +457,9 @@ class HamsterKombatClicker:
             else:
                 print("ℹ️  Все задания сегодня уже выполнены")
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def complete_daily_chipher(self):
         try:
@@ -524,16 +482,9 @@ class HamsterKombatClicker:
             else:
                 print(f"ℹ️  Шифр сегодня уже получен. {next_cipher}")
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def complete_daily_combo(self, buy_anyway=False):
         try:
@@ -564,16 +515,9 @@ class HamsterKombatClicker:
             else:
                 print(f"ℹ️  Комбо сегодня уже получено. {next_combo}")
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def complete_daily_minigame(self, game_id):
         try:
@@ -634,13 +578,7 @@ class HamsterKombatClicker:
                 print(f"ℹ️  Миниигра {game_id} сегодня уже пройдена. {next_minigame}")
 
         except requests.exceptions.HTTPError as http_err:
-            if config_response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле\n🚫  {http_err}")
-
-            elif config_response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле\n🚫  {http_err}")
-
-            elif end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
+            if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
                 print(f"\n🚫  Не удалось пройти Миниигру {game_id}\n"
                       f"⚠️  Кажется разрабы хомяка снова поменяли шифр. Обновите код с помощью файла `UPDATE.bat`\n"
                       f"ℹ️  Если обновление не поможет, то подождите. Мы уже добываем для вас новый шифр  🫡\n")
@@ -652,7 +590,8 @@ class HamsterKombatClicker:
                 logging.error(f"🚫  HTTP ошибка: {http_err}\n")
 
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def send_balance_to_group(self, bot_token, update_time_sec=7200, chat_id=None):
         try:
@@ -677,15 +616,9 @@ class HamsterKombatClicker:
                 print(f"✅  {update_date} · Баланс успешно отправлен в группу")
                 time.sleep(update_time_sec)
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def apply_promocode(self, promoCode, promo_id):
         try:
@@ -720,18 +653,9 @@ class HamsterKombatClicker:
                 print(f"{LIGHT_GREEN}🎉  Промокод активирован. Получено ключей сегодня: {keys_today + 1}/{keys_limit}{WHITE}\n")
             time.sleep(1)
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
         except Exception as e:
-            logging.error(f"🚫  Не удалось активировать промокод: {e}\n{traceback.format_exc()}")
-
-        except requests.exceptions.RequestException as e:
-            print(f"❌ Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         """
@@ -763,7 +687,8 @@ class HamsterKombatClicker:
             random_numbers = ''.join([str(random.randint(0, 9)) for _ in range(19)])
             return f"{timestamp}-{random_numbers}"
 
-        async def __get_client_token(session, client_id) -> Any | None:
+        async def __get_client_token(session, client_id: str) -> str:
+            client_token = ''
             url = 'https://api.gamepromo.io/promo/login-client'
             headers = {'Content-Type': 'application/json'}
             payload = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
@@ -772,14 +697,19 @@ class HamsterKombatClicker:
                 async with session.post(url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
-                    return data.get('clientToken')
+                    client_token = data.get('clientToken')
+                    return client_token
 
-            except requests.exceptions.HTTPError:
+            except Exception as e:
                 if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                    return None
+                    logging.error(f"🚫  {localized_text('error_429')}")
+                else:
+                    print(f"🚫  {localized_text('error_occured')}: {e}")
+                    logging.error(traceback.format_exc())
+                return client_token
 
-        async def __emulate_progress(session, client_token) -> Any | None:
+        async def __emulate_progress(session, client_token: str) -> str:
+            has_code = ''
             url = 'https://api.gamepromo.io/promo/register-event'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
             payload = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
@@ -788,14 +718,19 @@ class HamsterKombatClicker:
                 async with session.post(url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
-                    return data.get('hasCode')
+                    has_code = data.get('hasCode')
+                    return has_code
 
-            except requests.exceptions.HTTPError:
+            except Exception as e:
                 if response.status_code == 429:
                     logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                    return None
+                else:
+                    print(f"🚫  {localized_text('error_occured')}: {e}")
+                    logging.error(traceback.format_exc())
+                return has_code
 
-        async def __get_promocode(session, client_token) -> Any | None:
+        async def __get_promocode(session, client_token: str) -> str | None:
+            promo_code = ''
             url = 'https://api.gamepromo.io/promo/create-code'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
             payload = {'promoId': PROMO_ID}
@@ -804,63 +739,65 @@ class HamsterKombatClicker:
                 async with session.post(url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
-                    if data['promoCode'] == "" or data['promoCode'] == " ":
-                        return None
-                    else:
-                        return data['promoCode']
+                    promo_code = data.get('promoCode')
+                    return promo_code
 
-            except requests.exceptions.HTTPError:
+            except Exception as e:
                 if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                return None
+                    logging.error(f"🚫  {localized_text('error_429')}")
+                else:
+                    print(f"🚫  {localized_text('error_occured')}: {e}")
+                    logging.error(traceback.format_exc())
+                return promo_code
 
-        async def __key_generation(session, index, keys_count) -> str | None:
+        async def __key_generation(session, index: int, keys_count: int) -> str:
+            promo_code = ''
             client_id = await __generate_client_id()
             client_token = await __get_client_token(session, client_id)
             time.sleep(1)
 
-            for n in range(EVENTS_COUNT):
-                await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
-                try:
-                    has_code = await __emulate_progress(session, client_token)
-                except Exception as error:
-                    logging.warning(f'[{index}/{keys_count}] {RED}Progress emulation failed: {error}{WHITE}')
-                    return None
-
-                print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {(n + 1) / EVENTS_COUNT * 100:.0f}%")
-                if has_code:
-                    break
-
             try:
-                promoCode = await __get_promocode(session, client_token)
-                print(f'{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · Статус: {generation_status(promoCode)}')
-                if promoCode:
-                    return promoCode
-                else:
-                    return 'None'
+                for n in range(EVENTS_COUNT):
+                    await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
+                    has_code = await __emulate_progress(session, client_token)
+                    print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {(n + 1) / EVENTS_COUNT * 100:.0f}%")
+                    if has_code:
+                        break
 
-            except Exception as error:
-                logging.error(error)
+                promo_code = await __get_promocode(session, client_token)
+                print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}")
+                return promo_code
 
-        async def __start_generate(keys_count):
+            except Exception as e:
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
+                return promo_code
+
+        async def __start_generate(keys_count: int) -> list:
             remain = remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)
-            print(f"\n{LIGHT_YELLOW}`{TITLE}` · Генерируется промокодов: {keys_count}{WHITE} ~ {remain}")
+            print(f"\n{LIGHT_YELLOW}`{TITLE}` · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
-            loading_event = asyncio.Event()
-            spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
+            try:
+                loading_event = asyncio.Event()
+                spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
 
-            async with aiohttp.ClientSession() as session:
-                tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
-                keys = await asyncio.gather(*tasks)
-                loading_event.set()
-                await spinner_task
-            return [key for key in keys if key]
+                async with aiohttp.ClientSession() as session:
+                    tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
+                    keys = await asyncio.gather(*tasks)
+                    loading_event.set()
+                    await spinner_task
+                return [key for key in keys if key]
+
+            except Exception as e:
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
+                return []
 
         promocodes = await __start_generate(count)
 
         line_before()
-        result = f"\n*{EMOJI} {TITLE}*\n*Промокоды: *\n"
+        result = f"\n*{EMOJI} {TITLE}*\n*{localized_text('main_menu_promocodes')}: *\n"
         for promocode in promocodes:
             result += f"·  `{promocode}`\n"
         formatted_text = result.replace('*', '').replace('`', '')
@@ -880,10 +817,9 @@ class HamsterKombatClicker:
                 time.sleep(3)
                 print(f"Промокоды `{TITLE}` были отправлены в группу: `{self.GROUP_URL}`")
 
-            except requests.exceptions.HTTPError:
-                logging.error(f"🚫  Ошибкка во время запроса к телеграм API\n{telegram_response.status_code}")
             except Exception as e:
-                logging.error(f"🚫  Произошла ошибка: {e}")
+                print(f"🚫  Ошибкка во время запроса к телеграм API\n{e}")
+                logging.error(traceback.format_exc())
 
         if save_to_file:
             if not os.path.exists('generated keys'):
@@ -924,10 +860,8 @@ class HamsterKombatClicker:
             return account_info
 
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
-
-        except requests.exceptions.RequestException as e:
-            print(f"❌ Произошла ошибка: {e}")
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def login(self):
         try:
@@ -941,17 +875,13 @@ class HamsterKombatClicker:
             config.hamster_token = True
             print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
 
-        except requests.exceptions.HTTPError as http_err:
-            print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
-                  f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
-            config.hamster_token = False
-
-            logging.warning(http_err)
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}\n{traceback.format_exc()}\n")
-
-        except requests.exceptions.RequestException as e:
-            print(f"❌ Произошла ошибка: {e}")
+            print(e)
+            print(traceback.format_exc())
+            print(response.json())
+            # print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
+            #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
+            config.hamster_token = False
 
     def get_cooldowns(self) -> dict:
         result = {}
@@ -988,7 +918,7 @@ class HamsterKombatClicker:
         except:
             return result
 
-    def bonus_for_one_point(self, mini_game):
+    def bonus_for_one_point(self, mini_game: dict) -> int:
         json_data = {'miniGameId': mini_game.get('id')}
         requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
 

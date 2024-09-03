@@ -77,7 +77,11 @@
         "info_default_spinner": "Индикатор загрузки установлен по умолчанию",
         "info_spinner_changed_to": "Индикатор загрузки изменен на",
         "received": "Получен",
-        "not_recieved": "Не получен"
+        "not_recieved": "Не получен",
+        "error_occured": "Произошла ошибка",
+        "error_429": "Не удалось начать генерацию. Превышено количетсво запросов",
+        "status": "Статус",
+        "generating_promocodes": "Генерируется промокодов"
     },
 
     "en": {
@@ -158,6 +162,9 @@
         "info_default_spinner": "Loading indicator set by default",
         "info_spinner_changed_to": "Loading indicator changed to",
         "received": "Received",
-        "not_recieved": "Not recieved"
+        "not_recieved": "Not recieved",
+        "error_429": "Failed to start generation. Number of requests exceeded",
+        "status": "Status",
+        "generating_promocodes": "Generating promocodes"
     }
 }
