@@ -112,11 +112,11 @@ def minigames_menu():
     menu = f"🎮  {localized_text('minigames_menu_header')}\n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         cooldown = remain_time(game_data.get("cooldown", "n/a"))
-        status = game_data.get("status", "n/a")
+        status = game_data.get("status", f"{RED}❌{WHITE}")
         emoji = game_data["emoji"]
         color = game_data["color"]
 
-        menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · {localized_text('exit')}: {cooldown} \n"
+        menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu += (
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"

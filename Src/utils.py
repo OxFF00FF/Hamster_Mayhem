@@ -66,12 +66,16 @@ def countdown_timer(seconds):
 
 
 def remain_time(seconds):
-    m, s = divmod(int(seconds), 60)
-    h, m = divmod(m, 60)
-    h = str(h).zfill(2)
-    m = str(m).zfill(2)
-    s = str(s).zfill(2)
-    return f"{h}:{m}:{s}"
+    try:
+        m, s = divmod(int(seconds), 60)
+        h, m = divmod(m, 60)
+        h = str(h).zfill(2)
+        m = str(m).zfill(2)
+        s = str(s).zfill(2)
+        return f"{h}:{m}:{s}"
+
+    except:
+        return 'n/a'
 
 
 async def loading(event):
