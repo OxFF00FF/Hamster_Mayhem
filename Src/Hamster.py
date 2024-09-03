@@ -748,10 +748,11 @@ class HamsterKombatClicker:
             print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
 
         except Exception as e:
-            print(e)
-            print(traceback.format_exc())
-            print(response.json())
-            # print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+
+            error = response.json()
+            if error['error_code'] == 'BAD_AUTH_TOKEN':
+                print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n")
             #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
             config.hamster_token = False
 

@@ -165,6 +165,7 @@
         "not_recieved": "Not recieved",
         "error_429": "Failed to start generation. Number of requests exceeded",
         "status": "Status",
-        "generating_promocodes": "Generating promocodes"
+        "generating_promocodes": "Generating promocodes",
+        "error_occured": "Error_occured"
     }
 }
