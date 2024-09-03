@@ -36,7 +36,7 @@ def handle_main_menu_choice(choice):
         if all(card['available'] for card in upgrades_info['cards']):
             hamster_client().complete_daily_combo()
         else:
-            choice = input(f"Сегодня не все карты доступны!\nХотите купить только доступные? Y(да) / Enter(нет): ")
+            choice = input(f"{localized_text('not_all_cards_available_today')}\n{localized_text('yes_enter')}: ")
             if str(choice.lower()) == 'y'.lower():
                 hamster_client().complete_daily_combo(buy_anyway=True)
 
@@ -60,17 +60,16 @@ def handle_main_menu_choice(choice):
     elif choice == '$':
         line_before()
         top_10_cards = hamster_client().evaluate_cards()
-        print(f"Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\n"
-              f"прирост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n")
+        print(localized_text('info_rent_coeff_coefficient'))
 
-        print(f"Топ 20 самых выгодных карт (показаны только доступные для покупки): \n")
+        print(localized_text('top20_profit_cards'))
         for card in top_10_cards:
-            price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} в час · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} в час (после покупки)".replace(',', ' ')
+            price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
             print(
                 f"🏷  {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
-                f"💰  {YELLOW}Стоимость: {price}\n"
-                f"🕞  {YELLOW}Время окупаемости: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} дней) \n"
-                f"📊  {YELLOW}Коэффициент рентабельности: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
+                f"💰  {YELLOW}{localized_text('price')}: {price}\n"
+                f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
+                f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
             )
             print("-" * 30)
 
@@ -115,16 +114,16 @@ def handle_playground_menu_choice():
             line_after()
 
         elif choice == '<':
-            print('Вы вышли в главное меню')
+            print(localized_text('reached_main_menu'))
             return
 
         elif choice == '0':
-            print("Выход")
+            print(localized_text('exit'))
             line_after()
             exit(1)
 
         else:
-            print("Такой опции нет")
+            print(localized_text('no_such_option'))
             line_after()
 
 
@@ -143,16 +142,16 @@ def handle_minigames_choice():
             line_after()
 
         elif choice == '<':
-            print('Вы вышли в главное меню')
+            print(localized_text('reached_main_menu'))
             return
 
         elif choice == '0':
-            print("Выход")
+            print(localized_text('exit'))
             line_after()
             exit(1)
 
         else:
-            print("Такой опции нет")
+            print(localized_text('no_such_option'))
             line_after()
 
 
@@ -166,20 +165,20 @@ def handle_settings_menu_choice():
 
         if choice == '1':
             config.send_to_group = not config.send_to_group
-            status = f'{GREEN}включена{WHITE}' if config.send_to_group else f'{RED}отключена{WHITE}'
-            print(f'Отправка промокодов в группу {status}')
+            status = f"{GREEN}{localized_text('on')}а{WHITE}" if config.send_to_group else f"{RED}{localized_text('off')}а{WHITE}"
+            print(f"{localized_text('info_send_promo_to_group')} {status}")
             line_after()
 
         elif choice == '2':
             config.apply_promo = not config.apply_promo
-            status = f'{GREEN}включено{WHITE}' if config.apply_promo else f'{RED}отключено{WHITE}'
-            print(f'Применение промокодов по умолчанию {status}')
+            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
+            print(f"{localized_text('info_apply_promo')} {status}")
             line_after()
 
         elif choice == '3':
             config.save_to_file = not config.save_to_file
-            status = f'{GREEN}включено{WHITE}' if config.save_to_file else f'{RED}отключено{WHITE}'
-            print(f'Сохранение в файл {status}')
+            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
+            print(f"{localized_text('info_save_to_file')} {status}")
             line_after()
 
         elif choice == '4':
@@ -195,27 +194,27 @@ def handle_settings_menu_choice():
         elif choice.startswith('spinner'):
             spinner_name = choice.split('_')[-1]
             if spinner_name == 'list':
-                print(f"\nСписок доступных индикаторов загрузки")
+                print(localized_text('spinners_list'))
                 print(spinners_table())
 
             elif spinner_name == 'default':
                 config.spinner = 'default'
-                print(f"Индикатор загрузки установлен по умолчанию")
+                print(localized_text('info_default_spinner'))
 
             else:
                 config.spinner = spinner_name
-                print(f"Индикатор загрузки изменен на `{spinner_name}`")
+                print(f"{localized_text('info_spinner_changed_to')} `{spinner_name}`")
             line_after()
 
         elif choice == '<':
-            print('Вы вышли в главное меню')
+            print(localized_text('reached_main_menu'))
             return
 
         elif choice == '0':
-            print("Выход")
+            print(localized_text('exit'))
             line_after()
             exit(1)
 
         else:
-            print("Такой опции нет")
+            print(localized_text('no_such_option'))
             line_after()
