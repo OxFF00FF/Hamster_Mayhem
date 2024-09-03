@@ -6,7 +6,7 @@ from Src.db_SQlite import ConfigDB
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
-from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu
+from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu, main_menu_not_logged
 from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text
 
 config = ConfigDB()
@@ -82,6 +82,25 @@ def handle_main_menu_choice(choice):
     elif choice == 'm':
         line_before()
         main_menu()
+
+    elif choice == '0':
+        line_before()
+        print(localized_text('exit'))
+        line_after()
+        exit(1)
+
+    else:
+        line_before()
+        print(localized_text('no_such_option'))
+
+
+def handle_main_menu_not_logged_choice(choice):
+    if choice == '6':
+        handle_playground_menu_choice()
+
+    elif choice == 'm':
+        line_before()
+        main_menu_not_logged()
 
     elif choice == '0':
         line_before()

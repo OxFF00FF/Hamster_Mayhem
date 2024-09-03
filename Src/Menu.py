@@ -45,7 +45,10 @@ def main_menu():
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
     )
-    print(menu)
+    if config.hamster_token:
+        print(menu)
+    else:
+        main_menu_not_logged()
 
 
 def main_menu_not_logged():

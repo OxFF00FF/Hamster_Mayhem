@@ -29,27 +29,13 @@ config = ConfigDB()
 
 class HamsterKombatClicker:
 
-    def __init__(self, hamster_token, show_warning=False):
-        """
-        :param hamster_token: Ваш токен хомяка из браузерной версии игры
-        """
-
+    def __init__(self, hamster_token):
         self.HAMSTER_TOKEN = hamster_token
         self.BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
         self.GROUP_ID = os.getenv('GROUP_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
 
         self.base_url = 'https://api.hamsterkombatgame.io'
-
-        if self.HAMSTER_TOKEN == 'XXX':
-            logging.error(f'Отсутствует значение HAMSTER_TOKEN в вашем .env')
-            exit(1)
-
-        if show_warning:
-            env = ['BOT_TOKEN', 'GROUP_ID', 'GROUP_URL']
-            missing_values = [value for value in env if os.getenv(value) == 'XXX']
-            if len(missing_values) > 0:
-                logging.warning(f'{YELLOW}Следующие значения среды отсутствуют в вашем .env файле: {", ".join(missing_values)}{WHITE}')
 
     def _get_headers(self, hamster_token: str) -> dict:
         ua = UserAgent()
@@ -76,16 +62,9 @@ class HamsterKombatClicker:
             response.raise_for_status()
             return response.json().get('clickerUser').get('id')
 
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 400:
-                logging.error(f"🚫  HAMSTER_TOKEN не указан в вашем .env файле")
-            elif response.status_code == 401:
-                logging.error(f"🚫  Неверно указан HAMSTER_TOKEN в вашем .env файле")
-            else:
-                logging.error(f"🚫  HTTP ошибка: {http_err}")
-
         except Exception as e:
-            logging.error(f"🚫  Произошла ошибка: {e}")
+            print(f"🚫  Произошла ошибка: {e} | status code {response.status_code}")
+            logging.error(f"{e}\n{traceback.format_exc()}")
 
     def _get_daily_combo(self) -> dict:
         try:
@@ -964,7 +943,7 @@ class HamsterKombatClicker:
 
         except requests.exceptions.HTTPError as http_err:
             print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
-                  f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}")
+                  f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
             config.hamster_token = False
 
             logging.warning(http_err)
