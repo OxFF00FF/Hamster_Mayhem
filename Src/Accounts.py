@@ -5,7 +5,7 @@ from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Hamster import HamsterKombatClicker
 from Src.Login import hamster_client
-from Src.utils import line_after, localized_text
+from Src.utils import localized_text
 
 config = ConfigDB()
 
