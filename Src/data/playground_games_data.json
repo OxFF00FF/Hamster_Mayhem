@@ -68,16 +68,6 @@
             "emoji": "\uD83C\uDF3E"
         },
         {
-            "appToken": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
-            "promoId": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
-            "prefix": "CAFE ",
-            "title": "Cafe Dash",
-            "eventsCount": 20,
-            "registerEventTimeout": 22000,
-            "text": "Cafe Dash",
-            "emoji": "\uD83C\uDF75"
-        },
-        {
             "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
             "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
             "prefix": "ZOO  ",
@@ -86,16 +76,6 @@
             "registerEventTimeout": 22000,
             "text": "\uD83E\uDD81  Уже незнаю что придумать",
             "emoji": "\uD83E\uDD81"
-        },
-        {
-            "appToken": "b6de60a0-e030-48bb-a551-548372493523",
-            "promoId": "c7821fa7-6632-482c-9635-2bd5798585f9",
-            "prefix": "GANGS",
-            "title": "Gangs Wars",
-            "eventsCount": 30,
-            "registerEventTimeout": 40000,
-            "text": "\uD83C\uDFF9  Кого задолбали новые игры ставьте + в чат, посмотрим сколько нас",
-            "emoji": "\uD83C\uDFF9"
         }
     ],
     "deleted_apps": [
@@ -118,6 +98,26 @@
             "registerEventTimeout": 20000,
             "text": "\uD83D\uDE99  Едем за ключами вместо вас",
             "emoji": "\uD83D\uDE99"
+        },
+        {
+            "appToken": "b6de60a0-e030-48bb-a551-548372493523",
+            "promoId": "c7821fa7-6632-482c-9635-2bd5798585f9",
+            "prefix": "GANGS",
+            "title": "Gangs Wars",
+            "eventsCount": 30,
+            "registerEventTimeout": 40000,
+            "text": "\uD83C\uDFF9  Кого задолбали новые игры ставьте + в чат, посмотрим сколько нас",
+            "emoji": "\uD83C\uDFF9"
+        },
+        {
+            "appToken": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
+            "promoId": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
+            "prefix": "CAFE ",
+            "title": "Cafe Dash",
+            "eventsCount": 20,
+            "registerEventTimeout": 22000,
+            "text": "Cafe Dash",
+            "emoji": "\uD83C\uDF75"
         }
     ],
     "template": [
