@@ -182,3 +182,8 @@
 14. Чтобы обновить код используйте команды `git pull` и `python main.py`
 15. Если при открытии Termux у вас будет открыта корневая папка `~ $`.
 Вам нужно будет перейти в папку проекта `cd Hamsters_mayhem` и запустить `python main.py`
+
+### Видео инструкция
+https://github.com/user-attachments/assets/cadbd13e-e932-4e30-9cec-e7a231d4a748
+
+
