@@ -658,15 +658,6 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
-        """
-        :param spinner:
-        :param save_to_file:
-        :param prefix:
-        :param count:  Количество промокодов для генерации
-        :param send_to_group: отправлять ли результат в вашу группу (необязательно)
-        :param apply_promo: применять ли полученные промокоды в аккаунте хомяка (необязательно)
-        """
-
         games_data = get_games_data()['apps']
 
         for promo in games_data:
