@@ -200,3 +200,43 @@ def localized_text(key, *args, **kwargs):
         return message.format(**kwargs)
     except:
         return message.format(*args)
+
+
+def align_daily_info(text):
+    max_length = max(
+        len(localized_text('balance')),
+        len(localized_text('total')),
+        len(localized_text('keys')),
+    )
+    formatted_text = f"{text}: ".replace(',', ' ')
+    return formatted_text.ljust(max_length + 2)
+
+
+def align_summary(text):
+    max_length = max(
+        len(localized_text('total_profit')),
+        len(localized_text('total_price')),
+    )
+    formatted_text = f"{text}: ".replace(',', ' ')
+    return formatted_text.ljust(max_length + 2)
+
+
+def align_main_menu(text):
+    max_length = max(
+        len(localized_text('main_menu_taps')),
+        len(localized_text('main_menu_tasks')),
+        len(localized_text('main_menu_cipher')),
+        len(localized_text('main_menu_combo')),
+    ) + 3
+    return text.ljust(max_length)
+
+
+def align_settins(text):
+    max_length = max(
+        len(localized_text('setting_send_to_group')),
+        len(localized_text('setting_apply_promo')),
+        len(localized_text('setting_save_to_file')),
+        len(localized_text('setting_language')),
+        len(localized_text('setting_loading_indicator'))
+    )
+    return text.ljust(max_length)

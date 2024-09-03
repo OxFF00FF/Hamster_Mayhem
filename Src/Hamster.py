@@ -20,7 +20,7 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary
 
 load_dotenv()
 config = ConfigDB()
@@ -326,8 +326,8 @@ class HamsterKombatClicker:
                             available = f"{RED}{upgrade['isAvailable']}{WHITE}"
                         cards_info += f"{upgrade['name']} · {available} | "
 
-            summary = f"📊  {LIGHT_YELLOW}{localized_text('total_profit')}:{WHITE}  {MAGENTA}+{total_profit:,} {localized_text('per_hour')} {WHITE}\n" \
-                      f"🌟  {LIGHT_YELLOW}{localized_text('total_price')}:{WHITE} {YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
+            summary = f"📊  {LIGHT_YELLOW}{align_summary(localized_text('total_profit'))}{WHITE}{MAGENTA}+{total_profit:,} {localized_text('per_hour')} {WHITE}\n" \
+                      f"🌟  {LIGHT_YELLOW}{align_summary(localized_text('total_price'))}{WHITE}{YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
 
             logging.warning(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
             return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
@@ -360,16 +360,15 @@ class HamsterKombatClicker:
                         f"📆  {upgrades_info.get('combo_date')} ({localized_text('combo_date')})",
                 'cipher': f"📇  {LIGHT_YELLOW}{localized_text('cipher')}:{WHITE}  {cipher} | {morse} |",
                 'summary': f"{upgrades_info.get('summary')}",
-                'combo': combo
-            }
+                'combo': combo}
 
             info = f"{result['date']} \n\n"
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
-            info += f"💰  {LIGHT_YELLOW}{localized_text('balance')}:{WHITE} {balance['balanceCoins']:,} \n"
-            info += f"💰  {LIGHT_YELLOW}{localized_text('total')}:{WHITE} {balance['total']:,} \n"
-            info += f"🔑  {LIGHT_YELLOW}{localized_text('keys')}:{WHITE} {balance['keys']:,}"
+            info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('balance'))}{WHITE}{balance['balanceCoins']:,}\n"
+            info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('total'))}{WHITE}{balance['total']:,}\n"
+            info += f"🔑  {LIGHT_YELLOW}{align_daily_info(localized_text('keys'))}{WHITE}{balance['keys']:,}"
             if '🚫' in result['combo']:
                 info += f"\n\n⚠️  {localized_text('no_combo_today')}".replace(',', ' ')
             return info

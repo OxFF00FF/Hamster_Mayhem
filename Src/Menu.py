@@ -3,7 +3,7 @@ import os
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Login import hamster_client
-from Src.utils import get_status, get_games_data, remain_time, localized_text
+from Src.utils import get_status, get_games_data, remain_time, localized_text, align_main_menu, align_settins
 
 config = ConfigDB()
 
@@ -19,22 +19,17 @@ def main_menu():
                 if key in activity:
                     status_dict[key] = (get_status(activity[key]['isClaimed']), activity[key]['remain'])
 
-    max_length = max(
-        len(localized_text('main_menu_taps')),
-        len(localized_text('main_menu_tasks')),
-        len(localized_text('main_menu_cipher')),
-        len(localized_text('main_menu_combo')),
-    ) + 3
+
 
     def activity_line(index, emoji, label, status, cooldown):
         return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu = f"📚  {localized_text('main_menu_header')}"
     menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
-    menu += activity_line(1, '👆', f"{localized_text('main_menu_taps').ljust(max_length)}", *status_dict['taps'])
-    menu += activity_line(2, '📑', f"{localized_text('main_menu_tasks').ljust(max_length)}", *status_dict['tasks'])
-    menu += activity_line(3, '🔍', f"{localized_text('main_menu_cipher').ljust(max_length)}", *status_dict['cipher'])
-    menu += activity_line(4, '💰', f"{localized_text('main_menu_combo').ljust(max_length)}", *status_dict['combo'])
+    menu += activity_line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
+    menu += activity_line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
+    menu += activity_line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
+    menu += activity_line(4, '💰', f"{align_main_menu(localized_text('main_menu_combo'))}", *status_dict['combo'])
     menu += (
         f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}{localized_text('main_menu_minigames')} {WHITE} \n"
         f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
@@ -139,27 +134,19 @@ def settings_menu():
     group_id = os.getenv('GROUP_ID')
     group_url = os.getenv('GROUP_URL')
 
-    max_length = max(
-        len(localized_text('setting_send_to_group')),
-        len(localized_text('setting_apply_promo')),
-        len(localized_text('setting_save_to_file')),
-        len(localized_text('setting_language')),
-        len(localized_text('setting_loading_indicator'))
-    )
-
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
-        f"  {LIGHT_YELLOW}1 | {YELLOW} {localized_text('setting_send_to_group').ljust(max_length)} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}2 | {YELLOW} {localized_text('setting_apply_promo').ljust(max_length)} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}3 | {YELLOW} {localized_text('setting_save_to_file').ljust(max_length)} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}4 | {YELLOW} {localized_text('setting_language').ljust(max_length)} · {WHITE}{config.lang} (ru/en) \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_loading_indicator').ljust(max_length)} · {WHITE}{config.spinner} (spinner_<name>/default/list) \n"
+        f"  {LIGHT_YELLOW}1 | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}2 | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}3 | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{config.lang} (ru/en) \n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_loading_indicator'))} · {WHITE}{config.spinner} (spinner_<name>/default/list) \n"
     )
 
     if group_id:
-        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_chat_id').ljust(max_length)} · {WHITE}{group_id} \n"
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_chat_id'))} · {WHITE}{group_id} \n"
 
     if group_url:
-        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {localized_text('setting_group_url').ljust(max_length)} · {WHITE}{group_url} \n"
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_group_url'))} · {WHITE}{group_url} \n"
 
     print(menu)
