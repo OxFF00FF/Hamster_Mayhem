@@ -81,7 +81,9 @@
         "error_occured": "Произошла ошибка",
         "error_429": "Не удалось начать генерацию. Превышено количетсво запросов",
         "status": "Статус",
-        "generating_promocodes": "Генерируется промокодов"
+        "generating_promocodes": "Генерируется промокодов",
+        "error_hamster_token_not_specified": "HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно",
+        "warning_hamster_combat_unavailable": "Все функции связанные с аккаунтом Hamster Kombat недоступны!"
     },
 
     "en": {
@@ -166,6 +168,8 @@
         "error_429": "Failed to start generation. Number of requests exceeded",
         "status": "Status",
         "generating_promocodes": "Generating promocodes",
-        "error_occured": "Error_occured"
+        "error_occured": "Error_occured",
+        "error_hamster_token_not_specified": "HAMSTER_TOKEN is not specified in your .env file, or you specified it incorrectly",
+        "warning_hamster_combat_unavailable": "All functions associated with the Hamster Kombat account are unavailable!"
     }
 }
