@@ -690,26 +690,6 @@ class HamsterKombatClicker:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             logging.error(traceback.format_exc())
 
-    def login(self):
-        try:
-            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
-            response.raise_for_status()
-
-            account_info = response.json()['accountInfo']['telegramUsers'][0]
-            username = account_info.get('username', 'n/a')
-            first_name = account_info.get('firstName', 'n/a')
-            last_name = account_info.get('lastName', 'n/a')
-            config.hamster_token = True
-            print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
-
-        except Exception as e:
-            print(e)
-            print(traceback.format_exc())
-            print(response.json())
-            # print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
-            #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
-            config.hamster_token = False
-
     def get_cooldowns(self) -> dict:
         result = {}
         try:
@@ -754,6 +734,26 @@ class HamsterKombatClicker:
         end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
         bonus = int(end_game.json().get('bonus'))
         return bonus
+
+    def login(self):
+        try:
+            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
+
+            account_info = response.json()['accountInfo']['telegramUsers'][0]
+            username = account_info.get('username', 'n/a')
+            first_name = account_info.get('firstName', 'n/a')
+            last_name = account_info.get('lastName', 'n/a')
+            config.hamster_token = True
+            print(f"{localized_text('sign_in')} {first_name} {last_name} ({username})")
+
+        except Exception as e:
+            print(e)
+            print(traceback.format_exc())
+            print(response.json())
+            # print(f"⚠️  {RED}HAMSTER_TOKEN не указан в вашем .env файле, либо вы указали его неверно.{WHITE}\n"
+            #       f"⚠️  {YELLOW}Все функции связанные с аккаунтом Hamster Kombat недоступны!{WHITE}\n")
+            config.hamster_token = False
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
         games_data = get_games_data()['apps']
