@@ -1,6 +1,8 @@
 import asyncio
 import re
 
+from spinners import Spinners
+
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Accounts import choose_account
@@ -209,20 +211,23 @@ def handle_settings_menu_choice():
             print(localized_text('change_lang'))
             line_after()
 
-        elif choice.startswith('spinner'):
-            spinner_name = choice.split('_')[-1]
-            if spinner_name == 'list':
-                print(localized_text('spinners_list'))
-                print(spinners_table())
-
-            elif spinner_name == 'default':
-                config.spinner = 'default'
-                print(localized_text('info_default_spinner'))
-
-            else:
-                config.spinner = spinner_name
-                print(f"{localized_text('info_spinner_changed_to')} `{spinner_name}`")
+        elif choice == 'spinner':
+            config.spinner = 'default'
+            print(localized_text('info_default_spinner'))
             line_after()
+
+        elif choice == 'list':
+            print(localized_text('spinners_list'))
+            print(spinners_table())
+            line_after()
+
+        elif choice.startswith('spinner'):
+            spinner_number = int(choice.split('_')[-1]) - 1
+            spinner_name = list(Spinners)[spinner_number].name
+            config.spinner = spinner_name
+            print(f"{localized_text('info_spinner_changed_to')} `{spinner_name}`")
+            line_after()
+
 
         elif choice == '<':
             print(localized_text('reached_main_menu'))
