@@ -809,7 +809,6 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    print(response)
                     response.raise_for_status()
 
                     data = await response.json()
@@ -828,8 +827,9 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    data = await response.json()
                     response.raise_for_status()
+
+                    data = await response.json()
                     has_code = data.get('hasCode')
                     return has_code
 
@@ -845,8 +845,9 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    data = await response.json()
                     response.raise_for_status()
+
+                    data = await response.json()
                     promo_code = data.get('promoCode')
                     return promo_code
 
