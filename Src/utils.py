@@ -137,12 +137,6 @@ def generation_status(status):
     return f"{LIGHT_GREEN}{localized_text('received')}{WHITE}" if status else f"{RED}{localized_text('not_recieved')}{WHITE}"
 
 
-def get_games_data():
-    with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
-        games_data = json.loads(f.read())
-    return games_data
-
-
 def get_salt(salt):
     try:
         with open('Src/data/salt.json', 'r', encoding='utf-8') as f:
@@ -246,3 +240,29 @@ def align_settins(text):
         len(localized_text('setting_loading_indicator'))
     )
     return text.ljust(max_length)
+
+
+def get_games_data():
+    with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
+        games_data = json.loads(f.read())
+    return games_data
+
+
+def add_new_app(app_token, promo_id, prefix, title, events_count, register_event_timeout, text, emoji):
+    games_data = get_games_data()
+
+    new_app = {
+        "appToken": app_token,
+        "promoId": promo_id,
+        "prefix": prefix,
+        "title": title,
+        "eventsCount": int(events_count),
+        "registerEventTimeout": int(register_event_timeout),
+        "text": text,
+        "emoji": emoji
+    }
+
+    games_data['apps'].append(new_app)
+
+    with open('Src/data/playground_games_data.json', 'w', encoding='utf-8') as file:
+        json.dump(games_data, file, ensure_ascii=False, indent=4)
