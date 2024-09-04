@@ -870,13 +870,13 @@ class HamsterKombatClicker:
                     total_progress += progress_increment
                     overall_progress = (total_progress / (keys_count * EVENTS_COUNT)) * 100
                     progress_message = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
-                    print(f"\r{progress_message}", end='', flush=True)
+                    print(progress_message)
                     if has_code:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
                 status_message = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
-                print(f"\r{status_message}", flush=True)
+                print(status_message)
                 return promo_code
 
             except Exception as e:
@@ -893,14 +893,14 @@ class HamsterKombatClicker:
                 total_progress = 0
                 progress_increment = 1
 
-                loading_event = asyncio.Event()
-                spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
+                # loading_event = asyncio.Event()
+                # spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
 
                 async with aiohttp.ClientSession() as session:
                     tasks = [__key_generation(session, i + 1, keys_count, progress_increment) for i in range(keys_count)]
                     keys = await asyncio.gather(*tasks)
-                    loading_event.set()
-                    await spinner_task
+                    # loading_event.set()
+                    # await spinner_task
                 return [key for key in keys if key]
 
             except Exception as e:
