@@ -178,7 +178,7 @@
         "setting_chat_id": "Group ID",
         "count_promocodes_to_generate": "How many promocodes generate?",
         "enter_one": "Enter(1)",
-        "count_not_specified": "The number of promocodes is not specified.\n    Generate 1 by default",
+        "count_not_specified": "The number of promocodes is not specified.\n   Generate 1 by default",
         "count_must_great_0": "\nCount must be greater then 0",
         "error_generate_failed": "An error occurred during generation, try again.\nIf errors continue, try again later.",
         "apply_promo_after_generate": "Do you want to apply promocodes after receiving?",

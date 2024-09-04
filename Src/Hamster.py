@@ -918,7 +918,7 @@ class HamsterKombatClicker:
 
         if apply_promo:
             config.send_to_group = False
-            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}\n")
+            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}")
 
             config.save_to_file = False
             print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_saved_to_file')}{WHITE}\n")
