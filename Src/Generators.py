@@ -9,7 +9,7 @@ from Src.utils import get_games_data, localized_text
 
 config = ConfigDB()
 
-choice_text = f"{DARK_GRAY}{localized_text('apply_promo_after_generate')}{CYAN}\n{localized_text('yes_enter')}: "
+choice_text = f"{DARK_GRAY}{localized_text('apply_promo_after_generate')}{CYAN}\n{localized_text('yes_enter')}: {WHITE}"
 
 
 def generate_promocodes(prefix='', apply_promo=False):
