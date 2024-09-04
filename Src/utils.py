@@ -98,7 +98,7 @@ async def loading_v2(event, spinner_name=None):
                     for frame in spinner.value['frames']:
                         if event.is_set():
                             break
-                        print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
+                        print(f"\r{YELLOW}| {frame.strip()} | {WHITE}", end='', flush=True)
                         await asyncio.sleep(0.3)
         logging.warning(f'Spinner `{spinner_name}` not found')
         await loading(event)

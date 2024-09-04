@@ -43,7 +43,7 @@ def generate_for_game(prefix):
             elif choice == '':
                 generate_promocodes(prefix=prefix)
             else:
-                print(localized_text('no_such_option'))
+                print(f"ℹ️  {localized_text('no_such_option')}")
     else:
         generate_promocodes(prefix=prefix)
 
