@@ -817,8 +817,7 @@ class HamsterKombatClicker:
                     return client_token
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
+                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
@@ -835,8 +834,7 @@ class HamsterKombatClicker:
                     return has_code
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
+                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str | None:
@@ -853,14 +851,11 @@ class HamsterKombatClicker:
                     return promo_code
 
             except Exception as e:
-                if response.status_code == 429:
-                    logging.error(f"🚫  {localized_text('error_429')}")
-                else:
-                    print(f"🚫  {localized_text('error_occured')}: {e}")
-                    logging.error(traceback.format_exc())
+                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
                 return promo_code
 
-        async def __key_generation(session, index: int, keys_count: int) -> str:
+        async def __key_generation(session, index: int, keys_count: int, progress_increment: int) -> str:
+            global total_progress
             promo_code = ''
             client_id = await __generate_client_id()
             client_token = await __get_client_token(session, client_id)
@@ -870,17 +865,21 @@ class HamsterKombatClicker:
                 for n in range(EVENTS_COUNT):
                     await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
                     has_code = await __emulate_progress(session, client_token)
-                    print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {(n + 1) / EVENTS_COUNT * 100:.0f}%")
+
+                    total_progress += progress_increment
+                    overall_progress = (total_progress / (keys_count * EVENTS_COUNT)) * 100
+                    progress_message = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
+                    print(f"\r{progress_message}", end='', flush=True)
                     if has_code:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}")
+                status_message = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
+                print(f"\r{status_message}", flush=True)
                 return promo_code
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
+                logging.error(f"\n🚫  {LIGHT_RED}{prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('error_occured')}: {e}\n")
                 return promo_code
 
         async def __start_generate(keys_count: int) -> list:
@@ -889,19 +888,22 @@ class HamsterKombatClicker:
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             try:
+                global total_progress
+                total_progress = 0
+                progress_increment = 1
+
                 loading_event = asyncio.Event()
                 spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
 
                 async with aiohttp.ClientSession() as session:
-                    tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
+                    tasks = [__key_generation(session, i + 1, keys_count, progress_increment) for i in range(keys_count)]
                     keys = await asyncio.gather(*tasks)
                     loading_event.set()
                     await spinner_task
                 return [key for key in keys if key]
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
+                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
                 return []
 
         promocodes = await __start_generate(count)
