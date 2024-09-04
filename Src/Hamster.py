@@ -782,7 +782,7 @@ class HamsterKombatClicker:
             return result
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
-        games_data = get_games_data()['apps']
+        games_data = [app for app in get_games_data()['apps'] if app.get('available')]
 
         for promo in games_data:
             if promo['prefix'] == prefix:

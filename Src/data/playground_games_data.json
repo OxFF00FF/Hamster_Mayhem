@@ -15,7 +15,8 @@
             "eventsCount": 7,
             "registerEventTimeout": 20000,
             "text": "🎲  Гоняем кубы за вас",
-            "emoji": "🎲"
+            "emoji": "🎲",
+            "available": true
         },
         {
             "appToken": "82647f43-3f87-402d-88dd-09a90025313f",
@@ -25,7 +26,8 @@
             "eventsCount": 2,
             "registerEventTimeout": 120000,
             "text": "🚂  Проходим поезда, чтобы вам не пришлось)",
-            "emoji": "🚂"
+            "emoji": "🚂",
+            "available": true
         },
         {
             "appToken": "8d1cc2ad-e097-4b86-90ef-7a27e19fb833",
@@ -35,7 +37,8 @@
             "eventsCount": 10,
             "registerEventTimeout": 20000,
             "text": "💎  Объединяем предметы вместо вас",
-            "emoji": "💎"
+            "emoji": "💎",
+            "available": true
         },
         {
             "appToken": "61308365-9d16-4040-8bb0-2f4a4c69074c",
@@ -45,7 +48,8 @@
             "eventsCount": 10,
             "registerEventTimeout": 20000,
             "text": "🏃  Бежим куда-то",
-            "emoji": "🏃"
+            "emoji": "🏃",
+            "available": true
         },
         {
             "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
@@ -55,7 +59,8 @@
             "eventsCount": 17,
             "registerEventTimeout": 3000,
             "text": "🐋  Восстанавливаем изображения за вас",
-            "emoji": "🐋"
+            "emoji": "🐋",
+            "available": true
         },
         {
             "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
@@ -65,7 +70,8 @@
             "eventsCount": 20,
             "registerEventTimeout": 20000,
             "text": "🌾  Косим траву",
-            "emoji": "🌾"
+            "emoji": "🌾",
+            "available": true
         },
         {
             "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
@@ -75,7 +81,8 @@
             "eventsCount": 10,
             "registerEventTimeout": 22000,
             "text": "🦁  Уже незнаю что придумать",
-            "emoji": "🦁"
+            "emoji": "🦁",
+            "available": true
         },
         {
             "appToken": "112887b0-a8af-4eb2-ac63-d82df78283d9",
@@ -85,7 +92,8 @@
             "eventsCount": 5,
             "registerEventTimeout": 120000,
             "text": "🏹",
-            "emoji": "🏹"
+            "emoji": "🏹",
+            "available": true
         },
         {
             "appToken": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
@@ -95,10 +103,9 @@
             "eventsCount": 22,
             "registerEventTimeout": 20000,
             "text": "🀄️",
-            "emoji": "🀄️"
-        }
-    ],
-    "deleted_apps": [
+            "emoji": "🀄️",
+            "available": false
+        },
         {
             "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
             "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
@@ -107,7 +114,8 @@
             "eventsCount": 17,
             "registerEventTimeout": 20000,
             "text": "🚴  Катаемся на велосипедах, чтобы вам не пришлось)",
-            "emoji": "🚴"
+            "emoji": "🚴",
+            "available": false
         },
         {
             "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
@@ -117,7 +125,8 @@
             "eventsCount": 20,
             "registerEventTimeout": 20000,
             "text": "🚙  Едем за ключами вместо вас",
-            "emoji": "🚙"
+            "emoji": "🚙",
+            "available": false
         },
         {
             "appToken": "b6de60a0-e030-48bb-a551-548372493523",
@@ -127,7 +136,8 @@
             "eventsCount": 30,
             "registerEventTimeout": 40000,
             "text": "🏹  Кого задолбали новые игры ставьте + в чат, посмотрим сколько нас",
-            "emoji": "🏹"
+            "emoji": "🏹",
+            "available": false
         },
         {
             "appToken": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
@@ -137,7 +147,8 @@
             "eventsCount": 20,
             "registerEventTimeout": 22000,
             "text": "Cafe Dash",
-            "emoji": "🍵"
+            "emoji": "🍵",
+            "available": false
         }
     ],
     "minigames": [

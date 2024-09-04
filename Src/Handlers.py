@@ -116,7 +116,7 @@ def handle_main_menu_not_logged_choice(choice):
 
 
 def handle_playground_menu_choice():
-    games_data = get_games_data()['apps']
+    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
     games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
     line_before()
 

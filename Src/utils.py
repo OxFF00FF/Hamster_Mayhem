@@ -249,7 +249,7 @@ def get_games_data():
 
 
 def add_new_app(app_token, promo_id, prefix, title, events_count, register_event_timeout, text, emoji):
-    games_data = get_games_data()
+    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
 
     new_app = {
         "appToken": app_token,
@@ -262,7 +262,7 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
         "emoji": emoji
     }
 
-    games_data['apps'].append(new_app)
+    games_data.append(new_app)
 
     with open('Src/data/playground_games_data.json', 'w', encoding='utf-8') as file:
         json.dump(games_data, file, ensure_ascii=False, indent=4)

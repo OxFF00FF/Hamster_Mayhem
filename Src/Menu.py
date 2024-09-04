@@ -60,7 +60,7 @@ def playground_menu():
         promos = hamster_client()._get_promos()
 
     keys_per_day = 4
-    games_data = get_games_data()['apps']
+    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
     max_width = max(len(game) for game in games_info)
 
