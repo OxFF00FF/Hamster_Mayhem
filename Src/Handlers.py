@@ -127,7 +127,6 @@ def handle_playground_menu_choice():
 
         if choice in games_prefix:
             generate_for_game(games_prefix[choice])
-            line_after()
 
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
