@@ -808,8 +808,10 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    data = await response.json()
+                    print(response)
                     response.raise_for_status()
+
+                    data = await response.json()
                     client_token = data.get('clientToken')
                     return client_token
 
