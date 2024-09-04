@@ -17,11 +17,10 @@ from bs4 import BeautifulSoup as BS
 from dotenv import load_dotenv
 from fake_useragent import UserAgent
 from fuzzywuzzy import fuzz
-from spinners import Spinners
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, get_spinner_frame, update_spinner
+from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary
 
 load_dotenv()
 config = ConfigDB()
@@ -810,6 +809,7 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
+                    print(response)
                     response.raise_for_status()
 
                     data = await response.json()
@@ -817,7 +817,8 @@ class HamsterKombatClicker:
                     return client_token
 
             except Exception as e:
-                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
@@ -828,14 +829,15 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
+                    data = await response.json()
                     response.raise_for_status()
 
-                    data = await response.json()
                     has_code = data.get('hasCode')
                     return has_code
 
             except Exception as e:
-                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str | None:
@@ -846,18 +848,21 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    response.raise_for_status()
-
                     data = await response.json()
+
+                    response.raise_for_status()
                     promo_code = data.get('promoCode')
                     return promo_code
 
             except Exception as e:
-                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                if response.status_code == 429:
+                    logging.error(f"🚫  {localized_text('error_429')}")
+                else:
+                    print(f"🚫  {localized_text('error_occured')}: {e}")
+                    logging.error(traceback.format_exc())
                 return promo_code
 
-        async def __key_generation(session, index: int, keys_count: int, progress_increment: int, game_name: str, progress_dict):
-            global total_progress
+        async def __key_generation(session, index: int, keys_count: int) -> str:
             promo_code = ''
             client_id = await __generate_client_id()
             client_token = await __get_client_token(session, client_id)
@@ -867,53 +872,41 @@ class HamsterKombatClicker:
                 for n in range(EVENTS_COUNT):
                     await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
                     has_code = await __emulate_progress(session, client_token)
-
-                    total_progress[game_name] += progress_increment
-                    overall_progress = (total_progress[game_name] / (keys_count * EVENTS_COUNT)) * 100
-
-                    # Обновляем сообщение о прогрессе в словаре
-                    progress_dict[game_name] = f"{LIGHT_BLUE}{game_name.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
-
+                    print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {(n + 1) / EVENTS_COUNT * 100:.0f}%")
                     if has_code:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                status_message = f"{LIGHT_BLUE}{game_name.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
-                print(f"\r{status_message}", flush=True)
+                print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}")
                 return promo_code
 
             except Exception as e:
-                logging.error(f"\n🚫  {LIGHT_RED}{game_name.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('error_occured')}: {e}\n")
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return promo_code
 
-        async def __start_generate(keys_count: int, game_name: str) -> list:
+        async def __start_generate(keys_count: int) -> list:
             remain = f"{YELLOW}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
-            print(f"\n{LIGHT_YELLOW}`{game_name}` · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
+            print(f"\n{LIGHT_YELLOW}`{TITLE}` · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             try:
-                global total_progress
-                total_progress = {game_name: 0}
-                progress_increment = 1
-
-                # Для хранения прогресса для каждой игры
-                progress_dict = {game_name: ""}
-
                 loading_event = asyncio.Event()
-                spinner_task = asyncio.create_task(update_spinner(Spinners['dots'], loading_event, progress_dict, game_name))
+                spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
 
                 async with aiohttp.ClientSession() as session:
-                    tasks = [__key_generation(session, i + 1, keys_count, progress_increment, game_name, progress_dict) for i in range(keys_count)]
+                    tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
                     keys = await asyncio.gather(*tasks)
-                    loading_event.set()  # Останавливаем спиннер
+                    loading_event.set()
                     await spinner_task
                 return [key for key in keys if key]
 
             except Exception as e:
-                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return []
 
-        promocodes = await __start_generate(count, 'poly')
+        promocodes = await __start_generate(count)
 
         line_before()
         result = f"\n*{EMOJI} {TITLE}*\n*{localized_text('main_menu_promocodes')}: *\n"
@@ -924,7 +917,7 @@ class HamsterKombatClicker:
 
         if apply_promo:
             config.send_to_group = False
-            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}")
+            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}\n")
 
             config.save_to_file = False
             print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_saved_to_file')}{WHITE}\n")
@@ -951,3 +944,4 @@ class HamsterKombatClicker:
             with open(file_path, 'w', encoding='utf-8') as file:
                 file.write(formatted_text.strip())
                 print(f"✅  {GREEN}{localized_text('main_menu_promocodes')} `{TITLE}` {localized_text('saved_to_file')}{WHITE}\n`{file_path}`")
+

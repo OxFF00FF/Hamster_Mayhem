@@ -107,21 +107,6 @@ async def loading_v2(event, spinner_name=None):
         await loading(event)
 
 
-def get_spinner_frame(spinner, frame_index):
-    frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
-    return frames[frame_index % len(frames)]
-
-
-async def update_spinner(spinner, event, progress_dict, game_name):
-    frame_index = 0
-    while not event.is_set():
-        spinner_frame = get_spinner_frame(spinner, frame_index)
-        progress_message = progress_dict.get(game_name, "")
-        print(f"\r{spinner_frame} {progress_message}", end='', flush=True)
-        frame_index += 1
-        await asyncio.sleep(0.3)
-
-
 def spinners_list():
     spinners = [spinner_name.name for spinner_name in Spinners]
     text = ''
