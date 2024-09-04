@@ -16,7 +16,7 @@ def generate_promocodes(prefix='', apply_promo=False):
     count = input(f"\n{DARK_GRAY}{localized_text('count_promocodes_to_generate')}{CYAN}\n{localized_text('enter_one')}: {WHITE}")
     if count == '':
         count = 1
-        print(f"⚠️  {localized_text('count_not_specified')}")
+        print(f"\n⚠️  {localized_text('count_not_specified')}")
 
     if int(count) <= 0:
         print(localized_text('error_count_must_great_0'))
@@ -43,7 +43,7 @@ def generate_for_game(prefix):
             elif choice == '':
                 generate_promocodes(prefix=prefix)
             else:
-                print(localized_text('no_such_option'))
+                print(f"ℹ️  {localized_text('no_such_option')}")
     else:
         generate_promocodes(prefix=prefix)
 
@@ -58,7 +58,7 @@ async def genetare_for_all_games():
     count = input(f"\n{DARK_GRAY}{localized_text('count_promocodes_to_generate_all_games')}{CYAN}\n{localized_text('enter_one')}: {WHITE}")
     if count == '':
         count = 1
-        print(f"⚠️  {localized_text('count_not_specified')}")
+        print(f"\n⚠️  {localized_text('count_not_specified')}")
 
     if int(count) <= 0:
         print(localized_text('error_count_must_great_0'))

@@ -87,13 +87,13 @@ def handle_main_menu_choice(choice):
 
     elif choice == '0':
         line_before()
-        print(localized_text('exit'))
+        print(f"ℹ️  {localized_text('exit')}")
         line_after()
         exit(1)
 
     else:
         line_before()
-        print(localized_text('no_such_option'))
+        print(f"ℹ️  {localized_text('no_such_option')}")
 
 
 def handle_main_menu_not_logged_choice(choice):
@@ -106,13 +106,13 @@ def handle_main_menu_not_logged_choice(choice):
 
     elif choice == '0':
         line_before()
-        print(localized_text('exit'))
+        print(f"ℹ️  {localized_text('exit')}")
         line_after()
         exit(1)
 
     else:
         line_before()
-        print(localized_text('no_such_option'))
+        print(f"ℹ️  {localized_text('no_such_option')}")
 
 
 def handle_playground_menu_choice():
@@ -134,16 +134,16 @@ def handle_playground_menu_choice():
             line_after()
 
         elif choice == '<':
-            print(localized_text('reached_main_menu'))
+            print(f"ℹ️  {localized_text('reached_main_menu')}")
             return
 
         elif choice == '0':
-            print(localized_text('exit'))
+            print(f"ℹ️  {localized_text('exit')}")
             line_after()
             exit(1)
 
         else:
-            print(localized_text('no_such_option'))
+            print(f"ℹ️  {localized_text('no_such_option')}")
             line_after()
 
 
@@ -162,16 +162,16 @@ def handle_minigames_choice():
             line_after()
 
         elif choice == '<':
-            print(localized_text('reached_main_menu'))
+            print(f"ℹ️  {localized_text('reached_main_menu')}")
             return
 
         elif choice == '0':
-            print(localized_text('exit'))
+            print(f"ℹ️  {localized_text('exit')}")
             line_after()
             exit(1)
 
         else:
-            print(localized_text('no_such_option'))
+            print(f"ℹ️  {localized_text('no_such_option')}")
             line_after()
 
 
@@ -230,14 +230,14 @@ def handle_settings_menu_choice():
 
 
         elif choice == '<':
-            print(localized_text('reached_main_menu'))
+            print(f"ℹ️  {localized_text('reached_main_menu')}")
             return
 
         elif choice == '0':
-            print(localized_text('exit'))
+            print(f"ℹ️  {localized_text('exit')}")
             line_after()
             exit(1)
 
         else:
-            print(localized_text('no_such_option'))
+            print(f"ℹ️  {localized_text('no_such_option')}")
             line_after()

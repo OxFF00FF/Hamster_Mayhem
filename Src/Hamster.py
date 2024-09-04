@@ -411,7 +411,7 @@ class HamsterKombatClicker:
             boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
             for boost in boostsForBuy:
                 if boost['id'] == 'BoostFullAvailableTaps':
-                    remain = f"{LIGHT_MAGENTA}{remain_time(boost['cooldownSeconds'])}{WHITE}"
+                    remain = boost['cooldownSeconds']
                     if remain == 0:
                         json_data = {'boostId': boost['id'], 'timestamp': int(time.time())}
                         boost_response = requests.post(f'{self.base_url}/clicker/buy-boost', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
@@ -428,7 +428,8 @@ class HamsterKombatClicker:
 
                     else:
                         available_boost = f"{boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}"
-                        print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain)}")
+                        remain_color = f"{LIGHT_MAGENTA}{remain_time(remain)}{WHITE}"
+                        print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain_color)}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -639,14 +640,17 @@ class HamsterKombatClicker:
 
             if keys_today == keys_limit:
                 print(f"ℹ️  {localized_text('info_all_keys_in_game_claimed', promo_title)}. {next_keys}")
+
             else:
                 print(f"{LIGHT_YELLOW}🔄  {localized_text('info_activating_promocode')} `{promoCode}`...{WHITE}")
+
+                time.sleep(2)
                 json_data = {'promoCode': promoCode}
-                response = requests.post('https://api.hamsterkombatgame.io/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
+                response = requests.post(f'{self.base_url}/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
-                time.sleep(1)
+
                 print(f"{LIGHT_GREEN}🎉  {localized_text('info_promocode_activated')}: {keys_today + 1}/{keys_limit}{WHITE}\n")
-            time.sleep(1)
+
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -732,7 +736,7 @@ class HamsterKombatClicker:
 
     def login(self):
         try:
-            response = requests.post('https://api.hamsterkombatgame.io/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response = requests.post(f'{self.base_url}/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
             if response.status_code == 401:
                 print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. Сheck your `{config.account}` for correct")
                 exit(1)
@@ -744,15 +748,16 @@ class HamsterKombatClicker:
                 first_name = account_info.get('firstName', 'n/a')
                 last_name = account_info.get('lastName', 'n/a')
                 config.hamster_token = True
+
                 print(f"{DARK_GRAY}{localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
 
-        except Exception as e:
+        except:
             if data['error_code'] == 'BAD_AUTH_TOKEN':
                 print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
                       f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
             else:
                 print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}\n")
-                logging.error(e)
+                logging.error(traceback.format_exc())
 
             config.hamster_token = False
             print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}\n")
@@ -804,17 +809,16 @@ class HamsterKombatClicker:
 
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    data = await response.json()
+                    print(response)
                     response.raise_for_status()
+
+                    data = await response.json()
                     client_token = data.get('clientToken')
                     return client_token
 
             except Exception as e:
-                if response.status_code == 429:
-                    logging.error(f"🚫  {localized_text('error_429')}")
-                else:
-                    print(f"🚫  {localized_text('error_occured')}: {e}")
-                    logging.error(traceback.format_exc())
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
@@ -831,11 +835,8 @@ class HamsterKombatClicker:
                     return has_code
 
             except Exception as e:
-                if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                else:
-                    print(f"🚫  {localized_text('error_occured')}: {e}")
-                    logging.error(traceback.format_exc())
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str | None:
