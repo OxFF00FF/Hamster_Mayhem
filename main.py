@@ -12,14 +12,6 @@ config = ConfigDB()
 
 
 if __name__ == '__main__':
-    # add_new_app(app_token='e68b39d2-4880-4a31-b3aa-0393e7df10c7',
-    #             promo_id='e68b39d2-4880-4a31-b3aa-0393e7df10c7',
-    #             prefix='TILE ',
-    #             title='Tile Trio',
-    #             events_count='22',
-    #             register_event_timeout='20000',
-    #             text='🀄️',
-    #             emoji='🀄️')
     try:
         banner()
         hamster_client().login()
