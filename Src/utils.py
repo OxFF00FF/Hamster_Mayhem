@@ -154,7 +154,7 @@ def get_salt(salt):
 
 
 def spinners_table(num_columns=3):
-    data = [spinner_name.name for spinner_name in Spinners]
+    data = [f"{i + 1}. {spinner_name.name}" for i, spinner_name in enumerate(Spinners)]
 
     if not data:
         return ""
