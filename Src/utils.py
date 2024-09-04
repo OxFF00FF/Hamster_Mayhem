@@ -267,6 +267,7 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
     with open('Src/data/playground_games_data.json', 'w', encoding='utf-8') as file:
         json.dump(games_data, file, ensure_ascii=False, indent=4)
 
+
 # add_new_app(app_token='e68b39d2-4880-4a31-b3aa-0393e7df10c7',
 #             promo_id='e68b39d2-4880-4a31-b3aa-0393e7df10c7',
 #             prefix='TILE ',
@@ -275,3 +276,27 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
 #             register_event_timeout='20000',
 #             text='🀄️',
 #             emoji='🀄️')
+
+async def update_spinner(spinner, event, progress_dict, prefix):
+    frame_index = 0
+    while not event.is_set():
+        spinner_frame = get_spinner_frame(spinner, frame_index)
+        progress_message = progress_dict.get(prefix, "")
+        print(f"\r| {spinner_frame} | {WHITE} {progress_message}", end='', flush=True)
+        frame_index += 1
+        await asyncio.sleep(0.3)
+
+
+def get_spinner_frame(spinner_name, frame_index):
+    try:
+        if spinner_name is not None:
+            spinners = [spinner_name.name for spinner_name in Spinners]
+            for spinner_item in spinners:
+                if spinner_item == spinner_name:
+                    spinner = Spinners[spinner_name]
+                    frames = spinner.value['frames']
+                    return frames[frame_index % len(frames)]
+
+    except:
+        frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
+        return frames[frame_index % len(frames)]

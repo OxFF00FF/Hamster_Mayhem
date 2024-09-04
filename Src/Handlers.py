@@ -131,7 +131,6 @@ def handle_playground_menu_choice():
 
         elif choice == '*':
             asyncio.run(genetare_for_all_games())
-            line_after()
 
         elif choice == '<':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
@@ -225,7 +224,7 @@ def handle_settings_menu_choice():
             spinner_number = int(choice.split('_')[-1]) - 1
             spinner_name = list(Spinners)[spinner_number].name
             config.spinner = spinner_name
-            print(f"{localized_text('info_spinner_changed_to')} `{spinner_name}`")
+            print(f"ℹ️  {localized_text('info_spinner_changed_to')} `{spinner_name}`")
             line_after()
 
 
