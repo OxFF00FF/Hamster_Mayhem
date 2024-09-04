@@ -10,21 +10,22 @@
 
 🔔  Для желающих поддержать проект, доступны способы оплаты:  🔔
 
+- 💎  USDT TON (TON): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
+
+- 💎  USDT TRC20 (Tron): `TK7v5F2HFEErUCFVmy4z53bwdwvZWNNzkz`
+
+- 💎  Toncoin (TON): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
+
+- 💎  Bitcoin (BTC): `188BPS54Pkjaa8uZ8CDdZegBwWP1iwxdrG`
+
+- 💎  Notcoin (NOT): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
+
 - 💎  [Boosty](https://boosty.to/oxff00ff)
 
 - 💎  [Donationalerts](https://www.donationalerts.com/r/oxff00ff)
 
 - 💎 [Paypal]()
 
-- 💎  TON (Telegram coin): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
-
-- 💎  Bitcoin: `188BPS54Pkjaa8uZ8CDdZegBwWP1iwxdrG`
-
-- 💎  Notcoin: `188BPS54Pkjaa8uZ8CDdZegBwWP1iwxdrG`
-
-- 💎  USDT (trc20, tron): `TK7v5F2HFEErUCFVmy4z53bwdwvZWNNzkz`
-
-- 💎  USDT (ton): `UQCjwbMX96YhA4POYlbE3v0M7Xx9TlvjX7bqnJIj0KFVfYlR`
 
 ## Обновление
  -  (03.09) Добавлен перевод интерфейса на английский язык. Чтобы поменять язык нужно в настройках выбрать пункт 4 и перезайти
