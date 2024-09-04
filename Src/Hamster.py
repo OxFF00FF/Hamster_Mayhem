@@ -816,11 +816,8 @@ class HamsterKombatClicker:
                     return client_token
 
             except Exception as e:
-                if response.status_code == 429:
-                    logging.error(f"🚫  {localized_text('error_429')}")
-                else:
-                    print(f"🚫  {localized_text('error_occured')}: {e}")
-                    logging.error(traceback.format_exc())
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
