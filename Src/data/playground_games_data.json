@@ -10,7 +10,7 @@
         {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
             "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
-            "prefix": "CUBE ",
+            "prefix": "CUBE",
             "title": "Chain Cube 2048",
             "eventsCount": 7,
             "registerEventTimeout": 20000,
@@ -50,7 +50,7 @@
         {
             "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
             "promoId": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
-            "prefix": "POLY ",
+            "prefix": "POLY",
             "title": "Polysphere",
             "eventsCount": 17,
             "registerEventTimeout": 3000,
@@ -60,7 +60,7 @@
         {
             "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
             "promoId": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
-            "prefix": "TRIM ",
+            "prefix": "TRIM",
             "title": "Mow and Trim",
             "eventsCount": 20,
             "registerEventTimeout": 20000,
@@ -70,12 +70,22 @@
         {
             "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
             "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
-            "prefix": "ZOO  ",
+            "prefix": "ZOO",
             "title": "Zoopolis",
             "eventsCount": 10,
             "registerEventTimeout": 22000,
             "text": "\uD83E\uDD81  Уже незнаю что придумать",
             "emoji": "\uD83E\uDD81"
+        },
+        {
+            "appToken": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
+            "promoId": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
+            "prefix": "TILE",
+            "title": "Tile Trio",
+            "eventsCount": 22,
+            "registerEventTimeout": 20000,
+            "text": "\ud83d\udc39  Уже незнаю что придумать",
+            "emoji": "\ud83d\udc39"
         }
     ],
     "deleted_apps": [
