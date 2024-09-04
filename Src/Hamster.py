@@ -411,7 +411,7 @@ class HamsterKombatClicker:
             boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
             for boost in boostsForBuy:
                 if boost['id'] == 'BoostFullAvailableTaps':
-                    remain = f"{LIGHT_MAGENTA}{remain_time(boost['cooldownSeconds'])}{WHITE}"
+                    remain = boost['cooldownSeconds']
                     if remain == 0:
                         json_data = {'boostId': boost['id'], 'timestamp': int(time.time())}
                         boost_response = requests.post(f'{self.base_url}/clicker/buy-boost', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
@@ -428,7 +428,8 @@ class HamsterKombatClicker:
 
                     else:
                         available_boost = f"{boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}"
-                        print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain)}")
+                        remain_color = f"{LIGHT_MAGENTA}{remain_time(remain)}{WHITE}"
+                        print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain_color)}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -834,11 +835,8 @@ class HamsterKombatClicker:
                     return has_code
 
             except Exception as e:
-                if response.status_code == 429:
-                    logging.error(f"🚫  Не удалось начать генерацию. Превышено количетсво запросов")
-                else:
-                    print(f"🚫  {localized_text('error_occured')}: {e}")
-                    logging.error(traceback.format_exc())
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(traceback.format_exc())
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str | None:
