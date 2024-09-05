@@ -5,7 +5,6 @@ import hashlib
 import logging
 import os
 import random
-import sys
 import time
 import traceback
 import uuid
@@ -21,7 +20,7 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
-from Src.utils import text_to_morse, remain_time, loading_v2, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner
+from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner
 
 load_dotenv()
 config = ConfigDB()
@@ -154,7 +153,7 @@ class HamsterKombatClicker:
 
             tasks = response.json().get('tasks', [])
             for task in tasks:
-                if task.get('id') == 'streak_days':
+                if task.get('id') == 'streak_days_special':
                     remain_task = remain_time(task.get('remainSeconds', 0))
             result.append({'tasks': {'remain': remain_task, 'isClaimed': all(task.get('isCompleted', False) for task in tasks)}})
 
@@ -390,10 +389,6 @@ class HamsterKombatClicker:
             availableTaps = int(clickerUser.get('availableTaps'))
             maxTaps = int(clickerUser.get('maxTaps'))
             earnPerTap = int(clickerUser.get('earnPerTap'))
-            tapsRecoverPerSec = int(clickerUser.get('tapsRecoverPerSec'))
-
-            total_remain_time = maxTaps / tapsRecoverPerSec
-            current_remain_time = availableTaps / tapsRecoverPerSec
 
             if availableTaps == maxTaps:
                 count = int(maxTaps / earnPerTap)
@@ -406,8 +401,7 @@ class HamsterKombatClicker:
                 print(f"✅  {localized_text('info_taps_completed')}")
 
             else:
-                remain = f"{LIGHT_MAGENTA}{remain_time(int(total_remain_time - current_remain_time))}{WHITE}"
-                print(f"🚫  {localized_text('info_no_accumulate_yet')}: {remain}")
+                print(f"🚫  {localized_text('info_no_accumulate_yet')}")
 
             boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
             for boost in boostsForBuy:
@@ -430,6 +424,7 @@ class HamsterKombatClicker:
                     else:
                         available_boost = f"{boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}"
                         remain_color = f"{LIGHT_MAGENTA}{remain_time(remain)}{WHITE}"
+
                         print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain_color)}")
 
         except Exception as e:
@@ -469,9 +464,6 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             cipher = response.json().get('dailyCipher')
-            remain = f"{LIGHT_MAGENTA}{remain_time(cipher.get('remainSeconds'))}{WHITE}"
-            next_cipher = f"{localized_text('info_next_cipher_after')}: {remain}"
-
             isClaimed = cipher.get('isClaimed')
             if not isClaimed:
                 cipher = self._get_daily_cipher().upper()
@@ -479,10 +471,10 @@ class HamsterKombatClicker:
                 claim_cipher = requests.post(f'{self.base_url}/clicker/claim-daily-cipher', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 claim_cipher.raise_for_status()
 
-                print(f"✅  {localized_text('info_cipher_completed')}. {next_cipher}")
+                print(f"✅  {localized_text('info_cipher_completed')}")
 
             else:
-                print(f"ℹ️  {localized_text('info_cipher_already_complete')}. {next_cipher}")
+                print(f"ℹ️  {localized_text('info_cipher_already_complete')}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -494,9 +486,6 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             combo = response.json().get('dailyCombo')
-            remain = f"{LIGHT_MAGENTA}{remain_time(combo.get('remainSeconds'))}{WHITE}"
-            next_combo = f"{localized_text('info_next_combo_after')}: {remain}"
-
             isClaimed = combo.get('isClaimed')
             if not isClaimed:
                 upgrades_info = self._collect_upgrades_info()
@@ -508,14 +497,14 @@ class HamsterKombatClicker:
                     claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
                     claim_combo.raise_for_status()
 
-                    print(f"✅  {localized_text('info_combo_completed')}. {next_combo}")
+                    print(f"✅  {localized_text('info_combo_completed')}")
 
                 if buy_anyway:
                     for upgrade in cards:
                         self._buy_upgrade(upgrade['id'])
                     print(f"🚫  {localized_text('warning_combo_not_complete')}")
             else:
-                print(f"ℹ️  {localized_text('info_combo_already_complete')}. {next_combo}")
+                print(f"ℹ️  {localized_text('info_combo_already_complete')}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")

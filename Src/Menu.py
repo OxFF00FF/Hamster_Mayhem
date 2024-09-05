@@ -7,11 +7,16 @@ from Src.utils import get_status, get_games_data, remain_time, localized_text, a
 
 config = ConfigDB()
 
+not_available = f"{RED}❌{WHITE}"
+
 
 def main_menu():
     activities = hamster_client()._activity_cooldowns()
 
-    status_dict = {'taps': ('n/a', 'n/a'), 'tasks': ('n/a', 'n/a'), 'cipher': ('n/a', 'n/a'), 'combo': ('n/a', 'n/a')}
+    status_dict = {'taps': (not_available, 'n/a'),
+                   'tasks': (not_available, 'n/a'),
+                   'cipher': (not_available, 'n/a'),
+                   'combo': (not_available, 'n/a')}
 
     if activities:
         for activity in activities:
@@ -77,7 +82,7 @@ def playground_menu():
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         keys = game_data.get("keys", 0)
         cooldown = game_data.get("cooldown", "n/a")
-        status = game_data.get("status", f"{RED}❌{WHITE}")
+        status = game_data.get("status", not_available)
         emoji = game_data["emoji"]
         color = game_data["color"]
 
@@ -112,7 +117,7 @@ def minigames_menu():
     menu = f"🎮  {localized_text('minigames_menu_header')}\n"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
         cooldown = remain_time(game_data.get("cooldown", "n/a"))
-        status = game_data.get("status", f"{RED}❌{WHITE}")
+        status = game_data.get("status", not_available)
         emoji = game_data["emoji"]
         color = game_data["color"]
 
