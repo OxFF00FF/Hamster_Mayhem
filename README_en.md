@@ -4,7 +4,7 @@
 
 
 ![1](https://github.com/user-attachments/assets/bc847b2b-721c-42f4-b78d-dd6872c5b865)
-> 🇷🇺 README на русском доступен [здесь](https://github.com/OxFF00FF/Hamster_Mayhem/blob/master/README_ru.md)
+> 🇷🇺 README на русском доступен [здесь](https://github.com/OxFF00FF/Hamster_Mayhem/blob/master/README.md)
  
 The project was created to help people pass promotional games in the [Hamster Kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
 
