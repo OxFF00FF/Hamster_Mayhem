@@ -18,6 +18,11 @@ LIGHT_GRAY = '\x1b[37m'
 DARK_GRAY = '\x1b[90m'
 RESET = '\x1b[0m'
 
+BOLD = '\033[1m'
+UNDERLINED = '\033[4m'
+STRIKETHROUGH = '\033[9m'
+REVERSED = '\033[7m'
+
 
 def colors_test():
     print(f"{DEFAULT}DEFAULT{RESET}\n"
@@ -37,4 +42,8 @@ def colors_test():
           f"{WHITE}WHITE{RESET} · "
           f"{LIGHT_WHITE}LIGHT_WHITE{RESET}\n"
           f"{LIGHT_GRAY}LIGHT_GRAY{RESET} · "
-          f"{DARK_GRAY}DARK_GRAY{RESET}")
+          f"{DARK_GRAY}DARK_GRAY{RESET}"
+          f"{BOLD}BOLD{RESET}"
+          f"{UNDERLINED}UNDERLINED{RESET}"
+          f"{REVERSED}REVERSED{RESET}"
+          f"{STRIKETHROUGH}STRIKETHROUGH{RESET}")
