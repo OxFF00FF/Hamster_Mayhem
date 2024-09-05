@@ -422,10 +422,8 @@ class HamsterKombatClicker:
                         print(f"✅  {localized_text('info_taps_completed')}")
 
                     else:
-                        available_boost = f"{boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('available')}"
-                        remain_color = f"{LIGHT_MAGENTA}{remain_time(remain)}{WHITE}"
-
-                        print(f"🚫  {localized_text('info_boost_not_ready', available_boost, remain_color)}")
+                        remain = f"{LIGHT_MAGENTA}{remain_time(remain)}{WHITE}"
+                        print(f"🚫  {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('boosts_available')}. {localized_text('info_next_boost_after')}: {remain}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
