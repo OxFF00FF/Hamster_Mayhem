@@ -1,0 +1,12 @@
+version: '3'
+services:
+  balance-service:
+    build: .
+    container_name: balance_app
+    environment:
+      - CHAT_ID=${CHAT_ID}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - HAMSTER_TOKEN=${HAMSTER_TOKEN}
+    volumes:
+      - ./:/app
+    command: python balance.py

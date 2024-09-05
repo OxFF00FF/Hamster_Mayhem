@@ -6,7 +6,7 @@ from Src.db_SQlite import ConfigDB
 from Src.Handlers import handle_main_menu_choice, handle_main_menu_not_logged_choice
 from Src.Login import hamster_client
 from Src.Menu import main_menu
-from Src.utils import banner, line_after, localized_text, add_new_app
+from Src.utils import banner, line_after, localized_text
 
 config = ConfigDB()
 
