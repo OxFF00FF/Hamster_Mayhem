@@ -64,30 +64,36 @@ def playground_menu():
     if config.hamster_token:
         promos = hamster_client()._get_promos()
 
-    keys_per_day = 4
     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
-    games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
+    games_info = {game['title']: {"emoji": game['emoji']} for game in games_data}
     max_width = max(len(game) for game in games_info)
 
     for promo in promos:
         game_name = promo['name']
         if game_name in games_info:
             games_info[game_name].update({
-                "keys": promo['keys'],
+                "recieved_keys": promo['keys'],
+                "keys_per_day": promo['per_day'],
                 "cooldown": promo['remain'],
                 "status": get_status(promo['isClaimed'])
             })
 
     menu = f"🎮  {localized_text('playground_menu_header')}"
     for i, (game_name, game_data) in enumerate(games_info.items(), start=1):
-        keys = game_data.get("keys", 0)
-        cooldown = game_data.get("cooldown", "n/a")
+        recieved_keys = game_data.get("recieved_keys", 0)
+        keys_per_day = game_data.get("keys_per_day", 0)
+        remain = game_data.get("cooldown", "n/a")
         status = game_data.get("status", not_available)
         emoji = game_data["emoji"]
-        color = game_data["color"]
 
-        menu += (f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  "
-                 f"{keys}/{keys_per_day}  {status} · {localized_text('left')}: {cooldown} \n")
+        if recieved_keys >= keys_per_day:
+            color = GREEN
+        else:
+            color = LIGHT_YELLOW
+
+        promo_name = f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}"
+        promo_status = f"{recieved_keys}/{keys_per_day}  {status} · {localized_text('left')}: {remain} \n"
+        menu += f"{promo_name}  {promo_status}"
 
     menu += (
         f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"

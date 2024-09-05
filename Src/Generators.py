@@ -64,5 +64,5 @@ async def genetare_for_all_games():
         print(localized_text('error_count_must_great_0'))
         exit(1)
 
-    tasks = [hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file) for app in games_data]
+    tasks = [hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file, config.spinner) for app in games_data]
     await asyncio.gather(*tasks)

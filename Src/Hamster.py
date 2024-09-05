@@ -189,13 +189,14 @@ class HamsterKombatClicker:
             states = response.json().get('states', [{}])
 
             for promo in promos:
+                keys_per_day = promo['keysPerDay']
                 for state in states:
                     if promo['promoId'] == state['promoId']:
                         promo_name = promo['title']['en']
-                        keys_today = state['receiveKeysToday']
+                        recieved_keys = state['receiveKeysToday']
                         remain_promo = remain_time(state['receiveKeysRefreshSec'])
-                        is_claimed = True if keys_today == 4 else False
-                        result.append({'remain': remain_promo, 'keys': keys_today, 'name': promo_name, 'isClaimed': is_claimed})
+                        is_claimed = True if recieved_keys == keys_per_day else False
+                        result.append({'remain': remain_promo, 'keys': recieved_keys, 'name': promo_name, 'isClaimed': is_claimed, "per_day": keys_per_day})
             return result
 
         except Exception as e:
@@ -906,16 +907,16 @@ class HamsterKombatClicker:
         promocodes = await __start_generate(count)
 
         line_before()
-        result = f"\n*{EMOJI} {TITLE}*\n*{localized_text('main_menu_promocodes')}: *\n"
+        result = f"*{EMOJI} {TITLE}*\n*{localized_text('main_menu_promocodes')}: *\n"
         for promocode in promocodes:
-            result += f"·  {promocode}\n"
-        formatted_text = result.replace('*', '').replace('', '')
-        print(formatted_text)
+            result += f"·  `{promocode}`\n"
+        formatted_text = result.replace('*', '').replace('`', '')
+        print(formatted_text.strip())
         line_after()
 
         if apply_promo:
             config.send_to_group = False
-            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}\n")
+            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}")
 
             config.save_to_file = False
             print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_saved_to_file')}{WHITE}\n")
