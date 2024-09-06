@@ -52,9 +52,9 @@ def main_menu():
 def main_menu_not_logged():
     menu = localized_text('main_menu_header')
     menu += (
-        f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}6 | {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}m | {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
     )
     print(menu)
 
@@ -91,14 +91,20 @@ def playground_menu():
         else:
             color = LIGHT_YELLOW
 
-        promo_name = f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}"
-        promo_status = f"{recieved_keys}/{keys_per_day}  {status} · {localized_text('left')}: {remain} \n"
+        if not recieved_keys and not keys_per_day:
+            keys = 'n/a'
+            color = RED
+        else:
+            keys = f"{recieved_keys}/{keys_per_day}"
+
+        promo_name = f"  {LIGHT_YELLOW}{i:<2} | {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}"
+        promo_status = f"{keys}  {status} · {localized_text('left')}: {remain} \n"
         menu += f"{promo_name}  {promo_status}"
 
     menu += (
-        f"  {LIGHT_YELLOW}* |  {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}*  | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}<  | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0  | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE} \n"
     )
     print(menu)
 
