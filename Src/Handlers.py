@@ -219,6 +219,11 @@ def handle_settings_menu_choice():
             print(f"ℹ️  {localized_text('info_default_spinner')}")
             line_after()
 
+        elif choice == 'hamster':
+            config.spinner = 'hamster'
+            print(f"ℹ️  {localized_text('info_default_spinner')}")
+            line_after()
+
         elif choice == 'list':
             print(localized_text('spinners_list'))
             print(spinners_table())

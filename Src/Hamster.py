@@ -749,16 +749,19 @@ class HamsterKombatClicker:
 
                 print(f"{DARK_GRAY}{localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
 
-        except:
-            if data['error_code'] == 'BAD_AUTH_TOKEN':
-                print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
-                      f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
-            else:
-                print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}\n")
-                logging.error(traceback.format_exc())
+        except Exception as e:
+            error = data.get('error_code')
+            if error:
+                if error['error_code'] == 'BAD_AUTH_TOKEN':
+                    print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
+                          f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
+                else:
+                    print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
+                    logging.error(traceback.format_exc())
 
             config.hamster_token = False
-            print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}\n")
+            print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}")
+            logging.error(e)
 
     def get_purhase_count(self):
         result = {}
@@ -778,7 +781,7 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
             return result
 
-    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, spinner=None):
+    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
         games_data = [app for app in get_games_data()['apps'] if app.get('available')]
 
         for promo in games_data:
@@ -814,7 +817,7 @@ class HamsterKombatClicker:
                     return client_token
 
             except Exception as e:
-                print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                print(f"🚫  {localized_text('error_occured')}: {e}")
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
@@ -832,7 +835,7 @@ class HamsterKombatClicker:
                     return has_code
 
             except Exception as e:
-                print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                print(f"🚫  {localized_text('error_occured')}: {e}")
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str | None:
@@ -850,8 +853,7 @@ class HamsterKombatClicker:
                     return promo_code
 
             except Exception as e:
-                print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
-                # logging.error(traceback.format_exc())
+                print(f"\n🚫  {localized_text('error_occured')}: {e}")
                 return promo_code
 
         async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None):
@@ -886,7 +888,7 @@ class HamsterKombatClicker:
                 return promo_code
 
             except Exception as e:
-                logging.error(f"\n{LIGHT_RED}🚫  {prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('error_occured')}: {e}")
+                logging.error(f"{LIGHT_RED}🚫  {prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('error_occured')}: {e}")
                 return promo_code
 
         async def __start_generate(keys_count: int) -> list:
@@ -895,14 +897,14 @@ class HamsterKombatClicker:
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             try:
-                if spinner:
+                if one_game:
                     global total_progress
                     total_progress = {prefix: 0}
                     progress_increment = 1
                     progress_dict = {prefix: ""}
 
                     loading_event = asyncio.Event()
-                    spinner_task = asyncio.create_task(update_spinner(spinner, loading_event, progress_dict, prefix))
+                    spinner_task = asyncio.create_task(update_spinner(loading_event, progress_dict, prefix))
                     async with aiohttp.ClientSession() as session:
                         tasks = [__key_generation(session, i + 1, keys_count, progress_increment, progress_dict) for i in range(keys_count)]
                         keys = await asyncio.gather(*tasks)
@@ -912,7 +914,7 @@ class HamsterKombatClicker:
 
                 else:
                     loading_event = asyncio.Event()
-                    spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
+                    spinner_task = asyncio.create_task(loading_v2(loading_event))
                     async with aiohttp.ClientSession() as session:
                         tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
                         keys = await asyncio.gather(*tasks)
@@ -921,7 +923,7 @@ class HamsterKombatClicker:
                     return [key for key in keys if key]
 
             except Exception as e:
-                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
                 return []
 
         promocodes = await __start_generate(count)

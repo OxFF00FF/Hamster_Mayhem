@@ -88,7 +88,8 @@ async def loading(event):
             await asyncio.sleep(0.3)
 
 
-async def loading_v2(event, spinner_name=None):
+async def loading_v2(event):
+    spinner_name = config.spinner
     if spinner_name is not None:
         spinners = [spinner_name.name for spinner_name in Spinners]
         for spinner_item in spinners:
@@ -277,17 +278,21 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
 #             text='🀄️',
 #             emoji='🀄️')
 
-async def update_spinner(spinner, event, progress_dict, prefix):
+async def update_spinner(event, progress_dict, prefix):
     frame_index = 0
     while not event.is_set():
-        spinner_frame = get_spinner_frame(spinner, frame_index)
+        spinner_frame = get_spinner_frame(config.spinner, frame_index)
         progress_message = progress_dict.get(prefix, "")
-        print(f"\r| {spinner_frame} | {WHITE}{progress_message}", end='', flush=True)
+        print(f"\r|{spinner_frame}| {WHITE}{progress_message}", end='', flush=True)
         frame_index += 1
-        await asyncio.sleep(0.3)
+        await asyncio.sleep(0.25)
 
 
 def get_spinner_frame(spinner_name, frame_index):
+    if spinner_name == 'hamster':
+        frames = create_scrolling_frames('Hamster Kombat. Make your way from the shaved hamster to the grandmaster CEO of the tier-1 crypto exchange. Buy upgrades, complete quests, invite friends and become the best', 20)
+        return frames[frame_index % len(frames)]
+
     try:
         if spinner_name is not None:
             spinners = [spinner_name.name for spinner_name in Spinners]
@@ -300,3 +305,12 @@ def get_spinner_frame(spinner_name, frame_index):
     except:
         frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
         return frames[frame_index % len(frames)]
+
+
+def create_scrolling_frames(text, width):
+    frames = []
+    padding = ' ' * width
+    text = padding + text + padding
+    for i in range(len(text) - width + 1):
+        frames.append('' + text[i:i + width] + '')
+    return frames

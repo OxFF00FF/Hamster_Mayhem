@@ -28,7 +28,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         print(localized_text('error_count_must_great_0'))
 
     try:
-        asyncio.run(hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, prefix, config.save_to_file, config.spinner))
+        asyncio.run(hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, prefix, config.save_to_file, one_game=True))
 
     except Exception as e:
         logging.error(e)
@@ -75,5 +75,5 @@ async def genetare_for_all_games(task_count=None):
     else:
         limited_games_data = games_data[:task_count]
 
-    tasks = [hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file) for app in limited_games_data]
+    tasks = [hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file, one_game=False) for app in limited_games_data]
     await asyncio.gather(*tasks)

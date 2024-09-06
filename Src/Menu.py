@@ -41,7 +41,7 @@ def main_menu():
         f"  {LIGHT_YELLOW}+ |  {RESET}📥 {YELLOW}{localized_text('main_menu_buy_card')} {WHITE} \n"
         f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
     )
     if config.hamster_token:
         print(menu)
@@ -54,7 +54,7 @@ def main_menu_not_logged():
     menu += (
         f"  {LIGHT_YELLOW}6 | {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m | {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
     )
     print(menu)
 
@@ -104,7 +104,7 @@ def playground_menu():
     menu += (
         f"  {LIGHT_YELLOW}*  | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
         f"  {LIGHT_YELLOW}<  | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0  | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0  | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
     )
     print(menu)
 
@@ -137,7 +137,7 @@ def minigames_menu():
 
     menu += (
         f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
     )
     print(menu)
 
@@ -154,14 +154,14 @@ def settings_menu():
         f"  {LIGHT_YELLOW}1 | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}2 | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}3 | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{config.lang} (ru/en) \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_loading_indicator'))} · {WHITE}{config.spinner} (spinner_<num>/default/list) \n"
+        f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_loading_indicator'))} · {WHITE}{GREEN}{config.spinner.upper()}{WHITE} (spinner_<num>/default/list) \n"
     )
 
     if group_id:
-        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_chat_id'))} · {WHITE}{group_id} \n"
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_chat_id'))} · {WHITE}{group_id}\n"
 
     if group_url:
-        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_group_url'))} · {WHITE}{group_url} \n"
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_group_url'))} · {WHITE}{group_url}"
 
     print(menu)
