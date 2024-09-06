@@ -121,7 +121,8 @@
         "info_card_upgraded": "Карта `{0}` улучшена · ⭐️ {1} уровень",
         "error_upgrade_not_avaialble": "Не удалось улучшить карту",
         "total_purhased_cards_count": "Куплено карт",
-        "total_purhased_upgraqdes_count": "Куплено улучшений"
+        "total_purhased_upgraqdes_count": "Куплено улучшений",
+        "processing": "Обработка..."
     },
 
     "en": {
@@ -246,6 +247,7 @@
         "info_card_upgraded": "Card `{0}` upgraded · ⭐️ {1} level",
         "error_upgrade_not_avaialble": "Failed to upgrade card",
         "total_purhased_cards_count": "Cards purchased",
-        "total_purhased_upgraqdes_count": "Upgrades purchased"
+        "total_purhased_upgraqdes_count": "Upgrades purchased",
+        "processing": "Processing..."
     }
 }
