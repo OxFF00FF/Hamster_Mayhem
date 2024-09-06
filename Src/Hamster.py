@@ -20,7 +20,7 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
-from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner
+from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner, loading_v2
 
 load_dotenv()
 config = ConfigDB()
@@ -562,7 +562,7 @@ class HamsterKombatClicker:
                 if bonus_keys == 0:
                     print(f"✅  {localized_text('info_minigame_complete', game_id)}. {next_minigame}")
                 else:
-                    print(f"✅  {localized_text('info_minigame_complete_2',game_id)}: {bonus_keys}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete_2', game_id)}: {bonus_keys}. {next_minigame}")
 
             else:
                 print(f"ℹ️  {localized_text('info_minigame_already_completed', game_id)}. {next_minigame}")
@@ -850,7 +850,7 @@ class HamsterKombatClicker:
                     logging.error(traceback.format_exc())
                 return promo_code
 
-        async def __key_generation(session, index: int, keys_count: int, progress_increment: int, progress_dict):
+        async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None):
             global total_progress
             promo_code = ''
             client_id = await __generate_client_id()
@@ -871,7 +871,7 @@ class HamsterKombatClicker:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                status_message = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
+                status_message = f"{LIGHT_BLUE}{prefix.upper():<3}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
                 print(f"\r{status_message}", flush=True)
                 return promo_code
 
@@ -881,7 +881,7 @@ class HamsterKombatClicker:
 
         async def __start_generate(keys_count: int) -> list:
             remain = f"{YELLOW}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
-            print(f"\n{LIGHT_YELLOW}`{prefix}` · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
+            print(f"\n{LIGHT_YELLOW}{prefix} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             try:
