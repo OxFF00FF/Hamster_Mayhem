@@ -638,8 +638,12 @@ class HamsterKombatClicker:
                 response = requests.post(f'{self.base_url}/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
 
-                print(f"{LIGHT_GREEN}🎉  {localized_text('info_promocode_activated')}: {keys_today + 1}/{keys_limit}{WHITE}\n")
+                reward = response.json()
+                if reward['type'] == 'keys':
+                    print(f"{LIGHT_GREEN}🎉  {localized_text('info_keys_recieved')}: {keys_today + reward['amount']}/{keys_limit} {WHITE}\n")
 
+                elif reward['type'] == 'coins':
+                    print(f"{LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['coins']:,}{WHITE}\n".replace(',', ' '))
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
