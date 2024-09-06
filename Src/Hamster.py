@@ -869,10 +869,9 @@ class HamsterKombatClicker:
                     await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
                     has_code = await __emulate_progress(session, client_token)
 
-                    total_progress[prefix] += progress_increment
-                    overall_progress = (total_progress[prefix] / (keys_count * EVENTS_COUNT)) * 100
-
                     if progress_dict:
+                        total_progress[prefix] += progress_increment
+                        overall_progress = (total_progress[prefix] / (keys_count * EVENTS_COUNT)) * 100
                         progress_dict[prefix] = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
                     else:
                         progress_message = (n + 1) / EVENTS_COUNT * 100
@@ -882,28 +881,27 @@ class HamsterKombatClicker:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                status_message = f"{LIGHT_BLUE}{prefix.upper():<3}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
+                status_message = f"{LIGHT_BLUE}{prefix:<3}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
                 print(f"\r{status_message}", flush=True)
                 return promo_code
 
             except Exception as e:
-                logging.error(f"\n🚫  {LIGHT_RED}{prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('error_occured')}: {e}\n")
+                logging.error(f"\n{LIGHT_RED}🚫  {prefix.upper()}{WHITE} [{index}/{keys_count}] · {localized_text('error_occured')}: {e}")
                 return promo_code
 
         async def __start_generate(keys_count: int) -> list:
-            remain = f"{YELLOW}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
-            print(f"\n{LIGHT_YELLOW}{prefix} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
+            remain = f"{LIGHT_MAGENTA}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
+            print(f"\n{LIGHT_YELLOW}{TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
             print(f'{YELLOW}{TEXT}{WHITE}')
 
             try:
-                global total_progress
-                total_progress = {prefix: 0}
-                progress_increment = 1
-                progress_dict = {prefix: ""}
-
-                loading_event = asyncio.Event()
-
                 if spinner:
+                    global total_progress
+                    total_progress = {prefix: 0}
+                    progress_increment = 1
+                    progress_dict = {prefix: ""}
+
+                    loading_event = asyncio.Event()
                     spinner_task = asyncio.create_task(update_spinner(spinner, loading_event, progress_dict, prefix))
                     async with aiohttp.ClientSession() as session:
                         tasks = [__key_generation(session, i + 1, keys_count, progress_increment, progress_dict) for i in range(keys_count)]
@@ -913,6 +911,7 @@ class HamsterKombatClicker:
                     return [key for key in keys if key]
 
                 else:
+                    loading_event = asyncio.Event()
                     spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
                     async with aiohttp.ClientSession() as session:
                         tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]

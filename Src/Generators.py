@@ -54,7 +54,7 @@ def generate_for_game(prefix):
         generate_promocodes(prefix=prefix)
 
 
-async def genetare_for_all_games():
+async def genetare_for_all_games(task_count=None):
     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
 
     if config.hamster_token:
@@ -70,5 +70,10 @@ async def genetare_for_all_games():
         print(localized_text('error_count_must_great_0'))
         exit(1)
 
-    tasks = [hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file) for app in games_data]
+    if task_count is None:
+        limited_games_data = games_data
+    else:
+        limited_games_data = games_data[:task_count]
+
+    tasks = [hamster_client().get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file) for app in limited_games_data]
     await asyncio.gather(*tasks)

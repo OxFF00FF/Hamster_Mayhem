@@ -10,7 +10,7 @@
         {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
             "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
-            "prefix": "CUBE ",
+            "prefix": "CUBE",
             "title": "Chain Cube 2048",
             "eventsCount": 7,
             "registerEventTimeout": 20000,
@@ -87,7 +87,7 @@
         {
             "appToken": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
             "promoId": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
-            "prefix": "TILE ",
+            "prefix": "TILE",
             "title": "Tile Trio",
             "eventsCount": 22,
             "registerEventTimeout": 20000,
@@ -120,7 +120,7 @@
         {
             "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
             "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
-            "prefix": "BIKE ",
+            "prefix": "BIKE",
             "title": "Bike Ride 3D",
             "eventsCount": 17,
             "registerEventTimeout": 20000,
@@ -131,7 +131,7 @@
         {
             "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
             "promoId": "8814a785-97fb-4177-9193-ca4180ff9da8",
-            "prefix": "RACE ",
+            "prefix": "RACE",
             "title": "Mud Racing",
             "eventsCount": 20,
             "registerEventTimeout": 20000,
@@ -153,7 +153,7 @@
         {
             "appToken": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
             "promoId": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
-            "prefix": "CAFE ",
+            "prefix": "CAFE",
             "title": "Cafe Dash",
             "eventsCount": 20,
             "registerEventTimeout": 22000,

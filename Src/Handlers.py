@@ -128,8 +128,13 @@ def handle_playground_menu_choice():
         if choice in games_prefix:
             generate_for_game(games_prefix[choice])
 
-        elif choice == '*':
-            asyncio.run(genetare_for_all_games())
+        elif choice.startswith('*'):
+            if choice.strip('*') == '':
+                asyncio.run(genetare_for_all_games())
+
+            else:
+                games_count = int(choice.strip('*'))
+                asyncio.run(genetare_for_all_games(games_count))
 
         elif choice == '<':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
