@@ -113,8 +113,8 @@
             "title": "Stone Age",
             "eventsCount": 10,
             "registerEventTimeout": 20000,
-            "text": "🪨",
-            "emoji": "🪨",
+            "text": "\uD83D\uDDFF",
+            "emoji": "\uD83D\uDDFF",
             "available": true
         },
         {
