@@ -54,7 +54,7 @@
         {
             "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
             "promoId": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
-            "prefix": "POLY ",
+            "prefix": "POLY",
             "title": "Polysphere",
             "eventsCount": 17,
             "registerEventTimeout": 3000,
@@ -65,7 +65,7 @@
         {
             "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
             "promoId": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
-            "prefix": "TRIM ",
+            "prefix": "TRIM",
             "title": "Mow and Trim",
             "eventsCount": 20,
             "registerEventTimeout": 20000,
@@ -76,23 +76,12 @@
         {
             "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
             "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
-            "prefix": "ZOO  ",
+            "prefix": "ZOO",
             "title": "Zoopolis",
             "eventsCount": 10,
             "registerEventTimeout": 22000,
             "text": "🦁  Уже незнаю что придумать",
             "emoji": "🦁",
-            "available": true
-        },
-        {
-            "appToken": "112887b0-a8af-4eb2-ac63-d82df78283d9",
-            "promoId": "112887b0-a8af-4eb2-ac63-d82df78283d9",
-            "prefix": "FLUF ",
-            "title": "Fluff Crusade",
-            "eventsCount": 5,
-            "registerEventTimeout": 120000,
-            "text": "🏹",
-            "emoji": "🏹",
             "available": true
         },
         {
@@ -104,7 +93,29 @@
             "registerEventTimeout": 20000,
             "text": "🀄️",
             "emoji": "🀄️",
-            "available": false
+            "available": true
+        },
+        {
+            "appToken": "112887b0-a8af-4eb2-ac63-d82df78283d9",
+            "promoId": "112887b0-a8af-4eb2-ac63-d82df78283d9",
+            "prefix": "FLUF",
+            "title": "Fluff Crusade",
+            "eventsCount": 5,
+            "registerEventTimeout": 120000,
+            "text": "🏹",
+            "emoji": "🏹",
+            "available": true
+        },
+        {
+            "appToken": "04ebd6de-69b7-43d1-9c4b-04a6ca3305af",
+            "promoId": "04ebd6de-69b7-43d1-9c4b-04a6ca3305af",
+            "prefix": "STONE",
+            "title": "Stone Age",
+            "eventsCount": 10,
+            "registerEventTimeout": 20000,
+            "text": "🪨",
+            "emoji": "🪨",
+            "available": true
         },
         {
             "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
