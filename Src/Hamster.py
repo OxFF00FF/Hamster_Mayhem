@@ -643,7 +643,7 @@ class HamsterKombatClicker:
                 response = requests.post(f'{self.base_url}/clicker/apply-promo', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 response.raise_for_status()
 
-                reward = response.json()
+                reward = response.json()['reward']
                 if reward['type'] == 'keys':
                     print(f"{LIGHT_GREEN}🎉  {localized_text('info_keys_recieved')}: {keys_today + reward['amount']}/{keys_limit} {WHITE}\n")
 
