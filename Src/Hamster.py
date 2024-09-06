@@ -22,6 +22,11 @@ from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner, loading_v2
 
+import platform
+
+if platform.system() == 'Windows':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 load_dotenv()
 config = ConfigDB()
 
@@ -562,7 +567,7 @@ class HamsterKombatClicker:
                 if bonus_keys == 0:
                     print(f"✅  {localized_text('info_minigame_complete', game_id)}. {next_minigame}")
                 else:
-                    print(f"✅  {localized_text('info_minigame_complete_2',game_id)}: {bonus_keys}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete_2', game_id)}: {bonus_keys}. {next_minigame}")
 
             else:
                 print(f"ℹ️  {localized_text('info_minigame_already_completed', game_id)}. {next_minigame}")
