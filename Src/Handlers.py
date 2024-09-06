@@ -206,12 +206,12 @@ def handle_settings_menu_choice():
             elif config.lang == 'en':
                 config.lang = 'ru'
 
-            print(localized_text('change_lang'))
+            print(f"ℹ️  {localized_text('change_lang')}")
             line_after()
 
-        elif choice == 'spinner':
+        elif choice == 'default':
             config.spinner = 'default'
-            print(localized_text('info_default_spinner'))
+            print(f"ℹ️  {localized_text('info_default_spinner')}")
             line_after()
 
         elif choice == 'list':

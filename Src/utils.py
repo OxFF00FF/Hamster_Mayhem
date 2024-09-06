@@ -282,7 +282,7 @@ async def update_spinner(spinner, event, progress_dict, prefix):
     while not event.is_set():
         spinner_frame = get_spinner_frame(spinner, frame_index)
         progress_message = progress_dict.get(prefix, "")
-        print(f"\n\r| {spinner_frame} | {WHITE}{progress_message}", end='', flush=True)
+        print(f"\r| {spinner_frame} | {WHITE}{progress_message}", end='', flush=True)
         frame_index += 1
         await asyncio.sleep(0.3)
 

@@ -562,7 +562,7 @@ class HamsterKombatClicker:
                 if bonus_keys == 0:
                     print(f"✅  {localized_text('info_minigame_complete', game_id)}. {next_minigame}")
                 else:
-                    print(f"✅  {localized_text('info_minigame_complete_2', game_id)}: {bonus_keys}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete_2',game_id)}: {bonus_keys}. {next_minigame}")
 
             else:
                 print(f"ℹ️  {localized_text('info_minigame_already_completed', game_id)}. {next_minigame}")
@@ -865,7 +865,11 @@ class HamsterKombatClicker:
                     total_progress[prefix] += progress_increment
                     overall_progress = (total_progress[prefix] / (keys_count * EVENTS_COUNT)) * 100
 
-                    progress_dict[prefix] = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
+                    if progress_dict:
+                        progress_dict[prefix] = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
+                    else:
+                        progress_message = (n + 1) / EVENTS_COUNT * 100
+                        print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {progress_message:.0f}%")
 
                     if has_code:
                         break
@@ -891,14 +895,24 @@ class HamsterKombatClicker:
                 progress_dict = {prefix: ""}
 
                 loading_event = asyncio.Event()
-                spinner_task = asyncio.create_task(update_spinner(spinner, loading_event, progress_dict, prefix))
 
-                async with aiohttp.ClientSession() as session:
-                    tasks = [__key_generation(session, i + 1, keys_count, progress_increment, progress_dict) for i in range(keys_count)]
-                    keys = await asyncio.gather(*tasks)
-                    loading_event.set()
-                    await spinner_task
-                return [key for key in keys if key]
+                if spinner:
+                    spinner_task = asyncio.create_task(update_spinner(spinner, loading_event, progress_dict, prefix))
+                    async with aiohttp.ClientSession() as session:
+                        tasks = [__key_generation(session, i + 1, keys_count, progress_increment, progress_dict) for i in range(keys_count)]
+                        keys = await asyncio.gather(*tasks)
+                        loading_event.set()
+                        await spinner_task
+                    return [key for key in keys if key]
+
+                else:
+                    spinner_task = asyncio.create_task(loading_v2(loading_event, spinner))
+                    async with aiohttp.ClientSession() as session:
+                        tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
+                        keys = await asyncio.gather(*tasks)
+                        loading_event.set()
+                        await spinner_task
+                    return [key for key in keys if key]
 
             except Exception as e:
                 logging.error(f"🚫  {localized_text('error_occured')}: {e}")
