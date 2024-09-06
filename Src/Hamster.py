@@ -805,8 +805,7 @@ class HamsterKombatClicker:
                     return client_token
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
+                print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
@@ -824,8 +823,7 @@ class HamsterKombatClicker:
                     return has_code
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
+                print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str | None:
@@ -843,11 +841,8 @@ class HamsterKombatClicker:
                     return promo_code
 
             except Exception as e:
-                if response.status_code == 429:
-                    logging.error(f"🚫  {localized_text('error_429')}")
-                else:
-                    print(f"🚫  {localized_text('error_occured')}: {e}")
-                    logging.error(traceback.format_exc())
+                print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
+                # logging.error(traceback.format_exc())
                 return promo_code
 
         async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None):
@@ -858,6 +853,9 @@ class HamsterKombatClicker:
             time.sleep(1)
 
             try:
+                if progress_dict:
+                    progress_dict[prefix] = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {localized_text('processing')}"
+
                 for n in range(EVENTS_COUNT):
                     await asyncio.sleep(EVENTS_DELAY * await delay_random() / 1000)
                     has_code = await __emulate_progress(session, client_token)
@@ -915,7 +913,7 @@ class HamsterKombatClicker:
                     return [key for key in keys if key]
 
             except Exception as e:
-                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(f"\n🚫  {localized_text('error_occured')}: {e}\n")
                 return []
 
         promocodes = await __start_generate(count)
