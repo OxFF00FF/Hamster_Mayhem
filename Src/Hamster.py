@@ -648,7 +648,7 @@ class HamsterKombatClicker:
                     print(f"{LIGHT_GREEN}🎉  {localized_text('info_keys_recieved')}: {keys_today + reward['amount']}/{keys_limit} {WHITE}\n")
 
                 elif reward['type'] == 'coins':
-                    print(f"{LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['coins']:,}{WHITE}\n".replace(',', ' '))
+                    print(f"{LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['amount']:,}{WHITE}\n".replace(',', ' '))
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
