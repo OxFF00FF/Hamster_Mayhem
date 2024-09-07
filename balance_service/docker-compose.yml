@@ -1,8 +1,9 @@
 version: '3'
 services:
-  balance-service:
+  hamster-mayhem-service:
     build: .
-    container_name: balance_app
+    image: python:3.9-alpine
+    container_name: Hamster_Mayhem_ultimate
     environment:
       - CHAT_ID=${CHAT_ID}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
@@ -10,3 +11,4 @@ services:
     volumes:
       - ./:/app
     command: python balance.py
+    restart: unless-stopped
