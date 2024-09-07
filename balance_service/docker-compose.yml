@@ -1,3 +1,13 @@
+# docker run -d \
+#   --name Hamster_Mayhem_ultimate \
+#   -e CHAT_ID=your_chat_id \
+#   -e TELEGRAM_BOT_TOKEN=your_telegram_bot_token \
+#   -e HAMSTER_TOKEN=your_hamster_token \
+#   -v "$(pwd)":/app \
+#   hamster-mayhem-image \
+#   python balance.py
+
+
 version: '3'
 services:
   hamster-mayhem-service:
