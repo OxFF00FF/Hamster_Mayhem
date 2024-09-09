@@ -39,7 +39,7 @@ def choose_account():
                 print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}{WHITE}")
                 logging.error(e)
 
-        account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}{localized_text('choose_number')}: {WHITE}")
+        account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}▶️  {localized_text('choose_number')}: {WHITE}")
         return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
     else:
         print(localized_text('one_account_detected'))

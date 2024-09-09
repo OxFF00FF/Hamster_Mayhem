@@ -37,7 +37,7 @@ def handle_main_menu_choice(choice):
         if all(card['available'] for card in upgrades_info['cards']):
             hamster_client().complete_daily_combo()
         else:
-            choice = input(f"{localized_text('not_all_cards_available_today')}\n{localized_text('yes_enter')}: ")
+            choice = input(f"{localized_text('not_all_cards_available_today')}\n{CYAN}▶️  {localized_text('yes_enter')}: {WHITE}")
             if str(choice.lower()) == 'y'.lower():
                 hamster_client().complete_daily_combo(buy_anyway=True)
 
@@ -122,7 +122,7 @@ def handle_playground_menu_choice():
 
     while True:
         playground_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}▶️  (1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
         line_before()
 
         if choice in games_prefix:
@@ -156,7 +156,7 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}▶️  ({'/'.join(choices)}/</0): {RESET}")
         line_before()
 
         if choice in choices:
@@ -183,7 +183,7 @@ def handle_settings_menu_choice():
 
     while True:
         settings_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/</0): {RESET}")
+        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}▶️  (1/2/3/4/</0): {RESET}")
         line_before()
 
         if choice == '1':
