@@ -725,16 +725,6 @@ class HamsterKombatClicker:
                 'completed': next((task.get('isCompleted', False) for task in tasks_data.get('tasks', []) if task['id'] == 'streak_days_special'), False)
             }
 
-            # Fetch boosts data
-            boosts_data = _post_request('clicker/boosts-for-buy')
-            boosts = boosts_data.get('boostsForBuy', [])
-            boost_data = next((boost for boost in boosts if boost['id'] == 'BoostFullAvailableTaps'), {})
-            result['boost'] = {
-                'remain': 3700,
-                'total': int(boost_data.get('maxLevel', 0)),
-                'completed': int(boost_data.get('cooldownSeconds', 0)) > 0
-            }
-
             # Fetch taps data
             taps_data = _post_request('clicker/sync').get('clickerUser', {})
             max_taps = int(taps_data.get('maxTaps', 0))
