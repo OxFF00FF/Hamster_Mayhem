@@ -36,7 +36,7 @@ class HamsterKombatClicker:
     def __init__(self, hamster_token):
         self.HAMSTER_TOKEN = hamster_token
         self.BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-        self.GROUP_ID = os.getenv('CHAT_ID')
+        self.CHAT_ID = os.getenv('CHAT_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
         self.base_url = 'https://api.hamsterkombatgame.io'
 
@@ -600,7 +600,7 @@ class HamsterKombatClicker:
                     response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": balance})
                     response.raise_for_status()
                 else:
-                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.GROUP_ID), "text": balance})
+                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": balance})
                     response.raise_for_status()
 
                 print(f"✅  {update_date} · Баланс успешно отправлен в группу")
@@ -795,17 +795,21 @@ class HamsterKombatClicker:
                 print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
 
         except Exception as e:
-            error = data.get('error_code')
-            if error:
-                if error['error_code'] == 'BAD_AUTH_TOKEN':
-                    print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
-                          f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
-                else:
-                    print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
-                    logging.error(traceback.format_exc())
+            try:
+                error = data.get('error_code')
+                if error:
+                    if error['error_code'] == 'BAD_AUTH_TOKEN':
+                        print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
+                              f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
+                    else:
+                        print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
+                        logging.error(traceback.format_exc())
+            except:
+                pass
 
             config.hamster_token = False
-            print(f"⚠️  {YELLOW}{localized_text('warning_hamster_combat_unavailable')}{WHITE}")
+            print(f"{RED}❌  {localized_text('error_hamster_token_not_specified')}{WHITE}")
+            print(f"{YELLOW}⚠️ {localized_text('warning_hamster_combat_unavailable')}{WHITE}")
             logging.error(e)
 
     def get_purhase_count(self):
@@ -993,7 +997,7 @@ class HamsterKombatClicker:
 
         if send_to_group:
             try:
-                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "parse_mode": "Markdown", "text": result})
+                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.CHAT_ID, "parse_mode": "Markdown", "text": result})
                 telegram_response.raise_for_status()
                 time.sleep(3)
                 print(f"✅  {GREEN}{localized_text('main_menu_promocodes')} `{TITLE}` {localized_text('sent_to_group')}{WHITE}")
