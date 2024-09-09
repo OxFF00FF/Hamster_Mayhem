@@ -59,10 +59,10 @@ def countdown_timer(seconds):
         h = str(h).zfill(2)
         m = str(m).zfill(2)
         s = str(s).zfill(2)
-        print(f"\rplease wait until {h}:{m}:{s} ", flush=True, end="")
+        print(f"\r⏳  Please wait until {h}:{m}:{s} ", flush=True, end="")
         seconds -= 1
         time.sleep(1)
-    print(f"\rplease wait until {h}:{m}:{s} ", flush=True, end="")
+    print(f"\r⏳  Please wait until {h}:{m}:{s} ", flush=True, end="")
 
 
 def remain_time(seconds):
