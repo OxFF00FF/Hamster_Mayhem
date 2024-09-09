@@ -583,13 +583,13 @@ class HamsterKombatClicker:
                 print(f"🚫  {localized_text('error_occured')}: {e}")
                 logging.error(traceback.format_exc())
 
-    def send_balance_to_group(self, bot_token, update_time_sec=7200, chat_id=None):
+    def send_balance_to_group(self, update_time_sec=7200, chat_id=None):
         try:
             while True:
                 info = self._get_balance()
                 user_id = self._get_telegram_user_id()
 
-                update_date = datetime.datetime.fromtimestamp(info['date']).strftime('%Y-%m-%d %H:%M:%S')
+                update_date = datetime.fromtimestamp(info['date']).strftime('%Y-%m-%d %H:%M:%S')
                 result = f"💰  Баланс: {info['balanceCoins']:,} \n" \
                          f"⭐️  Всего: {info['total']:,} \n" \
                          f"🆔  ID пользователя: {user_id} \n" \
@@ -597,10 +597,10 @@ class HamsterKombatClicker:
                 balance = result.replace(',', ' ')
 
                 if chat_id is not None:
-                    response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": chat_id, "text": balance})
+                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": chat_id, "text": balance})
                     response.raise_for_status()
                 else:
-                    response = requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage", data={"chat_id": self.GROUP_ID, "text": balance})
+                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.GROUP_ID, "text": balance})
                     response.raise_for_status()
 
                 print(f"✅  {update_date} · Баланс успешно отправлен в группу")
