@@ -12,7 +12,7 @@ load_dotenv()
 
 class ConfigDB:
     def __init__(self):
-        self.con = sqlite3.connect('Src/data/Config.db')
+        self.con = sqlite3.connect('Src/data/Config.db', check_same_thread=False)
         self.cur = self.con.cursor()
 
         self.cur.execute('''CREATE TABLE IF NOT EXISTS config (
