@@ -1,3 +1,4 @@
+import os
 import threading
 import time
 from random import randint
@@ -36,7 +37,12 @@ def process_tasks():
         time.sleep(tasks['remain'] + random_delay())
 
 
+def process_balance():
+    hamster_client().send_balance_to_group(chat_id=int(os.getenv('BOT_LOGS_GROUP_ID')))
+
+
 threads = [
+    threading.Thread(target=process_balance),
     threading.Thread(target=process_taps),
     threading.Thread(target=process_cipher),
     threading.Thread(target=process_tasks),
