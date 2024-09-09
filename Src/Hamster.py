@@ -36,7 +36,7 @@ class HamsterKombatClicker:
     def __init__(self, hamster_token):
         self.HAMSTER_TOKEN = hamster_token
         self.BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-        self.GROUP_ID = os.getenv('GROUP_ID')
+        self.GROUP_ID = os.getenv('CHAT_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
         self.base_url = 'https://api.hamsterkombatgame.io'
 
