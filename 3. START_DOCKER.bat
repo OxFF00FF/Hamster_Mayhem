@@ -11,6 +11,6 @@ if not exist ".env" (
 pause
 
 echo Starting...
-docker-compose up
+docker-compose up -d
 
 pause
