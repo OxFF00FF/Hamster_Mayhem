@@ -137,7 +137,8 @@
         "next_minigame_tiles_after": "Следующая игра Tiles через",
         "next_minigame_candles_after": "Следующая игра Candles через",
         "next_combo_after": "Следующее комбо через",
-        "next_purhase_after": "Следующая покупка через"
+        "next_purhase_after": "Следующая покупка через",
+        "not_enough_coins": "Недостаточно монет для покупки"
     },
 
     "en": {
@@ -278,6 +279,7 @@
         "next_minigame_tiles_after": "Next minigame Tiles after",
         "next_minigame_candles_after": "Next minigame Candles after",
         "next_combo_after": "Next combo after",
-        "next_purhase_after": "Next purhase after"
+        "next_purhase_after": "Next purhase after",
+        "not_enough_coins": "Not enough coins to purchase"
     }
 }

@@ -301,7 +301,7 @@ class HamsterKombatClicker:
                             return error_message
 
                 else:
-                    print(f"{RED}🚫  Недостатчоно баланса дял покупки{WHITE}")
+                    print(f"{RED}🚫  {localized_text('not_enough_coins')}{WHITE}")
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
