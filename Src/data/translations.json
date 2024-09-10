@@ -104,8 +104,8 @@
         "info_minigame_complete_2": "Миниигра {0} пройдена. Получено ключей",
         "info_minigame_already_completed": "Миниигра {0} сегодня уже пройдена",
         "info_next_combo_after": "Следующее через",
-        "info_combo_completed": "Ежедневное комбо выполнено",
-        "warning_combo_not_complete": "Ежедневное комбо не выполнено. Были куплены только доступные карты",
+        "info_combo_completed": "Комбо выполнено",
+        "warning_combo_not_complete": "Комбо не выполнено. Были куплены только доступные карты",
         "info_combo_already_complete": "Комбо сегодня уже получено",
         "info_next_cipher_after": "Следующий через",
         "info_cipher_completed": "Шифр получен",
@@ -128,7 +128,16 @@
         "setting_cards_in_top": "Карт в топе",
         "not_all_carda_available": "Не все карты доступны. Будут куплены только доступные!",
         "continue": "Продолжить?",
-        "combo_cancel": "Покупка комбо отменена"
+        "combo_cancel": "Покупка комбо отменена",
+        "setting_balance_threshold": "Мин. остаток на балансе",
+        "next_taps_after": "Следующие тапы через",
+        "next_cipher_after": "Следующий шифр через",
+        "next_tasks_after": "Следующие задания через",
+        "next_balance_after": "Следующий баланс через",
+        "next_minigame_tiles_after": "Следующая игра Tiles через",
+        "next_minigame_candles_after": "Следующая игра Candles через",
+        "next_combo_after": "Следующее комбо через",
+        "next_purhase_after": "Следующая покупка через"
     },
 
     "en": {
@@ -236,8 +245,8 @@
         "info_minigame_complete_2": "Minigame {0} completed. Keys received",
         "info_minigame_already_completed": "Minigame {0} has already been completed today",
         "info_next_combo_after": "Next after",
-        "info_combo_completed": "Daily combo completed",
-        "warning_combo_not_complete": "Daily combo failed. Only available cards were purchased",
+        "info_combo_completed": "Сombo completed",
+        "warning_combo_not_complete": "Сombo failed. Only available cards were purchased",
         "info_combo_already_complete": "Combo already received today",
         "info_next_cipher_after": "Next after",
         "info_cipher_completed": "Cipher completed",
@@ -260,6 +269,15 @@
         "setting_cards_in_top": "Cards in top",
         "not_all_carda_available": "Not all cards are available. Only available ones will be purchased!",
         "continue": "Continue?",
-        "combo_cancel": "Сombo purchase canceled"
+        "combo_cancel": "Сombo purchase canceled",
+        "setting_balance_threshold": "Saved balance limit",
+        "next_taps_after": "Next taps after",
+        "next_cipher_after": "Next cipher after",
+        "next_tasks_after": "Next tasks after",
+        "next_balance_after": "Next balance afternext balance after",
+        "next_minigame_tiles_after": "Next minigame Tiles after",
+        "next_minigame_candles_after": "Next minigame Candles after",
+        "next_combo_after": "Next combo after",
+        "next_purhase_after": "Next purhase after"
     }
 }
