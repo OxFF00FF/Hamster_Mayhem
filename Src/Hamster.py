@@ -272,9 +272,10 @@ class HamsterKombatClicker:
                 upgrade_level = upgrade.get('level') + 1
                 upgrade_available = upgrade.get('isAvailable')
                 upgrade_expire = upgrade.get('isExpired')
+                upgrade_cooldown = upgrade.get('cooldownSeconds')
 
                 if upgradeId == upgrade['id']:
-                    if upgrade.get('isAvailable') and not upgrade.get('isExpired'):
+                    if upgrade.get('isAvailable') and not upgrade.get('isExpired') and upgrade_cooldown == 0:
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                         response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         response.raise_for_status()
@@ -284,12 +285,12 @@ class HamsterKombatClicker:
                     elif upgrade_available and upgrade_expire:
                         logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade_name)}")
 
-                    elif not upgrade_available:
+                    else:
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                         buy_upgrade_response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
 
                         error_message = buy_upgrade_response.json().get('error_message')
-                        logging.warning(f"🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}")
+                        print(f"🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`\n    {error_message}")
                         return error_message
 
         except Exception as e:
@@ -673,7 +674,7 @@ class HamsterKombatClicker:
 
                 evaluated_cards.append(card)
         sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
-        return sorted_cards[:20]
+        return sorted_cards[:config.cards_in_top]
 
     def get_account_info(self):
         try:
