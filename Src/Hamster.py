@@ -596,9 +596,6 @@ class HamsterKombatClicker:
                          f"🔄  Обновление: {update_date}"
                 balance = result.replace(',', ' ')
 
-                print(self.HAMSTER_TOKEN)
-                print(self.BOT_TOKEN)
-                print(self.CHAT_ID)
                 if chat_id is not None:
                     response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": balance})
                     response.raise_for_status()
