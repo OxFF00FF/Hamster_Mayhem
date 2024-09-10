@@ -27,7 +27,8 @@ class ConfigDB:
                            'bonus_for_one_point' INTEGER,
                            'group_url' VARCHAR(50),
                            'group_id' VARCHAR(10),
-                           `cards_in_top` INTEGER
+                           `cards_in_top` INTEGER,
+                           `balance_threshold` INTEGER
                            )''')
         self.con.commit()
         self._default_config()
