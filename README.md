@@ -6,6 +6,7 @@
 ![1](https://github.com/user-attachments/assets/bc847b2b-721c-42f4-b78d-dd6872c5b865)
 
 > 🇪🇳 README in english available [here](https://github.com/OxFF00FF/Hamster_Mayhem/blob/master/README_en.md)
+
  
 Проект был создал чтобы помочь людям проходить рекламные игры в [Hamster Kombat](https://t.me/hamsTer_kombat_bot/start?startapp=kentId1476571560).
 По вопросам проекта можете писать в телеграм или в [группу](https://t.me/+SUekzTWJlq8yNzIy)
