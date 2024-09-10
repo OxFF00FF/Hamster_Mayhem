@@ -123,7 +123,8 @@
         "error_upgrade_not_avaialble": "Не удалось улучшить карту",
         "total_purhased_cards_count": "Куплено карт",
         "total_purhased_upgraqdes_count": "Куплено улучшений",
-        "processing": "Обработка..."
+        "processing": "Обработка...",
+        "setting_account": "Аккаунт"
     },
 
     "en": {
@@ -250,6 +251,7 @@
         "error_upgrade_not_avaialble": "Failed to upgrade card",
         "total_purhased_cards_count": "Cards purchased",
         "total_purhased_upgraqdes_count": "Upgrades purchased",
-        "processing": "Processing..."
+        "processing": "Processing...",
+        "setting_account": "Account"
     }
 }
