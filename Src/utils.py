@@ -246,7 +246,8 @@ def align_settins(text):
         len(localized_text('setting_apply_promo')),
         len(localized_text('setting_save_to_file')),
         len(localized_text('setting_language')),
-        len(localized_text('setting_loading_indicator'))
+        len(localized_text('setting_loading_indicator')),
+        len(localized_text('setting_balance_threshold'))
     )
     return text.ljust(max_length)
 
