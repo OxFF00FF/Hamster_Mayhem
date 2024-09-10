@@ -290,7 +290,7 @@ async def update_spinner(event, progress_dict, prefix):
 
 def get_spinner_frame(spinner_name, frame_index):
     if spinner_name == 'hamster':
-        frames = create_scrolling_frames('Hamster Kombat. Make your way from the shaved hamster to the grandmaster CEO of the tier-1 crypto exchange. Buy upgrades, complete quests, invite friends and become the best', 20)
+        frames = create_scrolling_frames('Hamster Kombat', 15)
         return frames[frame_index % len(frames)]
 
     try:
