@@ -269,10 +269,10 @@ class HamsterKombatClicker:
             upgradesForBuy = upgrades_for_buy_response.json().get('upgradesForBuy')
             for upgrade in upgradesForBuy:
                 upgrade_name = upgrade.get('name')
-                upgrade_level = upgrade.get('level') + 1
+                upgrade_level = upgrade.get('level')
                 upgrade_available = upgrade.get('isAvailable')
                 upgrade_expire = upgrade.get('isExpired')
-                upgrade_cooldown = upgrade.get('cooldownSeconds')
+                upgrade_cooldown = upgrade.get('cooldownSeconds', 1)
 
                 if upgradeId == upgrade['id']:
                     if upgrade.get('isAvailable') and not upgrade.get('isExpired') and upgrade_cooldown == 0:
@@ -280,7 +280,7 @@ class HamsterKombatClicker:
                         response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         response.raise_for_status()
 
-                        print(f"✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level)}")
+                        print(f"✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level+1)}")
 
                     elif upgrade_available and upgrade_expire:
                         logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade_name)}")
@@ -288,7 +288,7 @@ class HamsterKombatClicker:
                     else:
                         json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                         buy_upgrade_response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
-
+                        print(buy_upgrade_response.json())
                         error_message = buy_upgrade_response.json().get('error_message')
                         print(f"🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`\n    {error_message}")
                         return error_message
@@ -662,7 +662,8 @@ class HamsterKombatClicker:
         evaluated_cards = []
         upgrades = response.json()['upgradesForBuy']
         for card in upgrades:
-            if card['isAvailable'] and not card['isExpired']:
+            cooldown = card.get('cooldownSeconds', 1)
+            if card['isAvailable'] and not card['isExpired'] and cooldown == 0:
                 if card["profitPerHourDelta"] != 0:
                     payback_seconds = int(card["price"] / card["profitPerHour"]) * 3600
                     card["payback_period"] = remain_time(payback_seconds)
