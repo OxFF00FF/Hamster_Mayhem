@@ -60,19 +60,30 @@ def handle_main_menu_choice(choice):
 
     elif choice == '$':
         line_before()
-        top_10_cards = hamster_client().evaluate_cards()
+        cards = hamster_client().evaluate_cards(cards_in_list=5)
         print(localized_text('info_rent_coeff_coefficient'))
 
-        print(localized_text('top20_profit_cards'))
-        for card in top_10_cards:
+        print(localized_text('top_profit_cards'))
+        for e, card in enumerate(cards):
             price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
             print(
-                f"🏷  {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
+                f"#   {e + 1}. {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
                 f"💰  {YELLOW}{localized_text('price')}: {price}\n"
                 f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
                 f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
             )
             print("-" * 30)
+
+    elif choice.startswith('$'):
+        line_before()
+        cards = hamster_client().evaluate_cards(cards_in_list=5)
+        card_index = int(choice[1:]) - 1
+
+        if 0 <= card_index < len(cards):
+            card = cards[card_index]
+            upgrade_id = card['id']
+            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
+            hamster_client().evaluate_cards()
 
     elif choice.startswith('+'):
         line_before()
