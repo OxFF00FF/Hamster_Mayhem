@@ -394,17 +394,20 @@ class HamsterKombatClicker:
 
             clickerUser = response.json().get('clickerUser')
             availableTaps = int(clickerUser.get('availableTaps'))
-            maxTaps = int(clickerUser.get('maxTaps'))
-            earnPerTap = int(clickerUser.get('earnPerTap'))
+            max_taps = int(clickerUser.get('maxTaps'))
+            earn_per_sec = int(clickerUser.get('earnPerTap'))
+            taps_recoverper_sec = int(clickerUser.get('tapsRecoverPerSec'))
 
-            if availableTaps == maxTaps:
-                count = int(maxTaps / earnPerTap)
-                availableTaps = int(maxTaps - (count * earnPerTap))
+            total_remain_time = max_taps / taps_recoverper_sec
+            current_remain_time = availableTaps / taps_recoverper_sec
+
+            if availableTaps == max_taps:
+                count = int(max_taps / earn_per_sec)
+                availableTaps = int(max_taps - (count * earn_per_sec))
 
                 json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                 taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 taps_response.raise_for_status()
-
                 print(f"✅  {localized_text('info_taps_completed')}")
 
             else:
@@ -421,7 +424,7 @@ class HamsterKombatClicker:
 
                         print(f"✅  {localized_text('info_boost_used')}")
 
-                        count = int(maxTaps / earnPerTap)
+                        count = int(max_taps / earn_per_sec)
                         json_data = {'count': count, 'availableTaps': availableTaps, 'timestamp': int(time.time())}
                         taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                         taps_response.raise_for_status()
@@ -431,6 +434,9 @@ class HamsterKombatClicker:
                     else:
                         remain = f"{LIGHT_MAGENTA}{remain_time(remain)}{WHITE}"
                         print(f"🚫  {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('boosts_available')}. {localized_text('info_next_boost_after')}: {remain}")
+
+            taps_remain = int(total_remain_time - current_remain_time)
+            return taps_remain
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -444,20 +450,27 @@ class HamsterKombatClicker:
             task_list = response.json().get('tasks')
             any_completed = False
             for task in task_list:
-                if not task.get('isCompleted'):
+                if task.get('id') == 'streak_days_special':
+                    remain = task.get('remainSeconds', 0)
+
+                if not task.get('isCompleted') and task.get('id') != 'invite_friends':
                     task_id = task.get('id')
                     json_data = {'taskId': task_id}
                     check_task = requests.post(f'{self.base_url}/clicker/check-task', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                     check_task.raise_for_status()
 
-                    print(f"⭐️  {localized_text('info_task_completed', task_id)}")
                     any_completed = True
+                    print(f"⭐️  {localized_text('info_task_completed', task_id)}")
 
             if any_completed:
                 print(f"✅  {localized_text('info_all_tasks_complete')}")
 
             else:
                 print(f"ℹ️  {localized_text('info_all_tasks_already_complete')}")
+
+            return remain
+
+
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -469,17 +482,20 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             cipher = response.json().get('dailyCipher')
+            remain = cipher.get('remainSeconds', 0)
+
             isClaimed = cipher.get('isClaimed')
             if not isClaimed:
                 cipher = self._get_daily_cipher().upper()
                 json_data = {'cipher': cipher}
                 claim_cipher = requests.post(f'{self.base_url}/clicker/claim-daily-cipher', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 claim_cipher.raise_for_status()
-
                 print(f"✅  {localized_text('info_cipher_completed')}")
 
             else:
                 print(f"ℹ️  {localized_text('info_cipher_already_complete')}")
+
+            return remain
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -515,16 +531,16 @@ class HamsterKombatClicker:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             logging.error(traceback.format_exc())
 
-    def complete_daily_minigame(self, game_id):
+    def complete_daily_minigame(self, game_id: str) -> int:
         try:
             config_response = requests.post(f'{self.base_url}/clicker/config', headers=self._get_headers(self.HAMSTER_TOKEN))
             config_response.raise_for_status()
 
             config_response_data = config_response.json()
-            minigame = config_response_data.get('dailyKeysMiniGames').get(game_id)
-            remain = f"{LIGHT_MAGENTA}{remain_time(minigame.get('remainSeconds'))}{WHITE}"
+            game = game_id.capitalize()
+            minigame = config_response_data.get('dailyKeysMiniGames').get(game)
+            remain = int(minigame.get('remainSeconds'))
             max_points = int(config_response_data.get('dailyKeysMiniGames').get('Tiles').get('maxPoints'))
-            next_minigame = f"{localized_text('info_next_minigame_after')}: {remain}"
             next_attempt = remain_time(minigame.get('remainSecondsToNextAttempt'))
             bonus_keys = minigame.get('bonusKeys')
 
@@ -541,7 +557,7 @@ class HamsterKombatClicker:
                     print(f"ℹ️  {YELLOW}{localized_text('info_coinf_for_one_point')}:  {LIGHT_BLUE}{one_point_bonus}{WHITE} \n"
                           f"{YELLOW}{localized_text('info_max_coins')}: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
 
-                json_data = {'miniGameId': game_id}
+                json_data = {'miniGameId': game}
                 start_game = requests.post(f'{self.base_url}/clicker/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 start_game.raise_for_status()
 
@@ -554,7 +570,7 @@ class HamsterKombatClicker:
                 print(f"ℹ️  {YELLOW}{localized_text('balance')}: {balance} | {localized_text('passive')}".replace(',', ' '))
 
                 cipher = self._get_mini_game_cipher(minigame)
-                json_data = {'cipher': cipher, 'miniGameId': game_id}
+                json_data = {'cipher': cipher, 'miniGameId': game}
                 end_game = requests.post(f'{self.base_url}/clicker/claim-daily-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 end_game.raise_for_status()
 
@@ -566,25 +582,28 @@ class HamsterKombatClicker:
                 print(f"ℹ️  {YELLOW}{localized_text('balance')}: {balance} [{bonus}] | {localized_text('passive_and_bonus')}\n".replace(',', ' '))
 
                 if bonus_keys == 0:
-                    print(f"✅  {localized_text('info_minigame_complete', game_id)}. {next_minigame}")
+                    print(f"✅  {localized_text('info_minigame_complete', game)}")
                 else:
-                    print(f"✅  {localized_text('info_minigame_complete_2', game_id)}: {bonus_keys}")
+                    print(f"✅  {localized_text('info_minigame_complete_2', game)}: {bonus_keys}")
 
             else:
-                print(f"ℹ️  {localized_text('info_minigame_already_completed', game_id)}")
+                print(f"ℹ️  {localized_text('info_minigame_already_completed', game)}")
 
-        except requests.exceptions.HTTPError as e:
-            if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
-                print(f"🚫  {localized_text('error_wrong_minigame_cipher', game_id)}")
+        except Exception as e:
+            try:
+                if end_game.json().get('error_code') == 'DAILY_KEYS_MINI_GAME_WRONG':
+                    print(f"🚫  {localized_text('error_wrong_minigame_cipher', game_id)}")
 
-            elif start_game.json().get('error_code') == 'KEYS-MINIGAME_WAITING':
-                print(f"🚫  {localized_text('error_next_minigame_attempt')}: {next_attempt}")
+                elif start_game.json().get('error_code') == 'KEYS-MINIGAME_WAITING':
+                    print(f"🚫  {localized_text('error_next_minigame_attempt')}: {next_attempt}")
 
-            else:
+            except:
                 print(f"🚫  {localized_text('error_occured')}: {e}")
                 logging.error(traceback.format_exc())
 
-    def send_balance_to_group(self, update_time_sec=7200, chat_id=None):
+        return remain
+
+    def send_balance_to_group(self, update_time_sec: int = None, chat_id: int = None):
         try:
             while True:
                 info = self._get_balance()
@@ -604,8 +623,12 @@ class HamsterKombatClicker:
                     response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": balance})
                     response.raise_for_status()
 
-                print(f"✅  {update_date} · Баланс успешно отправлен в группу")
-                time.sleep(update_time_sec)
+                if update_time_sec is None:
+                    print(f"✅  {update_date} · Баланс успешно отправлен в в чат")
+                    time.sleep(7200)
+                else:
+                    print(f"✅  Баланс успешно отправлен в чат")
+                    return update_time_sec
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -733,7 +756,7 @@ class HamsterKombatClicker:
             taps_per_sec = int(taps_data.get('tapsRecoverPerSec', 0))
             available_taps = int(taps_data.get('availableTaps', 0))
             result['taps'] = {
-                'remain': int(max_taps / taps_per_sec) + 10,
+                'remain': int(max_taps / taps_per_sec),
                 'completed': available_taps != max_taps
             }
 
@@ -784,7 +807,9 @@ class HamsterKombatClicker:
                 last_name = account_info.get('lastName', 'n/a')
                 config.hamster_token = True
 
-                print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {first_name} {last_name} ({username}){WHITE}\n")
+                user_info = f"{first_name} {last_name} ({username})"
+                print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
+                return user_info
 
         except Exception as e:
             try:
