@@ -62,7 +62,7 @@
         "count_promocodes_to_generate_all_games": "Количество промокодов для всех игр",
         "not_all_cards_available_today": "Сегодня не все карты доступны! Хотите купить только доступные?",
         "info_rent_coeff_coefficient": "Коэффициент рентабельности означает, что за каждую потраченную монету вы получите\nприрост прибыль в размере указанного % от суммы, потраченной на покупку этой карточки.\n",
-        "top20_profit_cards": "Топ 20 самых выгодных карт (показаны только доступные для покупки): \n",
+        "top_profit_cards": "Топ самых выгодных карт (показаны только доступные для покупки): \n",
         "price": "Стоимость",
         "payback_time": "Время окупаемости",
         "profitability_ratio": "Коэффициент рентабельности",
@@ -124,7 +124,8 @@
         "total_purhased_cards_count": "Куплено карт",
         "total_purhased_upgraqdes_count": "Куплено улучшений",
         "processing": "Обработка...",
-        "setting_account": "Аккаунт"
+        "setting_account": "Аккаунт",
+        "setting_cards_in_top": "Карт в топе"
     },
 
     "en": {
@@ -191,7 +192,7 @@
         "reached_main_menu": "You enter to main menu",
         "not_all_cards_available_today": "Not all cards are available today! Do you want buy only those that are available?",
         "info_rent_coeff_coefficient": "The profitability ratio means that for every coin you spend you will get\nprofit increase in the amount of the specified % of the amount spent on the purchase of this card.\n",
-        "top20_profit_cards": "Top 20 most profitable cards (only those available for purchase are shown): \n",
+        "top_profit_cards": "Top most profitable cards (only those available for purchase are shown): \n",
         "price": "Price",
         "payback_time": "Payback time",
         "profitability_ratio": "Profitability_ratio",
@@ -252,6 +253,7 @@
         "total_purhased_cards_count": "Cards purchased",
         "total_purhased_upgraqdes_count": "Upgrades purchased",
         "processing": "Processing...",
-        "setting_account": "Account"
+        "setting_account": "Account",
+        "setting_cards_in_top": "Cards in top"
     }
 }
