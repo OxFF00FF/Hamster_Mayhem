@@ -26,7 +26,8 @@ class ConfigDB:
                            'lang' VARCHAR(10),
                            'bonus_for_one_point' INTEGER,
                            'group_url' VARCHAR(50),
-                           'group_id' VARCHAR(10)
+                           'group_id' VARCHAR(10),
+                           `cards_in_top` INTEGER
                            )''')
         self.con.commit()
         self._default_config()
@@ -41,7 +42,7 @@ class ConfigDB:
             self.cur.execute("INSERT INTO `config`"
                              "(`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`, `group_url`, `group_id`)"
                              "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                             (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru', 0, group_url, group_id))
+                             (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru', 0, group_url, group_id, 5))
 
             self.con.commit()
             logging.info(f"default_config Created")
@@ -148,3 +149,11 @@ class ConfigDB:
     @group_url.setter
     def group_url(self, value):
         self.set('group_url', value)
+
+    @property
+    def cards_in_top(self):
+        return self.get('cards_in_top')
+
+    @cards_in_top.setter
+    def cards_in_top(self, value):
+        self.set('cards_in_top', value)
