@@ -122,12 +122,20 @@ def clear_screen():
     os.system('cls')
 
 
-def line_before():
-    print("\n╭" + "~" * 50 + '╮')
+def line_before(blank_line=True):
+    text = "\n╭" + "~" * 50 + "╮"
+    if blank_line:
+        print(text)
+    else:
+        print(text.strip())
 
 
-def line_after():
-    print('╰' + "~" * 50 + "╯\n")
+def line_after(blank_line=True):
+    text = "╰" + "~" * 50 + "╯\n"
+    if blank_line:
+        print(text)
+    else:
+        print(text.strip())
 
 
 def get_status(status):
