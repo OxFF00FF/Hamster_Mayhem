@@ -60,7 +60,7 @@ def handle_main_menu_choice(choice):
 
     elif choice == '$':
         line_before()
-        cards = hamster_client().evaluate_cards()
+        cards = hamster_client().get_most_profitable_cards()
         print(localized_text('info_rent_coeff_coefficient'))
 
         print(localized_text('top_profit_cards'))
@@ -77,14 +77,14 @@ def handle_main_menu_choice(choice):
 
     elif choice.startswith('$'):
         line_before()
-        cards = hamster_client().evaluate_cards()
+        cards = hamster_client().get_most_profitable_cards()
         card_index = int(choice[1:]) - 1
 
         if 0 <= card_index < len(cards):
             card = cards[card_index]
             upgrade_id = card['id']
             hamster_client()._buy_upgrade(upgradeId=upgrade_id)
-            hamster_client().evaluate_cards()
+            hamster_client().get_most_profitable_cards()
 
     elif choice.startswith('+'):
         line_before()
@@ -225,6 +225,9 @@ def handle_settings_menu_choice():
 
             print(f"ℹ️  {localized_text('change_lang')}")
             line_after()
+
+        elif choice.startswith('5'):
+            config.balance_threshold = choice.split('_')[-1]
 
         elif choice == 'default':
             config.spinner = 'default'
