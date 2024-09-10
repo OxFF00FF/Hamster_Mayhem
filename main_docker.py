@@ -38,7 +38,7 @@ def process_tasks():
 
 
 def process_balance():
-    hamster_client().send_balance_to_group(chat_id=int(os.getenv('BOT_LOGS_GROUP_ID')))
+    hamster_client().send_balance_to_group()
 
 
 threads = [

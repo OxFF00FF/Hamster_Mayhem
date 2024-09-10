@@ -1,4 +1,4 @@
-# docker run -d --name Hamster_Mayhem_ultimate -e CHAT_ID=your_chat_id -e TELEGRAM_BOT_TOKEN=your_telegram_bot_token -e HAMSTER_TOKEN_1="your_hamster_token" oxff00ff/hamster_mayhem_service
+# docker run -d --name hamster_mayhem_USERNAME -e HAMSTER_TOKEN_1="XXX" -e TELEGRAM_BOT_TOKEN=XXX -e CHAT_ID=XXX oxff00ff/hamster_mayhem_service
 
 version: '3'
 services:
