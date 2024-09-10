@@ -15,4 +15,4 @@ COPY main_docker.py ./
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "main_docker.py"]
+CMD ["python", "hamster_mayhem_service.py"]

@@ -2,7 +2,7 @@
 
 version: '3'
 services:
-  hamster-mayhem-service:
+  hamster-mayhem:
     image: oxff00ff/hamster_mayhem_service:latest
     build:
       context: .
