@@ -52,17 +52,17 @@ def text_to_morse(text: str) -> str:
     return morse_text
 
 
-def countdown_timer(seconds):
+def countdown_timer(seconds, text):
     while seconds:
         m, s = divmod(seconds, 60)
         h, m = divmod(m, 60)
         h = str(h).zfill(2)
         m = str(m).zfill(2)
         s = str(s).zfill(2)
-        print(f"\r⏳  Please wait until {h}:{m}:{s} ", flush=True, end="")
+        print(f"\r⏳  {text}: {h}:{m}:{s} ", flush=True, end="")
         seconds -= 1
         time.sleep(1)
-    print(f"\r⏳  Please wait until {h}:{m}:{s} ", flush=True, end="")
+    print(f"\r⏳  {text}: {h}:{m}:{s} ", flush=True, end="")
 
 
 def remain_time(seconds):
@@ -74,7 +74,8 @@ def remain_time(seconds):
         s = str(s).zfill(2)
         return f"{h}:{m}:{s}"
 
-    except:
+    except Exception as e:
+        print(e)
         return 'n/a'
 
 
