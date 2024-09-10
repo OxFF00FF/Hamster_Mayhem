@@ -60,7 +60,7 @@ def handle_main_menu_choice(choice):
 
     elif choice == '$':
         line_before()
-        cards = hamster_client().evaluate_cards(cards_in_list=5)
+        cards = hamster_client().evaluate_cards()
         print(localized_text('info_rent_coeff_coefficient'))
 
         print(localized_text('top_profit_cards'))
@@ -76,7 +76,7 @@ def handle_main_menu_choice(choice):
 
     elif choice.startswith('$'):
         line_before()
-        cards = hamster_client().evaluate_cards(cards_in_list=5)
+        cards = hamster_client().evaluate_cards()
         card_index = int(choice[1:]) - 1
 
         if 0 <= card_index < len(cards):
