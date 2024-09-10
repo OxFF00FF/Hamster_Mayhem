@@ -52,7 +52,7 @@ class ConfigDB:
         if count == 0:
             self.cur.execute("INSERT INTO `config`"
                              "(`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`, `group_url`, `cards_in_top`, `balance_threshold`)"
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                              (send_to_group, save_to_file, apply_promo, hamster_token, account, spinner, lang, bonus_for_one_point, group_url, group_id, cards_in_top, balance_threshold))
 
             self.con.commit()
