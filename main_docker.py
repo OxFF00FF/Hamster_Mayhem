@@ -85,13 +85,25 @@ def process_minigame_candles():
         time.sleep(remain + random_delay())
 
 
+def process_combo():
+    while True:
+        with print_lock:
+            line_before(blank_line=False)
+            print(f"⚙️  {datetime.now()} · {user}")
+            remain = hamster_client().complete_daily_combo(buy_anyway=True)
+            print(f"⏳   Следующее комбо через: {remain_time(remain)}")
+            line_after(blank_line=False)
+        time.sleep(remain + random_delay())
+
+
 threads = [
-    threading.Thread(target=process_minigame_tiles),
-    threading.Thread(target=process_minigame_candles),
-    threading.Thread(target=process_balance),
-    threading.Thread(target=process_taps),
-    threading.Thread(target=process_cipher),
-    threading.Thread(target=process_tasks),
+    threading.Thread(target=process_combo),
+#     threading.Thread(target=process_minigame_tiles),
+#     threading.Thread(target=process_minigame_candles),
+#     threading.Thread(target=process_balance),
+#     threading.Thread(target=process_taps),
+#     threading.Thread(target=process_cipher),
+#     threading.Thread(target=process_tasks),
 ]
 
 for thread in threads:
