@@ -125,7 +125,10 @@
         "total_purhased_upgraqdes_count": "Куплено улучшений",
         "processing": "Обработка...",
         "setting_account": "Аккаунт",
-        "setting_cards_in_top": "Карт в топе"
+        "setting_cards_in_top": "Карт в топе",
+        "not_all_carda_available": "Не все карты доступны. Будут куплены только доступные!",
+        "continue": "Продолжить?",
+        "combo_cancel": "Покупка комбо отменена"
     },
 
     "en": {
@@ -254,6 +257,9 @@
         "total_purhased_upgraqdes_count": "Upgrades purchased",
         "processing": "Processing...",
         "setting_account": "Account",
-        "setting_cards_in_top": "Cards in top"
+        "setting_cards_in_top": "Cards in top",
+        "not_all_carda_available": "Not all cards are available. Only available ones will be purchased!",
+        "continue": "Continue?",
+        "combo_cancel": "Сombo purchase canceled"
     }
 }
