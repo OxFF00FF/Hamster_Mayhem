@@ -11,7 +11,7 @@ WORKDIR /app
 
 COPY Src ./Src
 COPY requirements.txt ./
-COPY main_docker.py ./
+COPY hamster_mayhem_service.py ./
 
 RUN pip install -r requirements.txt
 
