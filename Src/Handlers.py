@@ -72,7 +72,8 @@ def handle_main_menu_choice(choice):
                 f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
                 f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
             )
-            print("-" * 30)
+            if e < len(cards) - 1:
+                print("-" * 30)
 
     elif choice.startswith('$'):
         line_before()
