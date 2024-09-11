@@ -56,19 +56,36 @@ class ConfigDB:
             self.con.commit()
             logging.info("default_config Created")
 
-    def _ADD_missing_values(self, values, table):
+    def _ADD_missing_values(self, data, table):
         self.cur.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'")
         table_exists = self.cur.fetchone()
 
         if not table_exists:
-            self.cur.execute(f'''CREATE TABLE {table} (`uuid` INTEGER PRIMARY KEY AUTOINCREMENT)''')
+            self.cur.execute(f'''CREATE TABLE {table} (`id` INTEGER PRIMARY KEY AUTOINCREMENT)''')
             self.con.commit()
             logging.info(f"Table '{table}' created")
 
         self.cur.execute(f"PRAGMA table_info({table})")
         existing_columns = [column[1] for column in self.cur.fetchall()]
 
-        for key, value in values.items():
+        updated_values = {}
+        for key, value in data.items():
+            if key == 'id':
+                new_key = '_id'
+                logging.info(f"Renaming column id to _id")
+            else:
+                new_key = key
+
+            updated_values[new_key] = value
+            if new_key not in existing_columns:
+                column_type = self._get_sqlite_type(value)
+                self.cur.execute(f"ALTER TABLE {table} ADD COLUMN `{new_key}` {column_type}")
+                logging.info(f"Added missing column: {new_key}")
+
+                self.cur.execute(f"UPDATE {table} SET `{new_key}` = ?", (value,))
+                logging.info(f"Updated column: {new_key}")
+
+        for key, value in data.items():
             if key not in existing_columns:
                 column_type = self._get_sqlite_type(value)
                 self.cur.execute(f"ALTER TABLE {table} ADD COLUMN `{key}` {column_type}")
@@ -129,7 +146,7 @@ class ConfigDB:
 
     def set(self, field_name, value):
         try:
-            self.cur.execute(f"UPDATE `config` SET `{field_name}` = ? WHERE `uuid` = 1", (value,))
+            self.cur.execute(f"UPDATE `config` SET `{field_name}` = ? WHERE `id` = 1", (value,))
             self.con.commit()
             logging.info(f"Значение `{field_name}` обновлено на `{value}`")
 
@@ -138,7 +155,7 @@ class ConfigDB:
 
     def get(self, field_name):
         try:
-            self.cur.execute(f"SELECT `{field_name}` FROM `config` WHERE `uuid` = 1")
+            self.cur.execute(f"SELECT `{field_name}` FROM `config` WHERE `id` = 1")
             result = self.cur.fetchone()
 
             if result:
