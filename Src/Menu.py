@@ -155,7 +155,7 @@ def settings_menu():
         f"  {LIGHT_YELLOW}2 | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}3 | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
-        f"  {LIGHT_YELLOW}5 | {YELLOW} {align_settins(localized_text('setting_balance_threshold'))} · {WHITE}{GREEN}{config.balance_threshold:_}{WHITE} (5_<new_count>)\n"
+        f"  {LIGHT_YELLOW}5 | {YELLOW} {align_settins(localized_text('setting_balance_threshold'))} · {WHITE}{GREEN}{config.balance_threshold:_}{WHITE} (5_<new_value>)\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}{config.account.upper()}{WHITE}\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_cards_in_top'))} · {WHITE}{GREEN}{config.cards_in_top}{WHITE}\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_loading_indicator'))} · {WHITE}{GREEN}{config.spinner.upper()}{WHITE} (spinner_<num>/default/list) \n"
