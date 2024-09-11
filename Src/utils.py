@@ -3,6 +3,8 @@ import json
 import logging
 import os
 import time
+from datetime import datetime
+from random import randint
 
 from spinners import Spinners
 from Src.db_SQlite import ConfigDB
@@ -324,3 +326,11 @@ def create_scrolling_frames(text, width):
     for i in range(len(text) - width + 1):
         frames.append('' + text[i:i + width] + '')
     return frames
+
+
+def random_delay():
+    return randint(1000, 2000)
+
+
+def current_time(user):
+    print(f"{DARK_GRAY}⚙️  {datetime.now()} · {user}{WHITE}")
