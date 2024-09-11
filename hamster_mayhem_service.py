@@ -13,7 +13,7 @@ config = ConfigDB()
 print_lock = threading.Lock()
 
 
-user = hamster_client(token="HAMSTER_TOKEN_2").login().split()[-1].strip('(').strip(')')
+user = hamster_client(account="HAMSTER_TOKEN_2").login().split()[-1].strip('(').strip(')')
 
 
 def process_taps():
