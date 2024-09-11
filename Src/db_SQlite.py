@@ -18,9 +18,14 @@ class ConfigDB:
         self.SET_default_config()
         self.con.commit()
 
+    ####################################################
+
+    # --- CONFIG --- #
+
     def SET_default_config(self):
         # Настройки по умолчанию
         default_values = {
+            'token': '',
             'send_to_group': False,
             'save_to_file': False,
             'apply_promo': False,
@@ -41,7 +46,7 @@ class ConfigDB:
             'complete_autobuy_upgrades': False
         }
 
-        self._add_missing_values(default_values)
+        self._ADD_missing_values(default_values, 'config')
         if not self.cur.execute('SELECT COUNT(*) FROM config').fetchone()[0]:
             columns = ', '.join(default_values.keys())
             placeholders = ', '.join('?' * len(default_values))
@@ -51,25 +56,25 @@ class ConfigDB:
             self.con.commit()
             logging.info("default_config Created")
 
-    def _add_missing_values(self, default_values):
-        self.cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='config'")
+    def _ADD_missing_values(self, values, table):
+        self.cur.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'")
         table_exists = self.cur.fetchone()
 
         if not table_exists:
-            self.cur.execute('''CREATE TABLE config (`id` INTEGER PRIMARY KEY AUTOINCREMENT)''')
+            self.cur.execute(f'''CREATE TABLE {table} (`uuid` INTEGER PRIMARY KEY AUTOINCREMENT)''')
             self.con.commit()
-            logging.info("Table 'config' created")
+            logging.info(f"Table '{table}' created")
 
-        self.cur.execute("PRAGMA table_info(config)")
+        self.cur.execute(f"PRAGMA table_info({table})")
         existing_columns = [column[1] for column in self.cur.fetchall()]
 
-        for key, value in default_values.items():
+        for key, value in values.items():
             if key not in existing_columns:
                 column_type = self._get_sqlite_type(value)
-                self.cur.execute(f"ALTER TABLE config ADD COLUMN `{key}` {column_type}")
+                self.cur.execute(f"ALTER TABLE {table} ADD COLUMN `{key}` {column_type}")
                 logging.info(f"Added missing column: {key}")
 
-                self.cur.execute(f"UPDATE config SET `{key}` = ?", (value,))
+                self.cur.execute(f"UPDATE {table} SET `{key}` = ?", (value,))
                 logging.info(f"Updated column: {key}")
 
         self.con.commit()
@@ -84,9 +89,47 @@ class ConfigDB:
         else:
             return 'TEXT'
 
+    # --- /CONFIG --- #
+
+    ####################################################
+
+    # --- USERS --- #
+
+    def user_exist(self, tg_user_id: int) -> bool:
+        self.cur.execute("SELECT COUNT(*) FROM `subscribers` WHERE `tg_user_id` = ?",
+                         (tg_user_id,))
+
+        if self.cur.fetchone()[0] > 0:
+            return True
+        else:
+            return False
+
+    def ADD_subscriber(self, account_info: dict):
+        tg_user_id = account_info.get('id', 'n/a')
+        username = account_info.get('username', 'n/a')
+        first_name = account_info.get('firstName', 'n/a')
+        account_info['is_subscriber'] = False
+
+        self._ADD_missing_values(account_info, 'subscribers')
+
+        columns = ', '.join(account_info.keys())
+        placeholders = ', '.join('?' * len(account_info))
+        values = list(account_info.values())
+
+        self.cur.execute(f"INSERT INTO `subscribers` ({columns}) VALUES ({placeholders})", values)
+        self.con.commit()
+
+        logging.info(f"""ADD new subscriber: `{first_name} · {username}` id: {tg_user_id} """)
+
+    # --- /USERS --- #
+
+    ####################################################
+
+    # --- PROPERTIES --- #
+
     def set(self, field_name, value):
         try:
-            self.cur.execute(f"UPDATE `config` SET `{field_name}` = ? WHERE `id` = 1", (value,))
+            self.cur.execute(f"UPDATE `config` SET `{field_name}` = ? WHERE `uuid` = 1", (value,))
             self.con.commit()
             logging.info(f"Значение `{field_name}` обновлено на `{value}`")
 
@@ -95,7 +138,7 @@ class ConfigDB:
 
     def get(self, field_name):
         try:
-            self.cur.execute(f"SELECT `{field_name}` FROM `config` WHERE `id` = 1")
+            self.cur.execute(f"SELECT `{field_name}` FROM `config` WHERE `uuid` = 1")
             result = self.cur.fetchone()
 
             if result:
@@ -106,6 +149,14 @@ class ConfigDB:
 
         except Exception as e:
             logging.error(e)
+
+    @property
+    def token(self):
+        return self.get('token')
+
+    @token.setter
+    def token(self, value):
+        self.set('token', value)
 
     @property
     def send_to_group(self):
@@ -219,8 +270,6 @@ class ConfigDB:
     def complete_cipher(self, value):
         self.set('complete_cipher', value)
 
-
-
     @property
     def complete_taps(self):
         return self.get('complete_taps')
@@ -252,3 +301,5 @@ class ConfigDB:
     @complete_autobuy_upgrades.setter
     def complete_autobuy_upgrades(self, value):
         self.set('complete_autobuy_upgrades', value)
+
+    # --- /PROPERTIES --- #
