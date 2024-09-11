@@ -30,11 +30,15 @@ class ConfigDB:
             'lang': 'ru',
             'bonus_for_one_point': 0,
             'group_url': os.getenv('GROUP_URL'),
-            'group_id': os.getenv('GROUP_ID'),
+            'chat_id': os.getenv('CHAT_ID'),
             'cards_in_top': 10,
             'balance_threshold': 1_000_000,
+            'complete_taps': False,
+            'complete_cipher': False,
+            'complete_tasks': False,
+            'complete_minigames': False,
             'complete_combo': False,
-            'complete_cipher': False
+            'complete_autobuy_upgrades': False
         }
 
         self._add_missing_values(default_values)
@@ -168,12 +172,12 @@ class ConfigDB:
         self.set('bonus_for_one_point', value)
 
     @property
-    def group_id(self):
-        return self.get('group_id')
+    def chat_id(self):
+        return self.get('chat_id')
 
-    @group_id.setter
-    def group_id(self, value):
-        self.set('group_id', value)
+    @chat_id.setter
+    def chat_id(self, value):
+        self.set('chat_id', value)
 
     @property
     def group_url(self):
@@ -214,3 +218,37 @@ class ConfigDB:
     @complete_cipher.setter
     def complete_cipher(self, value):
         self.set('complete_cipher', value)
+
+
+
+    @property
+    def complete_taps(self):
+        return self.get('complete_taps')
+
+    @complete_taps.setter
+    def complete_taps(self, value):
+        self.set('complete_taps', value)
+
+    @property
+    def complete_tasks(self):
+        return self.get('complete_tasks')
+
+    @complete_tasks.setter
+    def complete_tasks(self, value):
+        self.set('complete_tasks', value)
+
+    @property
+    def complete_minigames(self):
+        return self.get('complete_minigames')
+
+    @complete_minigames.setter
+    def complete_minigames(self, value):
+        self.set('complete_minigames', value)
+
+    @property
+    def complete_autobuy_upgrades(self):
+        return self.get('complete_autobuy_upgrades')
+
+    @complete_autobuy_upgrades.setter
+    def complete_autobuy_upgrades(self, value):
+        self.set('complete_autobuy_upgrades', value)
