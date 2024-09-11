@@ -333,4 +333,4 @@ def current_time(user):
 
 
 def kali(text):
-    return f"\n{CYAN}┌──({WHITE}{LIGHT_BLUE}{text}{WHITE}{CYAN})-[{WHITE}{BOLD}{localized_text('choose_action')}{CYAN}{RESET}]{WHITE}\n{CYAN}└─{LIGHT_BLUE}${WHITE} "
+    return f"\n{CYAN}┌───({WHITE}{LIGHT_BLUE}{text}{WHITE}{CYAN})-[{WHITE}{BOLD}{localized_text('choose_action')}{CYAN}{RESET}]{WHITE}\n{CYAN}└──{LIGHT_BLUE}${WHITE} "
