@@ -663,7 +663,7 @@ class HamsterKombatClicker:
                     print(f"{GREEN}✅  {update_date} · Баланс успешно отправлен в в чат{WHITE}")
                     time.sleep(7200)
                 else:
-                    print(f"{GREEN}✅  Баланс успешно отправлен в чат{WHITE}. {config.group_url} {config.chat_id}")
+                    print(f"{GREEN}✅  Баланс успешно отправлен в чат{WHITE}")
                     return update_time_sec
 
         except Exception as e:
