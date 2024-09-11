@@ -34,8 +34,8 @@ class ConfigDB:
             'cards_in_top': 10,
             'balance_threshold': 1_000_000,
             'complete_taps': False,
-            'complete_cipher': False,
             'complete_tasks': False,
+            'complete_cipher': False,
             'complete_minigames': False,
             'complete_combo': False,
             'complete_autobuy_upgrades': False

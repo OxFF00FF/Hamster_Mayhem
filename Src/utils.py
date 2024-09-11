@@ -245,12 +245,8 @@ def align_main_menu(text):
 
 def align_settins(text):
     max_length = max(
-        len(localized_text('setting_send_to_group')),
-        len(localized_text('setting_apply_promo')),
-        len(localized_text('setting_save_to_file')),
-        len(localized_text('setting_language')),
-        len(localized_text('setting_loading_indicator')),
-        len(localized_text('setting_balance_threshold'))
+        len(localized_text('setting_balance_threshold')),
+        len(localized_text('setting_complete_autobuy_upgrades'))
     )
     return text.ljust(max_length)
 
@@ -334,3 +330,7 @@ def random_delay():
 
 def current_time(user):
     print(f"{DARK_GRAY}⚙️  {datetime.now()} · {user}{WHITE}")
+
+
+def kali(text):
+    return f"\n{CYAN}┌──({WHITE}{LIGHT_BLUE}{text}{WHITE}{CYAN})-[{WHITE}{BOLD}{localized_text('choose_action')}{CYAN}{RESET}]{WHITE}\n{CYAN}└─{LIGHT_BLUE}${WHITE} "

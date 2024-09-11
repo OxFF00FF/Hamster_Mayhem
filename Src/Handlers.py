@@ -9,7 +9,7 @@ from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu, main_menu_not_logged
-from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text
+from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text, kali
 
 config = ConfigDB()
 
@@ -130,11 +130,14 @@ def handle_main_menu_not_logged_choice(choice):
 def handle_playground_menu_choice():
     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
     games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
+    games = [str(i + 1) for i in range(len(games_data))]
     line_before()
 
     while True:
         playground_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        choice = input(kali(f"{'/'.join(games)}/</0"))
+
         line_before()
 
         if choice in games_prefix:
@@ -168,7 +171,8 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  ({'/'.join(choices)}/</0): {RESET}")
+        # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  ({'/'.join(choices)}/</0): {RESET}")
+        choice = input(kali(f"{'/'.join(choices)}/</0"))
         line_before()
 
         if choice in choices:
@@ -195,28 +199,11 @@ def handle_settings_menu_choice():
 
     while True:
         settings_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/</0): {RESET}")
+        # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/</0): {RESET}")
+        choice = input(kali('1/2/3/4/5/</0'))
         line_before()
 
         if choice == '1':
-            config.send_to_group = not config.send_to_group
-            status = f"{GREEN}{localized_text('on')}а{WHITE}" if config.send_to_group else f"{RED}{localized_text('off')}а{WHITE}"
-            print(f"{localized_text('info_send_promo_to_group')} {status}")
-            line_after()
-
-        elif choice == '2':
-            config.apply_promo = not config.apply_promo
-            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
-            print(f"{localized_text('info_apply_promo')} {status}")
-            line_after()
-
-        elif choice == '3':
-            config.save_to_file = not config.save_to_file
-            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
-            print(f"{localized_text('info_save_to_file')} {status}")
-            line_after()
-
-        elif choice == '4':
             if config.lang == 'ru':
                 config.lang = 'en'
 
@@ -224,6 +211,24 @@ def handle_settings_menu_choice():
                 config.lang = 'ru'
 
             print(f"ℹ️  {localized_text('change_lang')}")
+            line_after()
+
+        elif choice == '2':
+            config.send_to_group = not config.send_to_group
+            status = f"{GREEN}{localized_text('on')}а{WHITE}" if config.send_to_group else f"{RED}{localized_text('off')}а{WHITE}"
+            print(f"{localized_text('info_send_promo_to_group')} {status}")
+            line_after()
+
+        elif choice == '3':
+            config.apply_promo = not config.apply_promo
+            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
+            print(f"{localized_text('info_apply_promo')} {status}")
+            line_after()
+
+        elif choice == '4':
+            config.save_to_file = not config.save_to_file
+            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
+            print(f"{localized_text('info_save_to_file')} {status}")
             line_after()
 
         elif choice.startswith('5'):
