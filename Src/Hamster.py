@@ -266,6 +266,7 @@ class HamsterKombatClicker:
         try:
             upgrades_for_buy_response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             upgrades_for_buy_response.raise_for_status()
+            not_enough_coins_printed = False
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour')
@@ -300,8 +301,12 @@ class HamsterKombatClicker:
                             print(f"{LIGHT_RED}🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}{WHITE}")
                             return error_message
 
+
                 else:
-                    print(f"{RED}🚫  {localized_text('not_enough_coins')}{WHITE}")
+                    # Печатаем сообщение о недостатке монет только один раз
+                    if not not_enough_coins_printed:
+                        print(f"{RED}🚫  {localized_text('not_enough_coins')}{WHITE}")
+                        not_enough_coins_printed = True
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -844,6 +849,8 @@ class HamsterKombatClicker:
 
                 user_info = f"{first_name} {last_name} ({username})"
                 print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
+
+                config.ADD_subscriber(account_info)
                 return user_info
 
         except Exception as e:
