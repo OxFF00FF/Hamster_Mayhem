@@ -332,5 +332,5 @@ def current_time(user):
     print(f"{DARK_GRAY}⚙️  {datetime.now()} · {user}{WHITE}")
 
 
-def kali(text):
-    return f"\n{CYAN}┌───({WHITE}{LIGHT_BLUE}{text}{WHITE}{CYAN})-[{WHITE}{BOLD}{localized_text('choose_action')}{CYAN}{RESET}]{WHITE}\n{CYAN}└──{LIGHT_BLUE}${WHITE} "
+def kali(text, menu=None):
+    return f"\n{CYAN}┌───({WHITE}{LIGHT_BLUE}{text}{WHITE}{CYAN})-[{WHITE}{BOLD}{menu}{CYAN}{RESET}]{WHITE}\n{CYAN}└──{LIGHT_BLUE}${WHITE} "
