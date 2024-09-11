@@ -15,48 +15,70 @@ class ConfigDB:
         self.con = sqlite3.connect('Src/data/Config.db', check_same_thread=False)
         self.cur = self.con.cursor()
 
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS config (
-                           `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                           `send_to_group` INTEGER,
-                           `save_to_file` INTEGER,
-                           `apply_promo` INTEGER,
-                           `hamster_token` INTEGER,
-                           `account` VARCHAR(20),
-                           `spinner` VARCHAR(20),
-                           'lang' VARCHAR(10),
-                           'bonus_for_one_point' INTEGER,
-                           'group_url' VARCHAR(50),
-                           'group_id' VARCHAR(10),
-                           `cards_in_top` INTEGER,
-                           `balance_threshold` INTEGER
-                           )''')
+        self.SET_default_config()
         self.con.commit()
-        self._default_config()
 
-    def _default_config(self):
-        send_to_group = 0
-        save_to_file = 0
-        apply_promo = 0
-        hamster_token = 0
-        account = 'HAMSTER_TOKEN_1'
-        spinner = 'default'
-        lang = 'ru'
-        bonus_for_one_point = 0
-        group_url = os.getenv('GROUP_URL')
-        group_id = os.getenv('GROUP_ID')
-        cards_in_top = 10
-        balance_threshold = 1_000_000
+    def SET_default_config(self):
+        # Настройки по умолчанию
+        default_values = {
+            'send_to_group': False,
+            'save_to_file': False,
+            'apply_promo': False,
+            'hamster_token': False,
+            'account': 'HAMSTER_TOKEN_1',
+            'spinner': 'default',
+            'lang': 'ru',
+            'bonus_for_one_point': 0,
+            'group_url': os.getenv('GROUP_URL'),
+            'group_id': os.getenv('GROUP_ID'),
+            'cards_in_top': 10,
+            'balance_threshold': 1_000_000,
+            'complete_combo': False,
+            'complete_cipher': False
+        }
 
-        self.cur.execute('SELECT COUNT(*) FROM config')
-        count = self.cur.fetchone()[0]
-        if count == 0:
-            self.cur.execute("INSERT INTO `config`"
-                             "(`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`, `group_url`, `cards_in_top`, `balance_threshold`)"
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                             (send_to_group, save_to_file, apply_promo, hamster_token, account, spinner, lang, bonus_for_one_point, group_url, group_id, cards_in_top, balance_threshold))
+        self._add_missing_values(default_values)
+        if not self.cur.execute('SELECT COUNT(*) FROM config').fetchone()[0]:
+            columns = ', '.join(default_values.keys())
+            placeholders = ', '.join('?' * len(default_values))
+            values = list(default_values.values())
 
+            self.cur.execute(f"INSERT INTO `config` ({columns}) VALUES ({placeholders})", values)
             self.con.commit()
-            logging.info(f"default_config Created")
+            logging.info("default_config Created")
+
+    def _add_missing_values(self, default_values):
+        self.cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='config'")
+        table_exists = self.cur.fetchone()
+
+        if not table_exists:
+            self.cur.execute('''CREATE TABLE config (`id` INTEGER PRIMARY KEY AUTOINCREMENT)''')
+            self.con.commit()
+            logging.info("Table 'config' created")
+
+        self.cur.execute("PRAGMA table_info(config)")
+        existing_columns = [column[1] for column in self.cur.fetchall()]
+
+        for key, value in default_values.items():
+            if key not in existing_columns:
+                column_type = self._get_sqlite_type(value)
+                self.cur.execute(f"ALTER TABLE config ADD COLUMN `{key}` {column_type}")
+                logging.info(f"Added missing column: {key}")
+
+                self.cur.execute(f"UPDATE config SET `{key}` = ?", (value,))
+                logging.info(f"Updated column: {key}")
+
+        self.con.commit()
+
+    def _get_sqlite_type(self, value):
+        if isinstance(value, int):
+            return 'INTEGER'
+        elif isinstance(value, float):
+            return 'REAL'
+        elif isinstance(value, str):
+            return 'VARCHAR(255)'
+        else:
+            return 'TEXT'
 
     def set(self, field_name, value):
         try:
@@ -176,3 +198,19 @@ class ConfigDB:
     @balance_threshold.setter
     def balance_threshold(self, value):
         self.set('balance_threshold', value)
+
+    @property
+    def complete_combo(self):
+        return self.get('complete_combo')
+
+    @complete_combo.setter
+    def complete_combo(self, value):
+        self.set('complete_combo', value)
+
+    @property
+    def complete_cipher(self):
+        return self.get('complete_cipher')
+
+    @complete_cipher.setter
+    def complete_cipher(self, value):
+        self.set('complete_cipher', value)
