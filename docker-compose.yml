@@ -16,5 +16,4 @@ services:
       - ./Src:/app/Src
       - ./requirements.txt:/app/requirements.txt
       - ./.env:/app/.env
-      - ./main_docker.py:/app/main_docker.py
     restart: unless-stopped

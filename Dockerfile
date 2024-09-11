@@ -11,8 +11,7 @@ WORKDIR /app
 
 COPY Src ./Src
 COPY requirements.txt ./
-COPY hamster_mayhem_service.py ./
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "hamster_mayhem_service.py"]
+CMD ["python", "Src/Hamster_bot.py"]
