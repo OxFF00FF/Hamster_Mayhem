@@ -19,7 +19,8 @@ if __name__ == '__main__':
 
         while True:
             if config.hamster_token:
-                choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (#/1/2/3/4/5/6/a/$/+/s/m/0):{RESET} ")
+                # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (#/1/2/3/4/5/6/a/$/+/s/m/0):{RESET} ")
+                choice = input(f"\n{CYAN}┌──({WHITE}{LIGHT_BLUE}#/1/2/3/4/5/6/a/$/+/s/m/0{WHITE}{CYAN})-[{WHITE}{BOLD}Выберите действие{CYAN}{RESET}]{WHITE}\n{CYAN}└─{LIGHT_BLUE}${WHITE} ")
                 handle_main_menu_choice(choice)
 
             else:
