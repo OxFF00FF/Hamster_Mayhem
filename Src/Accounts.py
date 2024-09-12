@@ -5,7 +5,7 @@ from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Hamster import HamsterKombatClicker
 from Src.Login import hamster_client
-from Src.utils import localized_text
+from Src.utils import localized_text, kali
 
 config = ConfigDB()
 
@@ -39,7 +39,9 @@ def choose_account():
                 print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}{WHITE}")
                 logging.error(e)
 
-        account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}▶️  {localized_text('choose_number')}: {WHITE}")
+        # account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}▶️  {localized_text('choose_number')}: {WHITE}")
+        accounts = '/'.join([f"{e + 1}" for e in range(len(accounts))])
+        account_choice = input(kali(accounts, '~/Accounts', localized_text('choose_account')))
         return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
     else:
         print(localized_text('one_account_detected'))
