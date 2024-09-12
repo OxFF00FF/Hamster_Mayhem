@@ -155,6 +155,7 @@ def settings_menu():
     complete_minigames = get_status(config.complete_minigames)
     complete_combo = get_status(config.complete_combo)
     complete_autobuy_upgrades = get_status(config.complete_autobuy_upgrades)
+    complete_promocodes = get_status(config.complete_promocodes)
 
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
@@ -173,6 +174,7 @@ def settings_menu():
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_minigames'))} · {WHITE}{GREEN}{complete_minigames}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_combo'))} · {WHITE}{GREEN}{complete_combo}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_autobuy_upgrades'))} · {WHITE}{GREEN}{complete_autobuy_upgrades}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}\n"
     )
 
     if chat_id:

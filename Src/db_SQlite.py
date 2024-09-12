@@ -42,7 +42,8 @@ class ConfigDB:
             'complete_cipher': False,
             'complete_minigames': False,
             'complete_combo': False,
-            'complete_autobuy_upgrades': False
+            'complete_autobuy_upgrades': False,
+            'complete_promocodes': False
         }
 
         self._ADD_missing_values(default_values, 'config')
@@ -300,5 +301,13 @@ class ConfigDB:
     @tg_user_id.setter
     def tg_user_id(self, value):
         self.set('tg_user_id', value)
+
+    @property
+    def complete_promocodes(self):
+        return self.get('complete_promocodes')
+
+    @complete_promocodes.setter
+    def complete_promocodes(self, value):
+        self.set('complete_promocodes', value)
 
     # --- /PROPERTIES --- #
