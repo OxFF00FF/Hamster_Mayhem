@@ -29,6 +29,8 @@ def main_menu():
 
     menu = f"📚  {localized_text('main_menu_header')}"
     menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
+    menu += f"  {LIGHT_YELLOW}@ |  {RESET}🤖 {YELLOW}{localized_text('main_menu_run_bot')} {WHITE} \n"
+
     menu += line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
     menu += line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
     menu += line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])

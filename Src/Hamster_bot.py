@@ -20,7 +20,7 @@ class HamsterUltimate:
         """
         :param TOKEN: Bearer token
         """
-        self.Client = hamster_client(token=TOKEN).login().split()[-1].strip('(').strip(')')
+        self.Client = hamster_client(token=TOKEN).login(show_info=False).split()[-1].strip('(').strip(')')
 
     def process_taps(self):
         while True:
@@ -220,8 +220,7 @@ class HamsterUltimate:
 
     def run(self):
         threads = [
-            threading.Thread(target=self.process_keys_minigames),
-            # threading.Thread(target=self.process_balance),
+            threading.Thread(target=self.process_balance),
             # threading.Thread(target=self.process_taps),
             # threading.Thread(target=self.process_tasks),
             # threading.Thread(target=self.process_cipher),
@@ -229,6 +228,7 @@ class HamsterUltimate:
             # threading.Thread(target=self.process_minigame_tiles),
             # threading.Thread(target=self.process_minigame_candles),
             # threading.Thread(target=self.process_autobuy_upgrades),
+            # threading.Thread(target=self.process_keys_minigames),
         ]
 
         for thread in threads:

@@ -145,7 +145,8 @@
         "setting_complete_minigames": "Прохождение миниигр",
         "setting_complete_combo": "Прохождение комбо",
         "setting_complete_autobuy_upgrades": "Автопокупка карт",
-        "setting_complete_promocodes": "Получение прококодов"
+        "setting_complete_promocodes": "Получение прококодов",
+        "main_menu_run_bot": "Запустить бота"
     },
 
     "en": {
@@ -294,6 +295,7 @@
         "setting_complete_minigames": "Complete minigames",
         "setting_complete_combo": "Complete combo",
         "setting_complete_autobuy_upgrades": "Autobuy upgrades",
-        "setting_complete_promocodes": "Complete promocodes"
+        "setting_complete_promocodes": "Complete promocodes",
+        "main_menu_run_bot": "Run Bot"
     }
 }

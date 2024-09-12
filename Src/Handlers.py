@@ -4,6 +4,7 @@ import re
 from spinners import Spinners
 
 from Src.Colors import *
+from Src.Hamster_bot import HamsterUltimate
 from Src.db_SQlite import ConfigDB
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
@@ -18,6 +19,10 @@ def handle_main_menu_choice(choice):
     if choice == '#':
         line_before()
         print(hamster_client().daily_info())
+
+    elif choice == '@':
+        bot = HamsterUltimate(TOKEN=hamster_client().HAMSTER_TOKEN)
+        bot.run()
 
     elif choice == '1':
         line_before()

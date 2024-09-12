@@ -239,7 +239,8 @@ def align_main_menu(text):
         len(localized_text('main_menu_tasks')),
         len(localized_text('main_menu_cipher')),
         len(localized_text('main_menu_combo')),
-    ) + 3
+        len(localized_text('main_menu_run_bot'))
+    ) - 2
     return text.ljust(max_length)
 
 

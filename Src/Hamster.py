@@ -832,7 +832,7 @@ class HamsterKombatClicker:
         bonus = int(end_game.json().get('bonus'))
         return bonus
 
-    def login(self):
+    def login(self, show_info=True):
         try:
             response = requests.post(f'{self.base_url}/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
             if response.status_code == 401:
@@ -848,7 +848,8 @@ class HamsterKombatClicker:
                 config.hamster_token = True
 
                 user_info = f"{first_name} {last_name} ({username})"
-                print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
+                if show_info:
+                    print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
 
                 config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
                 return user_info
