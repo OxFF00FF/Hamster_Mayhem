@@ -72,7 +72,7 @@ def handle_main_menu_choice(choice):
         for e, card in enumerate(cards):
             price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
             print(
-                f"#   {e + 1}. {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
+                f"#️⃣  {e + 1}. {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
                 f"💰  {YELLOW}{localized_text('price')}: {price}\n"
                 f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
                 f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"

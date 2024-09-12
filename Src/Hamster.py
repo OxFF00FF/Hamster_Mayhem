@@ -270,7 +270,6 @@ class HamsterKombatClicker:
         try:
             upgrades_for_buy_response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             upgrades_for_buy_response.raise_for_status()
-            not_enough_coins_printed = False
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour')
@@ -282,12 +281,12 @@ class HamsterKombatClicker:
                 upgrade_level = upgrade.get('level')
                 upgrade_available = upgrade.get('isAvailable')
                 upgrade_expire = upgrade.get('isExpired')
-                upgrade_cooldown = upgrade.get('cooldownSeconds', 1)
+                upgrade_cooldown = upgrade.get('cooldownSeconds', 0)
 
-                price = int(upgrade['price'])
-                max_price_limit = max(earn_per_hour, 50000) * 24
-                if int(free_balance * 0.8) >= price and price < int(max_price_limit):
-                    if upgradeId == upgrade['id']:
+                if upgradeId == upgrade['id']:
+                    price = int(upgrade['price'])
+                    max_price_limit = max(earn_per_hour, 50000) * 24
+                    if int(free_balance * 0.8) >= price and price < int(max_price_limit):
                         if upgrade.get('isAvailable') and not upgrade.get('isExpired') and upgrade_cooldown == 0:
                             json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                             response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
@@ -305,10 +304,9 @@ class HamsterKombatClicker:
                             print(f"{LIGHT_RED}🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}{WHITE}")
                             return error_message
 
-                else:
-                    if not not_enough_coins_printed:
+                    else:
                         print(f"{RED}🚫  {localized_text('not_enough_coins')}{WHITE}")
-                        not_enough_coins_printed = True
+                        break
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -721,8 +719,8 @@ class HamsterKombatClicker:
         evaluated_cards = []
         upgrades = response.json()['upgradesForBuy']
         for card in upgrades:
-            cooldown = card.get('cooldownSeconds', 1)
-            if card['isAvailable'] and not card['isExpired'] and cooldown == 0 and cooldown is not None:
+            cooldown = card.get('cooldownSeconds', 0)
+            if card['isAvailable'] and not card['isExpired'] and cooldown == 0:
                 if card["profitPerHourDelta"] != 0:
                     payback_seconds = int(card["price"] / card["profitPerHour"]) * 3600
                     card["payback_period"] = remain_time(payback_seconds)
