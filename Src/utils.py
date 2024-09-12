@@ -337,4 +337,6 @@ def current_time(user):
 
 
 def kali(variants=None, menu=None, text=None):
-    return f"\n{DARK_GRAY}{text}\n{CYAN}┌──({WHITE}{LIGHT_BLUE}{variants}{WHITE}{CYAN})-[{WHITE}{BOLD}{menu}{CYAN}]{RESET}\n{CYAN}└─{LIGHT_BLUE}${WHITE} "
+    return f"\n{LIGHT_CYAN}┌─[{DARK_GRAY}{text}{LIGHT_CYAN}]\n" \
+           f"{LIGHT_CYAN}├──({LIGHT_BLUE}{variants}{LIGHT_CYAN})-[{RESET}{BOLD}{menu}{LIGHT_CYAN}]\n" \
+           f"└─{LIGHT_BLUE}${RESET} "
