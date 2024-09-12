@@ -109,7 +109,7 @@ class ConfigDB:
             'is_subscriber': False,
             'username': account_info.get('username', 'n/a'),
             'first_name': account_info.get('firstName', 'n/a'),
-            'last_name': account_info.get(lastName', 'n/a'),
+            'last_name': account_info.get('lastName', 'n/a'),
         }
         self._ADD_missing_values(user_info, 'config')
 
