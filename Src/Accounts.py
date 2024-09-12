@@ -2,6 +2,7 @@ import logging
 import os
 
 from Src.Colors import *
+from Src.Menu import main_menu
 from Src.db_SQlite import ConfigDB
 from Src.Hamster import HamsterKombatClicker
 from Src.Login import hamster_client
@@ -40,9 +41,18 @@ def choose_account():
                 logging.error(e)
 
         # account_choice = input(f"\n{DARK_GRAY}{localized_text('choose_account')}{WHITE}\n{CYAN}▶️  {localized_text('choose_number')}: {WHITE}")
-        accounts = '/'.join([f"{e + 1}" for e in range(len(accounts))])
-        account_choice = input(kali(accounts, '~/Accounts', localized_text('choose_account')))
-        return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else None
+        accounts_number = '/'.join([f"{e + 1}" for e in range(len(accounts))])
+        account_choice = input(kali(accounts_number, '~/Accounts', localized_text('choose_account')))
+        if account_choice.isdigit() and int(account_choice) <= len(accounts):
+            return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else "HAMSTER_TOKEN_1"
+
+        elif account_choice == '0':
+            main_menu()
+            return "HAMSTER_TOKEN_1"
+
+        else:
+            return "HAMSTER_TOKEN_1"
+
     else:
         print(localized_text('one_account_detected'))
         return "HAMSTER_TOKEN_1"
