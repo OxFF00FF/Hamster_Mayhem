@@ -136,7 +136,7 @@ def handle_playground_menu_choice():
     while True:
         playground_menu()
         # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
-        choice = input(kali(f"{'/'.join(games)}/</0", '~/Playground'))
+        choice = input(kali(f"{'/'.join(games)}/</0", '~/Playground', localized_text('choose_action')))
 
         line_before()
 
@@ -172,7 +172,7 @@ def handle_minigames_choice():
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
         # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  ({'/'.join(choices)}/</0): {RESET}")
-        choice = input(kali(f"{'/'.join(choices)}/</0", '~/Minigames'))
+        choice = input(kali(f"{'/'.join(choices)}/</0", '~/Minigames', localized_text('choose_action')))
         line_before()
 
         if choice in choices:
