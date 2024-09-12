@@ -705,10 +705,10 @@ class HamsterKombatClicker:
 
                 reward = response.json()['reward']
                 if reward['type'] == 'keys':
-                    print(f"ℹ️  {LIGHT_GREEN}🎉  {localized_text('info_keys_recieved')}: {keys_today + reward['amount']}/{keys_limit} {WHITE}\n")
+                    print(f"{LIGHT_GREEN}🎉  {localized_text('info_keys_recieved')}: {keys_today + reward['amount']}/{keys_limit} {WHITE}\n")
 
                 elif reward['type'] == 'coins':
-                    print(f"ℹ️  {LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['coins']:,}{WHITE}\n".replace(',', ' '))
+                    print(f"{LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['amount']:,}{WHITE}\n".replace(',', ' '))
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -1001,8 +1001,7 @@ class HamsterKombatClicker:
 
         async def __start_generate(keys_count: int) -> list:
             remain = f"{LIGHT_MAGENTA}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
-            print(f"\n{LIGHT_YELLOW}{TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~ {remain}")
-            print(f'{YELLOW}{TEXT}{WHITE}')
+            print(f"\n{LIGHT_YELLOW}{EMOJI}  {TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~{remain}\n")
 
             try:
                 if one_game:
