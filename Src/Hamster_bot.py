@@ -91,7 +91,10 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
 
-                remain = hamster_client().send_balance_to_group(update_time_sec=5000, chat_id=int(os.getenv('BOT_LOGS_GROUP_ID')))
+                chat_id = os.getenv('BOT_LOGS_GROUP_ID')
+                if chat_id is None:
+                    chat_id = os.getenv('CHAT_ID')
+                remain = hamster_client().send_balance_to_group(update_time_sec=5000, chat_id=int(chat_id))
                 print(f"{LIGHT_YELLOW}⏳   {localized_text('next_balance_after')}: {remain_time(remain)}{WHITE}")
 
                 line_after(blank_line=False)

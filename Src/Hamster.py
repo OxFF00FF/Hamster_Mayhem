@@ -34,7 +34,11 @@ config = ConfigDB()
 class HamsterKombatClicker:
 
     def __init__(self, hamster_token):
-        self.HAMSTER_TOKEN = hamster_token
+        if hamster_token is None:
+            self.HAMSTER_TOKEN = os.getenv('HAMSTER_TOKEN_1')
+        else:
+            self.HAMSTER_TOKEN = hamster_token
+
         self.BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
         self.CHAT_ID = os.getenv('CHAT_ID')
         self.GROUP_URL = os.getenv('GROUP_URL')
@@ -648,12 +652,11 @@ class HamsterKombatClicker:
                          f"🔄  Обновление: {update_date}"
                 balance = result.replace(',', ' ')
 
-                if chat_id is not None:
+                try:
                     response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": balance})
-                    response.raise_for_status()
-                else:
+                except:
                     response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": balance})
-                    response.raise_for_status()
+                response.raise_for_status()
 
                 if update_time_sec is None:
                     print(f"{GREEN}✅  {update_date} · Баланс успешно отправлен в в чат{WHITE}")
@@ -961,7 +964,7 @@ class HamsterKombatClicker:
                 print(f"\n🚫  {localized_text('error_occured')}: {e}")
                 return promo_code
 
-        async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None, no_spinner=None):
+        async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None):
             global total_progress
             promo_code = ''
             client_id = await __generate_client_id()
@@ -1001,13 +1004,7 @@ class HamsterKombatClicker:
             print(f"\n{LIGHT_YELLOW}{EMOJI}  {TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~{remain}\n")
 
             try:
-                if no_spinner:
-                    async with aiohttp.ClientSession() as session:
-                        tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
-                        keys = await asyncio.gather(*tasks)
-                    return [key for key in keys if key]
-
-                elif one_game:
+                if one_game:
                     global total_progress
                     total_progress = {prefix: 0}
                     progress_increment = 1
