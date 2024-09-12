@@ -297,11 +297,13 @@ async def update_spinner(event, progress_dict, prefix):
 
 
 def get_spinner_frame(spinner_name, frame_index):
-    if spinner_name == 'hamster':
-        frames = create_scrolling_frames('Hamster Kombat', 15)
-        return frames[frame_index % len(frames)]
+    default_frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
 
     try:
+        if spinner_name == 'hamster':
+            frames = create_scrolling_frames('Hamster Kombat', 15)
+            return frames[frame_index % len(frames)]
+
         if spinner_name is not None:
             spinners = [spinner_name.name for spinner_name in Spinners]
             for spinner_item in spinners:
@@ -310,9 +312,10 @@ def get_spinner_frame(spinner_name, frame_index):
                     frames = spinner.value['frames']
                     return frames[frame_index % len(frames)]
 
+                else:
+                    return default_frames[frame_index % len(default_frames)]
     except:
-        frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
-        return frames[frame_index % len(frames)]
+        return default_frames[frame_index % len(default_frames)]
 
 
 def create_scrolling_frames(text, width):
