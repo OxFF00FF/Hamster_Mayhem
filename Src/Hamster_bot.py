@@ -205,18 +205,19 @@ class HamsterUltimate:
 
                         if not is_claimed:
                             asyncio.run(hamster_client().get_promocodes(count=count, apply_promo=True, prefix=prefix, one_game=True))
+                            time_to_sleep = random_delay()
+                            print(f"{LIGHT_YELLOW}⏳   {localized_text('next_keys_minigame_after')}: {remain_time(time_to_sleep)}{WHITE}")
 
-                        time_to_sleep = random_delay()
+                            if time_to_sleep:
+                                time.sleep(time_to_sleep + random_delay())
+                            else:
+                                return
                 else:
                     print(f"{YELLOW}⛔️  Автоматическое получение промокодов отключено{WHITE}")
-                    time_to_sleep = False
+                    return
 
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
 
 
     def run(self):

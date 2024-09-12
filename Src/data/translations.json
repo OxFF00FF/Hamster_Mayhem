@@ -146,7 +146,8 @@
         "setting_complete_combo": "Прохождение комбо",
         "setting_complete_autobuy_upgrades": "Автопокупка карт",
         "setting_complete_promocodes": "Получение прококодов",
-        "main_menu_run_bot": "Запустить бота"
+        "main_menu_run_bot": "Запустить бота",
+        "next_keys_promocodes_after": "Следующие промокоды через"
     },
 
     "en": {
@@ -296,6 +297,7 @@
         "setting_complete_combo": "Complete combo",
         "setting_complete_autobuy_upgrades": "Autobuy upgrades",
         "setting_complete_promocodes": "Complete promocodes",
-        "main_menu_run_bot": "Run Bot"
+        "main_menu_run_bot": "Run Bot",
+        "next_keys_promocodes_after": "Next promocodes after"
     }
 }
