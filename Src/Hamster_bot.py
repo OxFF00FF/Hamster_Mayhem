@@ -1,7 +1,6 @@
 import asyncio
 import os
 import threading
-import keyboard
 import time
 from dotenv import load_dotenv
 
@@ -169,11 +168,11 @@ class HamsterUltimate:
                 current_time(self.Client)
 
                 if config.complete_autobuy_upgrades:
-                    most_profitable_cards = hamster_client().get_most_profitable_cards(top=3)
+                    most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
                     for card in most_profitable_cards:
                         hamster_client()._buy_upgrade(card)
                     print(f"{LIGHT_YELLOW}⏳   {localized_text('next_purhase_after')}: {remain_time(random_delay())}{WHITE}")
-                    time_to_sleep = random_delay()
+                    time_to_sleep = 60
                 else:
                     print(f"{YELLOW}⛔️  Автоматическая покупка карт отключена{WHITE}")
                     time_to_sleep = False
@@ -181,7 +180,7 @@ class HamsterUltimate:
                 line_after(blank_line=False)
 
             if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
+                time.sleep(time_to_sleep)
             else:
                 return
 
@@ -195,7 +194,6 @@ class HamsterUltimate:
                     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
                     promos = hamster_client()._get_promos()
 
-
                     for game in games_data:
                         promo = next((p for p in promos if p.get('name') == game.get('title')), None)
 
@@ -207,7 +205,8 @@ class HamsterUltimate:
 
                         if not is_claimed:
                             asyncio.run(hamster_client().get_promocodes(count=count, apply_promo=True, prefix=prefix, one_game=True))
-                            break
+
+                        time_to_sleep = random_delay()
                 else:
                     print(f"{YELLOW}⛔️  Автоматическое получение промокодов отключено{WHITE}")
                     time_to_sleep = False
@@ -221,7 +220,7 @@ class HamsterUltimate:
 
 
     def run(self):
-        print('\nBot is running...\nFor stop bot press Ctrl+C or press "q" key\n')
+        print('\nBot is running...\n')
 
         threads = [
             threading.Thread(target=self.process_balance),
@@ -235,19 +234,8 @@ class HamsterUltimate:
             threading.Thread(target=self.process_keys_minigames),
         ]
 
-        def monitor_stop_key():
-            keyboard.wait('q')
-            self.stop_event.set()
-            print("Bot was been stopped")
-            exit(1)
-
-        monitor_thread = threading.Thread(target=monitor_stop_key)
-        monitor_thread.start()
-
         for thread in threads:
             thread.start()
 
         for thread in threads:
             thread.join()
-
-        monitor_thread.join()

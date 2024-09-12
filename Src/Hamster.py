@@ -301,9 +301,7 @@ class HamsterKombatClicker:
                             print(f"{LIGHT_RED}🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}{WHITE}")
                             return error_message
 
-
                 else:
-                    # Печатаем сообщение о недостатке монет только один раз
                     if not not_enough_coins_printed:
                         print(f"{RED}🚫  {localized_text('not_enough_coins')}{WHITE}")
                         not_enough_coins_printed = True
@@ -662,6 +660,7 @@ class HamsterKombatClicker:
                     time.sleep(7200)
                 else:
                     print(f"{GREEN}✅  Баланс успешно отправлен в чат{WHITE}")
+                    print(f"\n{balance}\n")
                     return update_time_sec
 
         except Exception as e:
