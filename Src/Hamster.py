@@ -425,7 +425,6 @@ class HamsterKombatClicker:
                 taps_response = requests.post(f'{self.base_url}/clicker/tap', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 taps_response.raise_for_status()
                 print(f"{GREEN}✅  {localized_text('info_taps_completed')}{WHITE}")
-                return remain
 
             else:
                 print(f"{RED}🚫  {localized_text('info_no_accumulate_yet')}{WHITE}")
@@ -447,7 +446,6 @@ class HamsterKombatClicker:
                         taps_response.raise_for_status()
 
                         print(f"{GREEN}✅  {localized_text('info_taps_completed')}{WHITE}")
-                        return remain
 
                     else:
                         print(f"{RED}🚫  {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('boosts_available')}. {localized_text('info_next_boost_after')}: {remain_time(boost_remain)}{WHITE}")
@@ -693,10 +691,10 @@ class HamsterKombatClicker:
                     promo_title = promo['title']['en']
 
             if keys_today == keys_limit:
-                print(f"ℹ️  {localized_text('info_all_keys_in_game_claimed', promo_title)}. {next_keys}")
+                print(f"{LIGHT_YELLOW}ℹ️  {localized_text('info_all_keys_in_game_claimed', promo_title)}. {next_keys}{WHITE}")
 
             else:
-                print(f"ℹ️  {LIGHT_YELLOW}🔄  {localized_text('info_activating_promocode')} `{promoCode}`...{WHITE}")
+                print(f"{LIGHT_YELLOW}🔄  {localized_text('info_activating_promocode')} `{promoCode}`...{WHITE}")
 
                 time.sleep(2)
                 json_data = {'promoCode': promoCode}
@@ -900,7 +898,6 @@ class HamsterKombatClicker:
                 EVENTS_DELAY = promo['registerEventTimeout']
                 EVENTS_COUNT = promo['eventsCount']
                 TITLE = promo['title']
-                TEXT = promo['text']
                 EMOJI = promo['emoji']
 
         async def delay_random():
