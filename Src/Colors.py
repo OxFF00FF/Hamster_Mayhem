@@ -42,8 +42,8 @@ def colors_test():
           f"{WHITE}WHITE{RESET} · "
           f"{LIGHT_WHITE}LIGHT_WHITE{RESET}\n"
           f"{LIGHT_GRAY}LIGHT_GRAY{RESET} · "
-          f"{DARK_GRAY}DARK_GRAY{RESET}"
-          f"{BOLD}BOLD{RESET}"
-          f"{UNDERLINED}UNDERLINED{RESET}"
-          f"{REVERSED}REVERSED{RESET}"
+          f"{DARK_GRAY}DARK_GRAY{RESET} \n"
+          f"{BOLD}BOLD{RESET} \n"
+          f"{UNDERLINED}UNDERLINED{RESET} \n"
+          f"{REVERSED}REVERSED{RESET} \n"
           f"{STRIKETHROUGH}STRIKETHROUGH{RESET}")
