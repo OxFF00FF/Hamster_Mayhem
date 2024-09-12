@@ -1,4 +1,5 @@
 import logging
+import os
 import traceback
 
 from Src.Colors import *
@@ -7,25 +8,26 @@ from Src.Handlers import handle_main_menu_choice, handle_main_menu_not_logged_ch
 from Src.Login import hamster_client
 from Src.Menu import main_menu
 from Src.utils import banner, line_after, localized_text, kali
+from Src.Hamster_bot import HamsterUltimate
 
 config = ConfigDB()
 
 
 if __name__ == '__main__':
     try:
+        # bot = HamsterUltimate(TOKEN=os.getenv('HAMSTER_TOKEN_1'))
+        # bot.run()
         banner()
         hamster_client().login()
         main_menu()
 
         while True:
             if config.hamster_token:
-                # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (#/1/2/3/4/5/6/a/$/+/s/m/0):{RESET} ")
-                choice = input(kali('#/1/2/3/4/5/6/a/$/+/s/m/0', '~'))
+                choice = input(kali('#/1/2/3/4/5/6/a/$/+/s/m/0', '~/Main menu', localized_text('choose_action')))
                 handle_main_menu_choice(choice)
 
             else:
-                # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (6/0):{RESET} ")
-                choice = input(kali('6/0', '~'))
+                choice = input(kali('6/0', '~', localized_text('choose_action')))
                 handle_main_menu_not_logged_choice(choice)
 
             line_after()
