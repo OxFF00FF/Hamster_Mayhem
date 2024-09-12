@@ -10,8 +10,10 @@ ENV PYTHONFAULTHANDLER=1 \
 WORKDIR /app
 
 COPY Src ./Src
+COPY main_bot.py ./
 COPY requirements.txt ./
+
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "Src/Hamster_bot.py"]
+CMD ["python", "main_bot.py"]

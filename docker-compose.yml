@@ -16,4 +16,5 @@ services:
       - ./Src:/app/Src
       - ./requirements.txt:/app/requirements.txt
       - ./.env:/app/.env
+      - ./main_bot.py:/app/main_bot.py
     restart: unless-stopped
