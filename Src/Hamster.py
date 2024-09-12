@@ -850,7 +850,7 @@ class HamsterKombatClicker:
                 user_info = f"{first_name} {last_name} ({username})"
                 print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
 
-                config.ADD_subscriber(account_info)
+                config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
                 return user_info
 
         except Exception as e:
