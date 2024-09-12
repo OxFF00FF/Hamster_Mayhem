@@ -138,7 +138,14 @@
         "next_minigame_candles_after": "Следующая игра Candles через",
         "next_combo_after": "Следующее комбо через",
         "next_purhase_after": "Следующая покупка через",
-        "not_enough_coins": "Недостаточно монет для покупки"
+        "not_enough_coins": "Недостаточно монет для покупки",
+        "setting_complete_taps": "Прохождение тапов",
+        "setting_complete_tasks": "Прохождение заданий",
+        "setting_complete_cipher": "Получение шифра",
+        "setting_complete_minigames": "Прохождение миниигр",
+        "setting_complete_combo": "Прохождение комбо",
+        "setting_complete_autobuy_upgrades": "Автопокупка карт",
+        "setting_complete_promocodes": "Получение прококодов"
     },
 
     "en": {
@@ -280,6 +287,13 @@
         "next_minigame_candles_after": "Next minigame Candles after",
         "next_combo_after": "Next combo after",
         "next_purhase_after": "Next purhase after",
-        "not_enough_coins": "Not enough coins to purchase"
+        "not_enough_coins": "Not enough coins to purchase",
+        "setting_complete_taps": "Complete taps",
+        "setting_complete_tasks": "Complete tasks",
+        "setting_complete_cipher": "Complete cipher",
+        "setting_complete_minigames": "Complete minigames",
+        "setting_complete_combo": "Complete combo",
+        "setting_complete_autobuy_upgrades": "Autobuy upgrades",
+        "setting_complete_promocodes": "Complete promocodes"
     }
 }
