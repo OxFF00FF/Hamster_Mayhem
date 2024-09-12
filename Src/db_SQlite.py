@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from Src.Colors import *
 
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}\n", level=logging.ERROR)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}", level=logging.ERROR)
 load_dotenv()
 
 
@@ -25,7 +25,6 @@ class ConfigDB:
     def SET_default_config(self):
         # Настройки по умолчанию
         default_values = {
-            'token': '',
             'send_to_group': False,
             'save_to_file': False,
             'apply_promo': False,
@@ -68,23 +67,6 @@ class ConfigDB:
         self.cur.execute(f"PRAGMA table_info({table})")
         existing_columns = [column[1] for column in self.cur.fetchall()]
 
-        updated_values = {}
-        for key, value in data.items():
-            if key == 'id':
-                new_key = '_id'
-                logging.info(f"Renaming column id to _id")
-            else:
-                new_key = key
-
-            updated_values[new_key] = value
-            if new_key not in existing_columns:
-                column_type = self._get_sqlite_type(value)
-                self.cur.execute(f"ALTER TABLE {table} ADD COLUMN `{new_key}` {column_type}")
-                logging.info(f"Added missing column: {new_key}")
-
-                self.cur.execute(f"UPDATE {table} SET `{new_key}` = ?", (value,))
-                logging.info(f"Updated column: {new_key}")
-
         for key, value in data.items():
             if key not in existing_columns:
                 column_type = self._get_sqlite_type(value)
@@ -113,30 +95,22 @@ class ConfigDB:
     # --- USERS --- #
 
     def user_exist(self, tg_user_id: int) -> bool:
-        self.cur.execute("SELECT COUNT(*) FROM `subscribers` WHERE `tg_user_id` = ?",
-                         (tg_user_id,))
-
+        self.cur.execute("SELECT COUNT(*) FROM `config` WHERE `tg_user_id` = ?", (tg_user_id,))
         if self.cur.fetchone()[0] > 0:
             return True
         else:
             return False
 
-    def ADD_subscriber(self, account_info: dict):
-        tg_user_id = account_info.get('id', 'n/a')
-        username = account_info.get('username', 'n/a')
-        first_name = account_info.get('firstName', 'n/a')
-        account_info['is_subscriber'] = False
-
-        self._ADD_missing_values(account_info, 'subscribers')
-
-        columns = ', '.join(account_info.keys())
-        placeholders = ', '.join('?' * len(account_info))
-        values = list(account_info.values())
-
-        self.cur.execute(f"INSERT INTO `subscribers` ({columns}) VALUES ({placeholders})", values)
-        self.con.commit()
-
-        logging.info(f"""ADD new subscriber: `{first_name} · {username}` id: {tg_user_id} """)
+    def ADD_subscriber(self, account_info, token):
+        user_info = {
+            'token': token,
+            'tg_user_id': account_info['id'],
+            'is_subscriber': False,
+            'username': account_info['username'],
+            'first_name': account_info['firstName'],
+            'last_name': account_info['lastName'],
+        }
+        self._ADD_missing_values(user_info, 'config')
 
     # --- /USERS --- #
 
@@ -318,5 +292,13 @@ class ConfigDB:
     @complete_autobuy_upgrades.setter
     def complete_autobuy_upgrades(self, value):
         self.set('complete_autobuy_upgrades', value)
+
+    @property
+    def tg_user_id(self):
+        return self.get('tg_user_id')
+
+    @tg_user_id.setter
+    def tg_user_id(self, value):
+        self.set('tg_user_id', value)
 
     # --- /PROPERTIES --- #
