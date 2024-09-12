@@ -126,7 +126,7 @@ def clear_screen():
 
 
 def line_before(blank_line=True):
-    text = "\n╭" + "~" * 50 + "╮"
+    text = "\n╭" + "─" * 50 + "╮"
     if blank_line:
         print(text)
     else:
@@ -134,7 +134,7 @@ def line_before(blank_line=True):
 
 
 def line_after(blank_line=True):
-    text = "╰" + "~" * 50 + "╯\n"
+    text = "╰" + "─" * 50 + "╯\n"
     if blank_line:
         print(text)
     else:
