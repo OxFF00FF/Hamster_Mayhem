@@ -1,6 +1,7 @@
 import asyncio
 import os
 import threading
+import keyboard
 import time
 from dotenv import load_dotenv
 
@@ -20,10 +21,11 @@ class HamsterUltimate:
         """
         :param TOKEN: Bearer token
         """
+        self.stop_event = threading.Event()
         self.Client = hamster_client(token=TOKEN).login(show_info=False).split()[-1].strip('(').strip(')')
 
     def process_taps(self):
-        while True:
+        while not self.stop_event.is_set():
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
@@ -86,7 +88,7 @@ class HamsterUltimate:
                 return
 
     def process_balance(self):
-        while True:
+        while not self.stop_event.is_set():
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
@@ -219,6 +221,8 @@ class HamsterUltimate:
 
 
     def run(self):
+        print('\nBot is running...\nFor stop bot press Ctrl+C or press "q" key\n')
+
         threads = [
             threading.Thread(target=self.process_balance),
             # threading.Thread(target=self.process_taps),
@@ -231,8 +235,19 @@ class HamsterUltimate:
             # threading.Thread(target=self.process_keys_minigames),
         ]
 
+        def monitor_stop_key():
+            keyboard.wait('q')
+            self.stop_event.set()
+            print("Bot was been stopped")
+            exit(1)
+
+        monitor_thread = threading.Thread(target=monitor_stop_key)
+        monitor_thread.start()
+
         for thread in threads:
             thread.start()
 
         for thread in threads:
             thread.join()
+
+        monitor_thread.join()
