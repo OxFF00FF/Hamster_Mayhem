@@ -159,28 +159,30 @@ def settings_menu():
 
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
-        f"  {LIGHT_YELLOW}1 | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
+        f"  {LIGHT_YELLOW}l | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}{config.account.upper()}{WHITE}\n"
-        f"  {LIGHT_YELLOW}2 | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}3 | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_cards_in_top'))} · {WHITE}{GREEN}{config.cards_in_top}{WHITE}\n"
+        f"  {LIGHT_YELLOW}g | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}a | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}f | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}t | {YELLOW} {align_settins(localized_text('setting_cards_in_top'))} · {WHITE}{GREEN}{config.cards_in_top}{WHITE} (5/10)\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_loading_indicator'))} · {WHITE}{GREEN}{config.spinner.upper()}{WHITE} (spinner_<num>/default/list) \n"
-
-        f"  {LIGHT_YELLOW}5 | {YELLOW} {align_settins(localized_text('setting_balance_threshold'))} · {WHITE}{GREEN}{config.balance_threshold:_}{WHITE} (5_<new_value>)\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_taps'))} · {WHITE}{GREEN}{complete_taps}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_tasks'))} · {WHITE}{GREEN}{complete_tasks}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_cipher'))} · {WHITE}{GREEN}{complete_cipher}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_minigames'))} · {WHITE}{GREEN}{complete_minigames}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_combo'))} · {WHITE}{GREEN}{complete_combo}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_autobuy_upgrades'))} · {WHITE}{GREEN}{complete_autobuy_upgrades}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}\n"
     )
+
+    if group_url:
+        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_group_url'))} · {WHITE}{group_url}\n"
 
     if chat_id:
         menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_chat_id'))} · {WHITE}{chat_id}\n"
 
-    if group_url:
-        menu += f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_group_url'))} · {WHITE}{group_url}"
-
+    menu += '  ' + '─' * 50 + '\n'
+    menu += (
+        f"  {LIGHT_YELLOW}1 | {YELLOW} {align_settins(localized_text('setting_balance_threshold'))} · {WHITE}{GREEN}{config.balance_threshold:_}{WHITE} (1_<new_value>)\n"
+        f"  {LIGHT_YELLOW}2 | {YELLOW} {align_settins(localized_text('setting_complete_taps'))} · {WHITE}{GREEN}{complete_taps}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}3 | {YELLOW} {align_settins(localized_text('setting_complete_tasks'))} · {WHITE}{GREEN}{complete_tasks}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_complete_cipher'))} · {WHITE}{GREEN}{complete_cipher}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}5 | {YELLOW} {align_settins(localized_text('setting_complete_minigames'))} · {WHITE}{GREEN}{complete_minigames}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}6 | {YELLOW} {align_settins(localized_text('setting_complete_combo'))} · {WHITE}{GREEN}{complete_combo}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}7 | {YELLOW} {align_settins(localized_text('setting_complete_autobuy_upgrades'))} · {WHITE}{GREEN}{complete_autobuy_upgrades}{WHITE} {localized_text('setting_on_off')}\n"
+        f"  {LIGHT_YELLOW}8 | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}"
+    )
     print(menu)
