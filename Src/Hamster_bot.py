@@ -20,11 +20,10 @@ class HamsterUltimate:
         """
         :param TOKEN: Bearer token
         """
-        self.stop_event = threading.Event()
         self.Client = hamster_client(token=TOKEN).login(show_info=False).split()[-1].strip('(').strip(')')
 
     def process_taps(self):
-        while not self.stop_event.is_set():
+        while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
@@ -87,7 +86,7 @@ class HamsterUltimate:
                 return
 
     def process_balance(self):
-        while not self.stop_event.is_set():
+        while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
@@ -106,7 +105,7 @@ class HamsterUltimate:
 
                 if config.complete_minigames:
                     remain = hamster_client().complete_daily_minigame('tiles')
-                    print(f"{LIGHT_YELLOW}⏳   {localized_text('next_minigame_tiles_after')}: {remain_time(remain)}{WHITE}")
+                    print(f"{LIGHT_YELLOW}⏳   {localized_text('next_minigame_after')}: {remain_time(remain)}{WHITE}")
                     time_to_sleep = remain
                 else:
                     print(f"{YELLOW}⛔️  Автоматическое прохождение миниигр отключено{WHITE}")
@@ -127,7 +126,7 @@ class HamsterUltimate:
 
                 if config.complete_minigames:
                     remain = hamster_client().complete_daily_minigame('candles')
-                    print(f"{LIGHT_YELLOW}⏳   {localized_text('next_minigame_candles_after')}: {remain_time(remain)}{WHITE}")
+                    print(f"{LIGHT_YELLOW}⏳   {localized_text('next_minigame_after')}: {remain_time(remain)}{WHITE}")
                     time_to_sleep = remain
                 else:
                     print(f"{YELLOW}⛔️  Автоматическое прохождение миниигр отключено{WHITE}")
@@ -194,31 +193,43 @@ class HamsterUltimate:
                     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
                     promos = hamster_client()._get_promos()
 
+                    all_claimed = True
+
                     for game in games_data:
                         promo = next((p for p in promos if p.get('name') == game.get('title')), None)
 
-                        recieved_keys = promo.get('keys', 0) if promo else 0
-                        keys_per_day = promo.get('per_day', 0) if promo else 1
-                        is_claimed = promo['isClaimed'] if promo else False
-                        prefix = game.get('prefix', '')
-                        count = int(keys_per_day - recieved_keys)
+                        if promo:
+                            recieved_keys = promo.get('keys', 0)
+                            keys_per_day = promo.get('per_day', 0)
+                            is_claimed = promo['isClaimed']
+                            promo_name = promo['name']
+                            remain = promo['remain']
+                            prefix = game.get('prefix', '')
+                            count = int(keys_per_day - recieved_keys)
 
-                        if not is_claimed:
-                            asyncio.run(hamster_client().get_promocodes(count=count, apply_promo=True, prefix=prefix, one_game=True))
-                            time_to_sleep = random_delay()
-                            print(f"{LIGHT_YELLOW}⏳   {localized_text('next_keys_minigame_after')}: {remain_time(time_to_sleep)}{WHITE}")
-
-                            if time_to_sleep:
-                                time.sleep(time_to_sleep + random_delay())
+                            if not is_claimed:
+                                all_claimed = False
+                                asyncio.run(hamster_client().get_promocodes(count=count, apply_promo=True, prefix=prefix, one_game=True))
+                                time_to_sleep = int(random_delay() / 2)
+                                print(f"{LIGHT_YELLOW}⏳   {localized_text('next_keys_promocodes_after')}: {remain_time(time_to_sleep)}{WHITE}")
+                                time.sleep(time_to_sleep)
                             else:
-                                return
+                                print(f"{YELLOW}ℹ️  Промокоды для {promo_name} сегодня уже получены{WHITE}")
+
+                    if all_claimed:
+                        print(f"{YELLOW}⚠️  Все промокоды сегодня получены. следющие через: {remain}{WHITE}")
+                        time_to_sleep = remain
+
                 else:
                     print(f"{YELLOW}⛔️  Автоматическое получение промокодов отключено{WHITE}")
                     return
 
+                if time_to_sleep:
+                    time.sleep(time_to_sleep + random_delay())
+                else:
+                    return
+
                 line_after(blank_line=False)
-
-
 
     def run(self):
         print('\nBot is running...\n')
@@ -240,3 +251,4 @@ class HamsterUltimate:
 
         for thread in threads:
             thread.join()
+

@@ -943,7 +943,7 @@ class HamsterKombatClicker:
                 print(f"🚫  {localized_text('error_occured')}: {e}")
                 return has_code
 
-        async def __get_promocode(session, client_token: str) -> str | None:
+        async def __get_promocode(session, client_token: str) -> str:
             promo_code = ''
             url = 'https://api.gamepromo.io/promo/create-code'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
@@ -961,7 +961,7 @@ class HamsterKombatClicker:
                 print(f"\n🚫  {localized_text('error_occured')}: {e}")
                 return promo_code
 
-        async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None):
+        async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None, no_spinner=None):
             global total_progress
             promo_code = ''
             client_id = await __generate_client_id()
@@ -988,8 +988,8 @@ class HamsterKombatClicker:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                status_message = f"{LIGHT_BLUE}{prefix:<3}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
-                print(f"\r{status_message}", flush=True)
+                status_message = f"✅  {LIGHT_BLUE}{prefix:<5}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
+                print(f"\r{status_message}", flush=True, end="")
                 return promo_code
 
             except Exception as e:
@@ -1001,7 +1001,13 @@ class HamsterKombatClicker:
             print(f"\n{LIGHT_YELLOW}{EMOJI}  {TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~{remain}\n")
 
             try:
-                if one_game:
+                if no_spinner:
+                    async with aiohttp.ClientSession() as session:
+                        tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
+                        keys = await asyncio.gather(*tasks)
+                    return [key for key in keys if key]
+
+                elif one_game:
                     global total_progress
                     total_progress = {prefix: 0}
                     progress_increment = 1
