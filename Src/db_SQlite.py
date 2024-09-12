@@ -105,11 +105,11 @@ class ConfigDB:
     def ADD_subscriber(self, account_info, token):
         user_info = {
             'token': token,
-            'tg_user_id': account_info['id'],
+            'tg_user_id': account_info.get('id', 'n/a'),
             'is_subscriber': False,
-            'username': account_info['username'],
-            'first_name': account_info['firstName'],
-            'last_name': account_info['lastName'],
+            'username': account_info.get('username', 'n/a'),
+            'first_name': account_info.get('firstName', 'n/a'),
+            'last_name': account_info.get(lastName', 'n/a'),
         }
         self._ADD_missing_values(user_info, 'config')
 
