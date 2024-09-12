@@ -1,3 +1,4 @@
+import asyncio
 import os
 import threading
 import time
@@ -6,7 +7,7 @@ from dotenv import load_dotenv
 from Src.Colors import *
 from Src.Login import hamster_client
 from Src.db_SQlite import ConfigDB
-from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay
+from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, get_games_data
 
 load_dotenv()
 config = ConfigDB()
@@ -182,9 +183,45 @@ class HamsterUltimate:
             else:
                 return
 
+    def process_keys_minigames(self):
+        while True:
+            with print_lock:
+                line_before(blank_line=False)
+                current_time(self.Client)
+
+                if config.complete_promocodes:
+                    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
+                    promos = hamster_client()._get_promos()
+
+
+                    for game in games_data:
+                        promo = next((p for p in promos if p.get('name') == game.get('title')), None)
+
+                        recieved_keys = promo.get('keys', 0) if promo else 0
+                        keys_per_day = promo.get('per_day', 0) if promo else 1
+                        is_claimed = promo['isClaimed'] if promo else False
+                        prefix = game.get('prefix', '')
+                        count = int(keys_per_day - recieved_keys)
+
+                        if not is_claimed:
+                            asyncio.run(hamster_client().get_promocodes(count=count, apply_promo=True, prefix=prefix, one_game=True))
+                            break
+                else:
+                    print(f"{YELLOW}⛔️  Автоматическое получение промокодов отключено{WHITE}")
+                    time_to_sleep = False
+
+                line_after(blank_line=False)
+
+            if time_to_sleep:
+                time.sleep(time_to_sleep + random_delay())
+            else:
+                return
+
+
     def run(self):
         threads = [
-            threading.Thread(target=self.process_balance),
+            threading.Thread(target=self.process_keys_minigames),
+            # threading.Thread(target=self.process_balance),
             # threading.Thread(target=self.process_taps),
             # threading.Thread(target=self.process_tasks),
             # threading.Thread(target=self.process_cipher),
