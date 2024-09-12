@@ -106,7 +106,18 @@
 Для красивого отображения установите 
 [windows terminal](https://apps.microsoft.com/detail/9n0dx20hk701?hl=en-US&gl=US) или из папки `Windows Terminal setup`
 
+## Быстрый старт Docker
+1. Скачайте и установите [Docker](https://www.docker.com/get-started/)
+2. в консоли вводим команду `docker run -d --name hamster_mayhem_USERNAME -e HAMSTER_TOKEN_1="XXX" -e TELEGRAM_BOT_TOKEN=XXX -e CHAT_ID=XXX oxff00ff/hamster_mayhem_service`
+и замените XXX на выши данные
 
+· HAMSTER_TOKEN_1 - Ваш hamster token bearer
+
+· TELEGRAM_BOT_TOKEN - Токен телеграм бота, который будет отправлять сообщения
+
+· CHAT_ID - ID группы куда бот будет отправлять сообщения
+
+· USERNAME - Ваш никнейм или другой текст для того чтобы понимать для кого запущен бот (необязательно)
 
 ## Как получить hamster Bearer token
 
