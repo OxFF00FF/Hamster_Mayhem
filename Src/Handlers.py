@@ -200,10 +200,41 @@ def handle_settings_menu_choice():
     while True:
         settings_menu()
         # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/</0): {RESET}")
-        choice = input(kali('1/2/3/4/5/</0', '~/Settings'))
+        choice = input(kali('1/2/3/4/5/6/7/8/9/l/g/a/f</0', '~/Settings', localized_text('choose_action')))
         line_before()
 
-        if choice == '1':
+        if choice.startswith('1'):
+            config.balance_threshold = choice.split('_')[-1]
+
+        elif choice == '2':
+            config.complete_taps = not config.complete_taps
+
+        elif choice == '3':
+            config.complete_tasks = not config.complete_tasks
+
+        elif choice == '4':
+            config.complete_cipher = not config.complete_cipher
+
+        elif choice == '5':
+            config.complete_minigames = not config.complete_minigames
+
+        elif choice == '6':
+            config.complete_combo = not config.complete_combo
+
+        elif choice == '7':
+            config.complete_autobuy_upgrades = not config.complete_autobuy_upgrades
+
+        elif choice == '8':
+            config.complete_promocodes = not config.complete_promocodes
+
+        elif choice == 't':
+            if config.cards_in_top == 10:
+                config.cards_in_top = 5
+            else:
+                if config.cards_in_top == 5:
+                    config.cards_in_top = 10
+
+        elif choice == 'l':
             if config.lang == 'ru':
                 config.lang = 'en'
 
@@ -213,26 +244,23 @@ def handle_settings_menu_choice():
             print(f"ℹ️  {localized_text('change_lang')}")
             line_after()
 
-        elif choice == '2':
+        elif choice == 'g':
             config.send_to_group = not config.send_to_group
             status = f"{GREEN}{localized_text('on')}а{WHITE}" if config.send_to_group else f"{RED}{localized_text('off')}а{WHITE}"
             print(f"{localized_text('info_send_promo_to_group')} {status}")
             line_after()
 
-        elif choice == '3':
+        elif choice == 'a':
             config.apply_promo = not config.apply_promo
             status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
             print(f"{localized_text('info_apply_promo')} {status}")
             line_after()
 
-        elif choice == '4':
+        elif choice == 'f':
             config.save_to_file = not config.save_to_file
             status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
             print(f"{localized_text('info_save_to_file')} {status}")
             line_after()
-
-        elif choice.startswith('5'):
-            config.balance_threshold = choice.split('_')[-1]
 
         elif choice == 'default':
             config.spinner = 'default'
@@ -255,7 +283,6 @@ def handle_settings_menu_choice():
             config.spinner = spinner_name
             print(f"ℹ️  {localized_text('info_spinner_changed_to')} `{spinner_name}`")
             line_after()
-
 
         elif choice == '<':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
