@@ -146,7 +146,15 @@
         "setting_complete_autobuy_upgrades": "Автопокупка карт",
         "setting_complete_promocodes": "Получение прококодов",
         "main_menu_run_bot": "Запустить бота",
-        "next_keys_promocodes_after": "Следующие промокоды через"
+        "next_keys_promocodes_after": "Следующие промокоды через",
+        "all_promocodes_recieved": "Все промокоды получены. Следующие через",
+        "warning_auto_taps_off": "Автоматическое прохождение тапов отключено",
+        "warning_auto_cipher_off": "Автоматическое прохождение шифра отключено",
+        "warning_auto_tasks_off": "Автоматическое прохождение заданий отключено",
+        "warning_auto_minigames_off": "Автоматическое прохождение миниигр отключено",
+        "warning_auto_combo_off": "Автоматическое прохождение комбо отключено",
+        "warning_auto_upgrades_off": "Автоматическая покупка карт отключена",
+        "warning_auto_promocodes_off": "Автоматическое получение промокодов отключено"
     },
 
     "en": {
@@ -296,6 +304,14 @@
         "setting_complete_autobuy_upgrades": "Autobuy upgrades",
         "setting_complete_promocodes": "Complete promocodes",
         "main_menu_run_bot": "Run Bot",
-        "next_keys_promocodes_after": "Next promocodes after"
+        "next_keys_promocodes_after": "Next promocodes after",
+        "all_promocodes_recieved": "All promocodes recieved. Next after",
+        "warning_auto_taps_off": "Automatic tapping disabled",
+        "warning_auto_cipher_off": "Automatic cipher acquisition is disabled",
+        "warning_auto_tasks_off": "Automatic task completion is disabled",
+        "warning_auto_minigames_off": "Automatic minigames are disabled",
+        "warning_auto_combo_off": "Automatic combo is disabled",
+        "warning_auto_upgrades_off": "Automatic card purchase is disabled",
+        "warning_auto_promocodes_off": "Automatic receipt of promocodes is disabled"
     }
 }
