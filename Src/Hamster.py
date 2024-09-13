@@ -916,10 +916,9 @@ class HamsterKombatClicker:
                 result.append({'prefix': prefix, 'count': count})
                 all_claimed = False
             else:
-                print(f"{YELLOW}ℹ️  Промокоды для {promo_name} сегодня уже получены{WHITE}")
+                print(f"{YELLOW}ℹ️  Промокоды для {LIGHT_YELLOW}`{promo_name}`{YELLOW} сегодня уже получены{WHITE}")
 
         if all_claimed:
-            print(f"{YELLOW}⚠️  Все промокоды сегодня получены. Следующие через: {remain}{WHITE}")
             return remain
 
         return result
@@ -1025,7 +1024,7 @@ class HamsterKombatClicker:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                status_message = f"✅  {LIGHT_BLUE}{prefix:<5}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
+                status_message = f"{LIGHT_BLUE}{prefix:<5}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
                 print(f"\r{status_message}", flush=True)
                 return promo_code
 
@@ -1034,7 +1033,7 @@ class HamsterKombatClicker:
                 return promo_code
 
         async def __start_generate(keys_count: int) -> list:
-            remain = f"{LIGHT_MAGENTA}{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}{WHITE}"
+            remain = f"{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}"
             print(f"\n{LIGHT_YELLOW}{EMOJI}  {TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~{remain}\n")
 
             try:
@@ -1079,10 +1078,10 @@ class HamsterKombatClicker:
 
         if apply_promo:
             config.send_to_group = False
-            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_sent_to_group')}{WHITE}")
+            print(f"⚠️  {localized_text('not_sent_to_group')}")
 
             config.save_to_file = False
-            print(f"⚠️  {LIGHT_YELLOW}{localized_text('not_saved_to_file')}{WHITE}\n")
+            print(f"⚠️  {localized_text('not_saved_to_file')}\n")
 
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)
