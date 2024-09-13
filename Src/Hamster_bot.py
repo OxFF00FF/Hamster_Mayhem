@@ -230,26 +230,26 @@ class HamsterUltimate:
                         for game in remain:
                             asyncio.run(hamster_client().get_promocodes(count=int(game['count']), prefix=game['prefix'], apply_promo=True, one_game=True))
 
-                            remain = random_delay() / 3
+                            sleep_between_gemes = random_delay() / 3
                             message = f"{LIGHT_YELLOW}⏳   {localized_text('next_keys_promocodes_after')}: {remain_time(remain)}{WHITE}"
                             print(message)
-                            time.sleep(remain)
-                            time_to_sleep = remain
+                            time.sleep(sleep_between_gemes)
+                            time_to_sleep = sleep_between_gemes
 
                     else:
                         print(f"\n{LIGHT_YELLOW}⚠️  {localized_text('all_promocodes_recieved')}: {remain_time(remain)}{WHITE}")
                         time_to_sleep = remain
+
                 else:
                     print(f"{YELLOW}⛔️  {localized_text('warning_auto_promocodes_off')}{WHITE}")
                     time_to_sleep = False
 
+                line_after(blank_line=False)
+
                 if time_to_sleep:
-                    print(f"\n{LIGHT_YELLOW}⚠️  {localized_text('all_promocodes_recieved')}: {remain_time(time_to_sleep)}{WHITE}")
                     time.sleep(time_to_sleep + random_delay())
                 else:
                     return
-
-                line_after(blank_line=False)
 
     def run(self):
         print('\nBot is running...\n')
