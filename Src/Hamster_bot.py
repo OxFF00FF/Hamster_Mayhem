@@ -255,14 +255,14 @@ class HamsterUltimate:
         print('\nBot is running...\n')
 
         threads = [
-            # threading.Thread(target=self.process_balance),
-            # threading.Thread(target=self.process_taps),
-            # threading.Thread(target=self.process_tasks),
-            # threading.Thread(target=self.process_cipher),
-            # threading.Thread(target=self.process_combo),
-            # threading.Thread(target=self.process_minigame_tiles),
-            # threading.Thread(target=self.process_minigame_candles),
-            # threading.Thread(target=self.process_autobuy_upgrades),
+            threading.Thread(target=self.process_balance),
+            threading.Thread(target=self.process_taps),
+            threading.Thread(target=self.process_tasks),
+            threading.Thread(target=self.process_cipher),
+            threading.Thread(target=self.process_combo),
+            threading.Thread(target=self.process_minigame_tiles),
+            threading.Thread(target=self.process_minigame_candles),
+            threading.Thread(target=self.process_autobuy_upgrades),
             threading.Thread(target=self.process_keys_minigames),
         ]
 
