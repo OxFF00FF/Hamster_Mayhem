@@ -204,9 +204,9 @@ class HamsterKombatClicker:
                     if promo['promoId'] == state['promoId']:
                         promo_name = promo['title']['en']
                         recieved_keys = state['receiveKeysToday']
-                        remain_promo = remain_time(state['receiveKeysRefreshSec'])
+                        remain_promo = state['receiveKeysRefreshSec']
                         is_claimed = True if recieved_keys == keys_per_day else False
-                        result.append({'remain': remain_promo, 'keys': recieved_keys, 'name': promo_name, 'isClaimed': is_claimed, "per_day": keys_per_day})
+                        result.append({'remain': remain_time(remain_promo), 'keys': recieved_keys, 'name': promo_name, 'isClaimed': is_claimed, "per_day": keys_per_day, 'seconds': remain_promo})
             return result
 
         except Exception as e:
@@ -292,7 +292,7 @@ class HamsterKombatClicker:
                             response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                             response.raise_for_status()
 
-                            print(f"{GREEN}✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level+1)}{WHITE}")
+                            print(f"{GREEN}✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level + 1)}{WHITE}")
 
                         elif upgrade_available and upgrade_expire:
                             logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade_name)}")
@@ -888,6 +888,42 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
             return result
 
+    def get_keys_minigames_for_generate(self):
+        games_data = [app for app in get_games_data()['apps'] if app.get('available')]
+        promos = self._get_promos()
+
+        result = []
+        all_claimed = True
+        remain = promos[0]['seconds']
+
+        for game in games_data:
+            prefix = game.get('prefix', 'n/a')
+            promo = next((p for p in promos if p['name'] == game['title']), None)
+            if promo:
+                is_claimed = promo['isClaimed']
+                recieved_keys = promo.get('keys', 0)
+                keys_per_day = promo.get('per_day', 0)
+                count = int(keys_per_day - recieved_keys)
+                promo_name = promo['name']
+            else:
+                is_claimed = False
+                recieved_keys = 0
+                keys_per_day = 1
+                count = int(keys_per_day - recieved_keys)
+                promo_name = game['title']
+
+            if not is_claimed:
+                result.append({'prefix': prefix, 'count': count})
+                all_claimed = False
+            else:
+                print(f"{YELLOW}ℹ️  Промокоды для {promo_name} сегодня уже получены{WHITE}")
+
+        if all_claimed:
+            print(f"{YELLOW}⚠️  Все промокоды сегодня получены. Следующие через: {remain}{WHITE}")
+            return remain
+
+        return result
+
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
         games_data = [app for app in get_games_data()['apps'] if app.get('available')]
 
@@ -990,7 +1026,7 @@ class HamsterKombatClicker:
 
                 promo_code = await __get_promocode(session, client_token)
                 status_message = f"✅  {LIGHT_BLUE}{prefix:<5}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
-                print(f"\r{status_message}", flush=True, end="")
+                print(f"\r{status_message}", flush=True)
                 return promo_code
 
             except Exception as e:

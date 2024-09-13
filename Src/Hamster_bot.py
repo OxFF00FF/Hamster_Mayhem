@@ -2,12 +2,13 @@ import asyncio
 import os
 import threading
 import time
+
 from dotenv import load_dotenv
 
 from Src.Colors import *
 from Src.Login import hamster_client
 from Src.db_SQlite import ConfigDB
-from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, get_games_data
+from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay
 
 load_dotenv()
 config = ConfigDB()
@@ -173,8 +174,9 @@ class HamsterUltimate:
                     most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
                     for card in most_profitable_cards:
                         hamster_client()._buy_upgrade(card)
-                    print(f"{LIGHT_YELLOW}⏳   {localized_text('next_purhase_after')}: {remain_time(random_delay())}{WHITE}")
+
                     time_to_sleep = 60
+                    print(f"{LIGHT_YELLOW}⏳   {localized_text('next_purhase_after')}: {remain_time(time_to_sleep)}{WHITE}")
                 else:
                     print(f"{YELLOW}⛔️  Автоматическая покупка карт отключена{WHITE}")
                     time_to_sleep = False
@@ -192,40 +194,17 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
 
+                games = hamster_client().get_keys_minigames_for_generate()
                 if config.complete_promocodes:
-                    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
-                    promos = hamster_client()._get_promos()
-
-                    all_claimed = True
-
-                    for game in games_data:
-                        promo = next((p for p in promos if p.get('name') == game.get('title')), None)
-
-                        if promo:
-                            recieved_keys = promo.get('keys', 0)
-                            keys_per_day = promo.get('per_day', 0)
-                            is_claimed = promo['isClaimed']
-                            promo_name = promo['name']
-                            remain = promo['remain']
-                            prefix = game.get('prefix', '')
-                            count = int(keys_per_day - recieved_keys)
-
-                            if not is_claimed:
-                                all_claimed = False
-                                asyncio.run(hamster_client().get_promocodes(count=count, apply_promo=True, prefix=prefix, one_game=True))
-                                time_to_sleep = int(random_delay() / 2)
-                                print(f"{LIGHT_YELLOW}⏳   {localized_text('next_keys_promocodes_after')}: {remain_time(time_to_sleep)}{WHITE}")
-                                time.sleep(time_to_sleep)
-                            else:
-                                print(f"{YELLOW}ℹ️  Промокоды для {promo_name} сегодня уже получены{WHITE}")
-
-                    if all_claimed:
-                        print(f"{YELLOW}⚠️  Все промокоды сегодня получены. следющие через: {remain}{WHITE}")
-                        time_to_sleep = remain
-
+                    if isinstance(games, list) and games != []:
+                        for game in games:
+                            asyncio.run(hamster_client().get_promocodes(count=game['count'], prefix=game['prefix'], apply_promo=True, one_game=True))
+                            time.sleep(random_delay())
+                    else:
+                        time_to_sleep = games
                 else:
                     print(f"{YELLOW}⛔️  Автоматическое получение промокодов отключено{WHITE}")
-                    return
+                    time_to_sleep = False
 
                 if time_to_sleep:
                     time.sleep(time_to_sleep + random_delay())
@@ -238,14 +217,14 @@ class HamsterUltimate:
         print('\nBot is running...\n')
 
         threads = [
-            threading.Thread(target=self.process_balance),
-            threading.Thread(target=self.process_taps),
-            threading.Thread(target=self.process_tasks),
-            threading.Thread(target=self.process_cipher),
-            threading.Thread(target=self.process_combo),
-            threading.Thread(target=self.process_minigame_tiles),
-            threading.Thread(target=self.process_minigame_candles),
-            threading.Thread(target=self.process_autobuy_upgrades),
+            # threading.Thread(target=self.process_balance),
+            # threading.Thread(target=self.process_taps),
+            # threading.Thread(target=self.process_tasks),
+            # threading.Thread(target=self.process_cipher),
+            # threading.Thread(target=self.process_combo),
+            # threading.Thread(target=self.process_minigame_tiles),
+            # threading.Thread(target=self.process_minigame_candles),
+            # threading.Thread(target=self.process_autobuy_upgrades),
             threading.Thread(target=self.process_keys_minigames),
         ]
 
@@ -254,4 +233,3 @@ class HamsterUltimate:
 
         for thread in threads:
             thread.join()
-
