@@ -2,7 +2,6 @@ import logging
 
 import asyncio
 
-from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.Login import hamster_client
 from Src.utils import get_games_data, localized_text, kali
@@ -14,8 +13,6 @@ if platform.system() == 'Windows':
 
 config = ConfigDB()
 
-
-# choice_text = f"{DARK_GRAY}{localized_text('apply_promo_after_generate')}{CYAN}\n▶️  {localized_text('yes_enter')}: {WHITE}"
 choice_text = kali(localized_text('yes_enter'), '~/Playground', localized_text('apply_promo_after_generate'))
 
 
