@@ -450,11 +450,14 @@ class HamsterKombatClicker:
                     else:
                         print(f"{RED}🚫  {boost['maxLevel'] + 1 - boost['level']}/{boost['maxLevel']} {localized_text('boosts_available')}. {localized_text('info_next_boost_after')}: {remain_time(boost_remain)}{WHITE}")
 
+            if remain == 0:
+                return int(total_remain_time)
+            else:
+                return remain
+
         except Exception as e:
             print(f"{RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
             logging.error(traceback.format_exc())
-
-        return remain
 
     def complete_daily_tasks(self):
         try:
