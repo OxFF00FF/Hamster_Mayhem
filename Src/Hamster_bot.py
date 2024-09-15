@@ -21,11 +21,7 @@ class HamsterUltimate:
         """
         :param TOKEN: Bearer token
         """
-        login_response = hamster_client(token=TOKEN).login(show_info=False)
-        if login_response:
-            self.Client = login_response.split()[-1].strip('(').strip(')')
-        else:
-            raise ValueError("Login response is None. Check login method.")
+        self.Client = hamster_client(token=TOKEN).login(show_info=False)
         
         self.chat_id = os.getenv('BOT_LOGS_GROUP_ID')
         if self.chat_id is None:

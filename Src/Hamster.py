@@ -484,8 +484,6 @@ class HamsterKombatClicker:
 
             return remain
 
-
-
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             logging.error(traceback.format_exc())
@@ -756,22 +754,12 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             data = response.json()
-            # Проверяем наличие accountInfo и telegramUsers
-            if 'accountInfo' in data:
-                account_info = data['accountInfo']
-                telegram_users = account_info.get('telegramUsers', [])
+            account_info = data.get('accountInfo', {})
+            if account_info:
+                user_name = account_info.get('name', 'n/a')
+                user_id = account_info.get('id', 'n/a')
+                return {'name': user_name, 'id': user_id}
 
-                if telegram_users:
-                    # Если список telegramUsers не пустой, возвращаем первый элемент
-                    user = telegram_users[0]
-                    username = user.get('username', 'n/a')
-                    first_name = user.get('firstName', 'n/a')
-                    last_name = user.get('lastName', 'n/a')
-                    return {'firstName':first_name, 'lastName': last_name, 'username': (username)}
-                else:
-                    # Если список пуст, возвращаем account_info (может быть username)
-                    username = account_info.get('name', 'n/a')
-                    return {'username': username}
             else:
                 raise ValueError("Account info not found in the response")
 
@@ -867,25 +855,13 @@ class HamsterKombatClicker:
                 exit(1)
 
             data = response.json()
-
-            # Проверяем наличие accountInfo и telegramUsers
             if 'accountInfo' in data:
                 account_info = data['accountInfo']
-                telegram_users = account_info.get('telegramUsers', [])
 
-                if telegram_users:
-                    # Если список telegramUsers не пустой
-                    user = telegram_users[0]
-                    username = user.get('username', 'n/a')
-                    first_name = user.get('firstName', 'n/a')
-                    last_name = user.get('lastName', 'n/a')
-                    user_info = f"{first_name} {last_name} ({username})"
-                else:
-                    # Если список пуст, выводим только username
-                    username = account_info.get('name', 'n/a')
-                    user_info = f"({username})"
+                username = account_info.get('name', 'n/a')
+                user_id = account_info.get('id', 'n/a')
+                user_info = f"{username} ({user_id})"
 
-                # Устанавливаем токен как действительный и выводим информацию о пользователе
                 config.hamster_token = True
                 if show_info:
                     print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
@@ -898,12 +874,11 @@ class HamsterKombatClicker:
 
         except Exception as e:
             try:
-                # Обработка ошибок
                 error = data.get('error_code')
                 if error:
                     if error == 'BAD_AUTH_TOKEN':
                         print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
-                          f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
+                              f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
                 else:
                     print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
                     logging.error(traceback.format_exc())
@@ -914,7 +889,6 @@ class HamsterKombatClicker:
             print(f"{RED}❌  {localized_text('error_hamster_token_not_specified')}{WHITE}")
             print(f"{YELLOW}⚠️ {localized_text('warning_hamster_combat_unavailable')}{WHITE}")
             logging.error(e)
-
 
     def get_purhase_count(self):
         result = {}

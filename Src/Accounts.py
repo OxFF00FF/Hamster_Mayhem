@@ -26,14 +26,13 @@ def choose_account():
             try:
                 hamster = HamsterKombatClicker(token)
                 account_info = hamster.get_account_info()
-                username = account_info.get('username', 'n/a')
-                first_name = account_info.get('firstName', 'n/a')
-                last_name = account_info.get('lastName', 'n/a')
+                user_name = account_info.get('name', 'n/a')
+                user_id = account_info.get('id', 'n/a')
 
-                if username == current_account.get('username', 'n/a'):
-                    print(f"[{e + 1}] · {LIGHT_BLUE}{first_name} {last_name} ({username}){WHITE} ({localized_text('logged_in')})")
+                if user_name == current_account.get('name', 'n/a'):
+                    print(f"[{e + 1}] · {LIGHT_BLUE}{user_name} ({user_id}){WHITE} ({localized_text('logged_in')})")
                 else:
-                    print(f"[{e + 1}] · {first_name} {last_name} ({username})")
+                    print(f"[{e + 1}] · {user_name} ({user_id})")
                 account_dict[str(e + 1)] = token
 
             except Exception as e:
