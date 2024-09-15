@@ -107,9 +107,7 @@ class ConfigDB:
             'token': token,
             'tg_user_id': account_info.get('id', 'n/a'),
             'is_subscriber': False,
-            'username': account_info.get('username', 'n/a'),
-            'first_name': account_info.get('firstName', 'n/a'),
-            'last_name': account_info.get('lastName', 'n/a'),
+            'user_name': account_info.get('user_name', 'n/a'),
         }
         self._ADD_missing_values(user_info, 'config')
 
