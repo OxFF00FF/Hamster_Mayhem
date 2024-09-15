@@ -8,6 +8,28 @@
     },
     "apps": [
         {
+            "appToken": "4bf4966c-4d22-439b-8ff2-dc5ebca1a600",
+            "promoId": "4bf4966c-4d22-439b-8ff2-dc5ebca1a600",
+            "prefix": "HIDE",
+            "title": "Hide Ball",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\ud83e\udea9",
+            "emoji": "\ud83e\udea9",
+            "available": true
+        },
+        {
+            "appToken": "bc72d3b9-8e91-4884-9c33-f72482f0db37",
+            "promoId": "bc72d3b9-8e91-4884-9c33-f72482f0db37",
+            "prefix": "BOUNC",
+            "title": "Bouncemasters",
+            "eventsCount": 7,
+            "registerEventTimeout": 150000,
+            "text": "\uD83E\uDD4E",
+            "emoji": "\uD83E\uDD4E",
+            "available": true
+        },
+        {
             "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
             "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
             "prefix": "CUBE",

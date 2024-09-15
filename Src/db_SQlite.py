@@ -6,45 +6,118 @@ from dotenv import load_dotenv
 
 from Src.Colors import *
 
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}\n", level=logging.ERROR)
+logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}", level=logging.ERROR)
 load_dotenv()
 
 
 class ConfigDB:
     def __init__(self):
-        self.con = sqlite3.connect('Src/data/Config.db')
+        self.con = sqlite3.connect('Src/data/Config.db', check_same_thread=False)
         self.cur = self.con.cursor()
 
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS config (
-                           `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                           `send_to_group` INTEGER,
-                           `save_to_file` INTEGER,
-                           `apply_promo` INTEGER,
-                           `hamster_token` INTEGER,
-                           `account` VARCHAR(20),
-                           `spinner` VARCHAR(20),
-                           'lang' VARCHAR(10),
-                           'bonus_for_one_point' INTEGER,
-                           'group_url' VARCHAR(50),
-                           'group_id' VARCHAR(10)
-                           )''')
+        self.SET_default_config()
         self.con.commit()
-        self._default_config()
 
-    def _default_config(self):
-        group_url = os.getenv('GROUP_URL')
-        group_id = os.getenv('GROUP_ID')
+    ####################################################
 
-        self.cur.execute('SELECT COUNT(*) FROM config')
-        count = self.cur.fetchone()[0]
-        if count == 0:
-            self.cur.execute("INSERT INTO `config`"
-                             "(`send_to_group`, `save_to_file`, `apply_promo`, `hamster_token`, `account`, `spinner`, `lang`, `bonus_for_one_point`, `group_url`, `group_id`)"
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                             (0, 0, 0, 0, 'HAMSTER_TOKEN_1', 'default', 'ru', 0, group_url, group_id))
+    # --- CONFIG --- #
 
+    def SET_default_config(self):
+        # Настройки по умолчанию
+        default_values = {
+            'send_to_group': False,
+            'save_to_file': False,
+            'apply_promo': False,
+            'hamster_token': False,
+            'account': 'HAMSTER_TOKEN_1',
+            'spinner': 'default',
+            'lang': 'ru',
+            'bonus_for_one_point': 0,
+            'group_url': os.getenv('GROUP_URL'),
+            'chat_id': os.getenv('CHAT_ID'),
+            'cards_in_top': 10,
+            'balance_threshold': 1_000_000,
+            'complete_taps': False,
+            'complete_tasks': False,
+            'complete_cipher': False,
+            'complete_minigames': False,
+            'complete_combo': False,
+            'complete_autobuy_upgrades': False,
+            'complete_promocodes': False
+        }
+
+        self._ADD_missing_values(default_values, 'config')
+        if not self.cur.execute('SELECT COUNT(*) FROM config').fetchone()[0]:
+            columns = ', '.join(default_values.keys())
+            placeholders = ', '.join('?' * len(default_values))
+            values = list(default_values.values())
+
+            self.cur.execute(f"INSERT INTO `config` ({columns}) VALUES ({placeholders})", values)
             self.con.commit()
-            logging.info(f"default_config Created")
+            logging.info("default_config Created")
+
+    def _ADD_missing_values(self, data, table):
+        self.cur.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'")
+        table_exists = self.cur.fetchone()
+
+        if not table_exists:
+            self.cur.execute(f'''CREATE TABLE {table} (`id` INTEGER PRIMARY KEY AUTOINCREMENT)''')
+            self.con.commit()
+            logging.info(f"Table '{table}' created")
+
+        self.cur.execute(f"PRAGMA table_info({table})")
+        existing_columns = [column[1] for column in self.cur.fetchall()]
+
+        for key, value in data.items():
+            if key not in existing_columns:
+                column_type = self._get_sqlite_type(value)
+                self.cur.execute(f"ALTER TABLE {table} ADD COLUMN `{key}` {column_type}")
+                logging.info(f"Added missing column: {key}")
+
+                self.cur.execute(f"UPDATE {table} SET `{key}` = ?", (value,))
+                logging.info(f"Updated column: {key}")
+
+        self.con.commit()
+
+    def _get_sqlite_type(self, value):
+        if isinstance(value, int):
+            return 'INTEGER'
+        elif isinstance(value, float):
+            return 'REAL'
+        elif isinstance(value, str):
+            return 'VARCHAR(255)'
+        else:
+            return 'TEXT'
+
+    # --- /CONFIG --- #
+
+    ####################################################
+
+    # --- USERS --- #
+
+    def user_exist(self, tg_user_id: int) -> bool:
+        self.cur.execute("SELECT COUNT(*) FROM `config` WHERE `tg_user_id` = ?", (tg_user_id,))
+        if self.cur.fetchone()[0] > 0:
+            return True
+        else:
+            return False
+
+    def ADD_subscriber(self, account_info, token):
+        user_info = {
+            'token': token,
+            'tg_user_id': account_info.get('id', 'n/a'),
+            'is_subscriber': False,
+            'username': account_info.get('username', 'n/a'),
+            'first_name': account_info.get('firstName', 'n/a'),
+            'last_name': account_info.get('lastName', 'n/a'),
+        }
+        self._ADD_missing_values(user_info, 'config')
+
+    # --- /USERS --- #
+
+    ####################################################
+
+    # --- PROPERTIES --- #
 
     def set(self, field_name, value):
         try:
@@ -68,6 +141,14 @@ class ConfigDB:
 
         except Exception as e:
             logging.error(e)
+
+    @property
+    def token(self):
+        return self.get('token')
+
+    @token.setter
+    def token(self, value):
+        self.set('token', value)
 
     @property
     def send_to_group(self):
@@ -134,12 +215,12 @@ class ConfigDB:
         self.set('bonus_for_one_point', value)
 
     @property
-    def group_id(self):
-        return self.get('group_id')
+    def chat_id(self):
+        return self.get('chat_id')
 
-    @group_id.setter
-    def group_id(self, value):
-        self.set('group_id', value)
+    @chat_id.setter
+    def chat_id(self, value):
+        self.set('chat_id', value)
 
     @property
     def group_url(self):
@@ -148,3 +229,85 @@ class ConfigDB:
     @group_url.setter
     def group_url(self, value):
         self.set('group_url', value)
+
+    @property
+    def cards_in_top(self):
+        return self.get('cards_in_top')
+
+    @cards_in_top.setter
+    def cards_in_top(self, value):
+        self.set('cards_in_top', value)
+
+    @property
+    def balance_threshold(self):
+        return self.get('balance_threshold')
+
+    @balance_threshold.setter
+    def balance_threshold(self, value):
+        self.set('balance_threshold', value)
+
+    @property
+    def complete_combo(self):
+        return self.get('complete_combo')
+
+    @complete_combo.setter
+    def complete_combo(self, value):
+        self.set('complete_combo', value)
+
+    @property
+    def complete_cipher(self):
+        return self.get('complete_cipher')
+
+    @complete_cipher.setter
+    def complete_cipher(self, value):
+        self.set('complete_cipher', value)
+
+    @property
+    def complete_taps(self):
+        return self.get('complete_taps')
+
+    @complete_taps.setter
+    def complete_taps(self, value):
+        self.set('complete_taps', value)
+
+    @property
+    def complete_tasks(self):
+        return self.get('complete_tasks')
+
+    @complete_tasks.setter
+    def complete_tasks(self, value):
+        self.set('complete_tasks', value)
+
+    @property
+    def complete_minigames(self):
+        return self.get('complete_minigames')
+
+    @complete_minigames.setter
+    def complete_minigames(self, value):
+        self.set('complete_minigames', value)
+
+    @property
+    def complete_autobuy_upgrades(self):
+        return self.get('complete_autobuy_upgrades')
+
+    @complete_autobuy_upgrades.setter
+    def complete_autobuy_upgrades(self, value):
+        self.set('complete_autobuy_upgrades', value)
+
+    @property
+    def tg_user_id(self):
+        return self.get('tg_user_id')
+
+    @tg_user_id.setter
+    def tg_user_id(self, value):
+        self.set('tg_user_id', value)
+
+    @property
+    def complete_promocodes(self):
+        return self.get('complete_promocodes')
+
+    @complete_promocodes.setter
+    def complete_promocodes(self, value):
+        self.set('complete_promocodes', value)
+
+    # --- /PROPERTIES --- #

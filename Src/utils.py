@@ -3,6 +3,8 @@ import json
 import logging
 import os
 import time
+from datetime import datetime
+from random import randint
 
 from spinners import Spinners
 from Src.db_SQlite import ConfigDB
@@ -52,17 +54,17 @@ def text_to_morse(text: str) -> str:
     return morse_text
 
 
-def countdown_timer(seconds):
+def countdown_timer(seconds, text):
     while seconds:
         m, s = divmod(seconds, 60)
         h, m = divmod(m, 60)
         h = str(h).zfill(2)
         m = str(m).zfill(2)
         s = str(s).zfill(2)
-        print(f"\rplease wait until {h}:{m}:{s} ", flush=True, end="")
+        print(f"\r⏳  {text}: {h}:{m}:{s} ", flush=True, end="")
         seconds -= 1
         time.sleep(1)
-    print(f"\rplease wait until {h}:{m}:{s} ", flush=True, end="")
+    print(f"\r⏳  {text}: {h}:{m}:{s} ", flush=True, end="")
 
 
 def remain_time(seconds):
@@ -74,7 +76,8 @@ def remain_time(seconds):
         s = str(s).zfill(2)
         return f"{h}:{m}:{s}"
 
-    except:
+    except Exception as e:
+        print(e)
         return 'n/a'
 
 
@@ -122,12 +125,20 @@ def clear_screen():
     os.system('cls')
 
 
-def line_before():
-    print("\n╭" + "~" * 50 + '╮')
+def line_before(blank_line=True):
+    text = "\n┌" + "─" * 50 + "┐"
+    if blank_line:
+        print(text)
+    else:
+        print(text.strip())
 
 
-def line_after():
-    print('╰' + "~" * 50 + "╯\n")
+def line_after(blank_line=True):
+    text = "└" + "─" * 50 + "┘\n"
+    if blank_line:
+        print(text)
+    else:
+        print(text.strip())
 
 
 def get_status(status):
@@ -228,17 +239,15 @@ def align_main_menu(text):
         len(localized_text('main_menu_tasks')),
         len(localized_text('main_menu_cipher')),
         len(localized_text('main_menu_combo')),
-    ) + 3
+        len(localized_text('main_menu_run_bot'))
+    ) - 2
     return text.ljust(max_length)
 
 
 def align_settins(text):
     max_length = max(
-        len(localized_text('setting_send_to_group')),
-        len(localized_text('setting_apply_promo')),
-        len(localized_text('setting_save_to_file')),
-        len(localized_text('setting_language')),
-        len(localized_text('setting_loading_indicator'))
+        len(localized_text('setting_balance_threshold')),
+        len(localized_text('setting_complete_autobuy_upgrades'))
     )
     return text.ljust(max_length)
 
@@ -289,11 +298,13 @@ async def update_spinner(event, progress_dict, prefix):
 
 
 def get_spinner_frame(spinner_name, frame_index):
-    if spinner_name == 'hamster':
-        frames = create_scrolling_frames('Hamster Kombat. Make your way from the shaved hamster to the grandmaster CEO of the tier-1 crypto exchange. Buy upgrades, complete quests, invite friends and become the best', 20)
-        return frames[frame_index % len(frames)]
+    default_frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
 
     try:
+        if spinner_name == 'hamster':
+            frames = create_scrolling_frames('Hamster Kombat', 15)
+            return frames[frame_index % len(frames)]
+
         if spinner_name is not None:
             spinners = [spinner_name.name for spinner_name in Spinners]
             for spinner_item in spinners:
@@ -302,9 +313,10 @@ def get_spinner_frame(spinner_name, frame_index):
                     frames = spinner.value['frames']
                     return frames[frame_index % len(frames)]
 
+                else:
+                    return default_frames[frame_index % len(default_frames)]
     except:
-        frames = ["▱▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰", "▱▰▰▰▰▰▰", "▱▱▰▰▰▰▰", "▱▱▱▰▰▰▰", "▱▱▱▱▰▰▰", "▱▱▱▱▱▰▰", "▱▱▱▱▱▱▰"]
-        return frames[frame_index % len(frames)]
+        return default_frames[frame_index % len(default_frames)]
 
 
 def create_scrolling_frames(text, width):
@@ -314,3 +326,17 @@ def create_scrolling_frames(text, width):
     for i in range(len(text) - width + 1):
         frames.append('' + text[i:i + width] + '')
     return frames
+
+
+def random_delay():
+    return randint(1000, 2000)
+
+
+def current_time(user):
+    print(f"{DARK_GRAY}⚙️  {datetime.now()} · {user}{WHITE}")
+
+
+def kali(variants=None, menu=None, text=None):
+    return f"\n{LIGHT_CYAN}┌─[{DARK_GRAY}{text}{LIGHT_CYAN}]\n" \
+           f"{LIGHT_CYAN}├──({LIGHT_BLUE}{variants}{LIGHT_CYAN})-[{RESET}{BOLD}{menu}{LIGHT_CYAN}]\n" \
+           f"└─{LIGHT_BLUE}${RESET} "

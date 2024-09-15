@@ -4,12 +4,13 @@ import re
 from spinners import Spinners
 
 from Src.Colors import *
+from Src.Hamster_bot import HamsterUltimate
 from Src.db_SQlite import ConfigDB
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu, main_menu_not_logged
-from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text
+from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text, kali
 
 config = ConfigDB()
 
@@ -18,6 +19,10 @@ def handle_main_menu_choice(choice):
     if choice == '#':
         line_before()
         print(hamster_client().daily_info())
+
+    elif choice == '@':
+        bot = HamsterUltimate(TOKEN=hamster_client().HAMSTER_TOKEN)
+        bot.run()
 
     elif choice == '1':
         line_before()
@@ -37,7 +42,7 @@ def handle_main_menu_choice(choice):
         if all(card['available'] for card in upgrades_info['cards']):
             hamster_client().complete_daily_combo()
         else:
-            choice = input(f"{localized_text('not_all_cards_available_today')}\n{localized_text('yes_enter')}: ")
+            choice = input(f"{localized_text('not_all_cards_available_today')}\n{CYAN}▶️  {localized_text('yes_enter')}: {WHITE}")
             if str(choice.lower()) == 'y'.lower():
                 hamster_client().complete_daily_combo(buy_anyway=True)
 
@@ -60,19 +65,31 @@ def handle_main_menu_choice(choice):
 
     elif choice == '$':
         line_before()
-        top_10_cards = hamster_client().evaluate_cards()
+        cards = hamster_client().get_most_profitable_cards()
         print(localized_text('info_rent_coeff_coefficient'))
 
-        print(localized_text('top20_profit_cards'))
-        for card in top_10_cards:
+        print(localized_text('top_profit_cards'))
+        for e, card in enumerate(cards):
             price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
             print(
-                f"🏷  {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
+                f"#️⃣  {e + 1}. {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
                 f"💰  {YELLOW}{localized_text('price')}: {price}\n"
                 f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
                 f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
             )
-            print("-" * 30)
+            if e < len(cards) - 1:
+                print("-" * 30)
+
+    elif choice.startswith('$'):
+        line_before()
+        cards = hamster_client().get_most_profitable_cards()
+        card_index = int(choice[1:]) - 1
+
+        if 0 <= card_index < len(cards):
+            card = cards[card_index]
+            upgrade_id = card['id']
+            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
+            hamster_client().get_most_profitable_cards()
 
     elif choice.startswith('+'):
         line_before()
@@ -118,11 +135,14 @@ def handle_main_menu_not_logged_choice(choice):
 def handle_playground_menu_choice():
     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
     games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
+    games = [str(i + 1) for i in range(len(games_data))]
     line_before()
 
     while True:
         playground_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/6/7/8/9/*/</0): {RESET}")
+        choice = input(kali(f"{'/'.join(games)}/</0", '~/Playground', localized_text('choose_action')))
+
         line_before()
 
         if choice in games_prefix:
@@ -156,7 +176,8 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}({'/'.join(choices)}/</0): {RESET}")
+        # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  ({'/'.join(choices)}/</0): {RESET}")
+        choice = input(kali(f"{'/'.join(choices)}/</0", '~/Minigames', localized_text('choose_action')))
         line_before()
 
         if choice in choices:
@@ -183,28 +204,42 @@ def handle_settings_menu_choice():
 
     while True:
         settings_menu()
-        choice = input(f"{DARK_GRAY}{localized_text('choose_action')}:\n{CYAN}(1/2/3/4/</0): {RESET}")
+        # choice = input(f"{DARK_GRAY}{localized_text('choose_action')}\n{CYAN}▶️  (1/2/3/4/5/</0): {RESET}")
+        choice = input(kali('1/2/3/4/5/6/7/8/9/l/g/a/f</0', '~/Settings', localized_text('choose_action')))
         line_before()
 
-        if choice == '1':
-            config.send_to_group = not config.send_to_group
-            status = f"{GREEN}{localized_text('on')}а{WHITE}" if config.send_to_group else f"{RED}{localized_text('off')}а{WHITE}"
-            print(f"{localized_text('info_send_promo_to_group')} {status}")
-            line_after()
+        if choice.startswith('1'):
+            config.balance_threshold = choice.split('_')[-1]
 
         elif choice == '2':
-            config.apply_promo = not config.apply_promo
-            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
-            print(f"{localized_text('info_apply_promo')} {status}")
-            line_after()
+            config.complete_taps = not config.complete_taps
 
         elif choice == '3':
-            config.save_to_file = not config.save_to_file
-            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
-            print(f"{localized_text('info_save_to_file')} {status}")
-            line_after()
+            config.complete_tasks = not config.complete_tasks
 
         elif choice == '4':
+            config.complete_cipher = not config.complete_cipher
+
+        elif choice == '5':
+            config.complete_minigames = not config.complete_minigames
+
+        elif choice == '6':
+            config.complete_combo = not config.complete_combo
+
+        elif choice == '7':
+            config.complete_autobuy_upgrades = not config.complete_autobuy_upgrades
+
+        elif choice == '8':
+            config.complete_promocodes = not config.complete_promocodes
+
+        elif choice == 't':
+            if config.cards_in_top == 10:
+                config.cards_in_top = 5
+            else:
+                if config.cards_in_top == 5:
+                    config.cards_in_top = 10
+
+        elif choice == 'l':
             if config.lang == 'ru':
                 config.lang = 'en'
 
@@ -212,6 +247,24 @@ def handle_settings_menu_choice():
                 config.lang = 'ru'
 
             print(f"ℹ️  {localized_text('change_lang')}")
+            line_after()
+
+        elif choice == 'g':
+            config.send_to_group = not config.send_to_group
+            status = f"{GREEN}{localized_text('on')}а{WHITE}" if config.send_to_group else f"{RED}{localized_text('off')}а{WHITE}"
+            print(f"{localized_text('info_send_promo_to_group')} {status}")
+            line_after()
+
+        elif choice == 'a':
+            config.apply_promo = not config.apply_promo
+            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
+            print(f"{localized_text('info_apply_promo')} {status}")
+            line_after()
+
+        elif choice == 'f':
+            config.save_to_file = not config.save_to_file
+            status = f"{GREEN}{localized_text('on')}о{WHITE}" if config.apply_promo else f"{RED}{localized_text('off')}о{WHITE}"
+            print(f"{localized_text('info_save_to_file')} {status}")
             line_after()
 
         elif choice == 'default':
@@ -235,7 +288,6 @@ def handle_settings_menu_choice():
             config.spinner = spinner_name
             print(f"ℹ️  {localized_text('info_spinner_changed_to')} `{spinner_name}`")
             line_after()
-
 
         elif choice == '<':
             print(f"ℹ️  {localized_text('reached_main_menu')}")

@@ -74,7 +74,7 @@ To switch to another account, select `a` in the menu and the account number.
 |------------------------------|-----------------------------------------------------------------------------------------------
 | **HAMSTER_TOKEN**            | Your `Bearer` token from the browser version of the game                                                  
 | **TELEGRAM_BOT_TOKEN**       | Token of your Telegram bot (optional). You need it to send promo codes to your group or any other chat room
-| **GROUP_ID**                 | ID of your group, channel or user (optional). You can find out by adding a bot `(t.me/GetMy1D_bot)` or analog in chat. To allow the bot to send messages you need to add it to a group or channel, if in private messages you need to send the command `/start`.
+| **CHAT_ID**                 | ID of your group, channel or user (optional). You can find out by adding a bot `(t.me/GetMy1D_bot)` or analog in chat. To allow the bot to send messages you need to add it to a group or channel, if in private messages you need to send the command `/start`.
 | **GROUP_URL**                | Url of your group (optional). It can be found in `Group management -> Invitation links`. If specified, the console will be notified to which group he sent the message to
 
 ## Prerequisites
