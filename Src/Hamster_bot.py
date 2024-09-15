@@ -35,10 +35,10 @@ class HamsterUltimate:
 
                 if config.complete_taps:
                     remain = hamster_client().complete_taps()
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_taps_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   {localized_text('next_taps_after')}: {remain_time(remain)}"
 
-                    print(message)
-                    # hamster_client().send_to_chat(self.chat_id, message)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -60,10 +60,10 @@ class HamsterUltimate:
 
                 if config.complete_cipher:
                     remain = hamster_client().complete_daily_chipher()
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_cipher_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   {localized_text('next_cipher_after')}: {remain_time(remain)}"
 
-                    print(message)
-                    # hamster_client().send_to_chat(message, chat_id=self.chat_id)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -85,10 +85,10 @@ class HamsterUltimate:
 
                 if config.complete_tasks:
                     remain = hamster_client().complete_daily_tasks()
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_tasks_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   {localized_text('next_tasks_after')}: {remain_time(remain)}"
 
-                    print(message)
-                    # hamster_client().send_to_chat(message, chat_id=self.chat_id)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -122,10 +122,10 @@ class HamsterUltimate:
 
                 if config.complete_minigames:
                     remain = hamster_client().complete_daily_minigame('tiles')
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_minigame_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   Tiles. {localized_text('next_minigame_after')}: {remain_time(remain)}"
 
-                    print(message)
-                    # hamster_client().send_to_chat(message, chat_id=self.chat_id)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -147,10 +147,10 @@ class HamsterUltimate:
 
                 if config.complete_minigames:
                     remain = hamster_client().complete_daily_minigame('candles')
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_minigame_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   Candles. {localized_text('next_minigame_after')}: {remain_time(remain)}"
 
-                    print(message)
-                    # hamster_client().send_to_chat(message, chat_id=self.chat_id)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -172,10 +172,10 @@ class HamsterUltimate:
 
                 if config.complete_combo:
                     remain = hamster_client().complete_daily_combo(buy_anyway=True)
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_combo_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   {localized_text('next_combo_after')}: {remain_time(remain)}"
 
-                    print(message)
-                    # hamster_client().send_to_chat(message, chat_id=self.chat_id)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -197,14 +197,14 @@ class HamsterUltimate:
 
                 if config.complete_autobuy_upgrades:
                     remain = random_delay()
-                    message = f"{LIGHT_YELLOW}⏳   {localized_text('next_purhase_after')}: {remain_time(remain)}{WHITE}"
+                    message = f"⏳   {localized_text('next_purhase_after')}: {remain_time(remain)}"
 
                     most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
                     for card in most_profitable_cards:
                         hamster_client()._buy_upgrade(card)
 
-                    print(message)
-                    # hamster_client().send_to_chat(message, chat_id=self.chat_id)
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    hamster_client().send_to_chat(self.chat_id, message)
                     time_to_sleep = remain
 
                 else:
@@ -230,11 +230,14 @@ class HamsterUltimate:
                         for game in remain:
                             asyncio.run(hamster_client().get_promocodes(count=int(game['count']), prefix=game['prefix'], apply_promo=True, one_game=True))
 
-                            sleep_between_gemes = random_delay() / 3
-                            message = f"{LIGHT_YELLOW}⏳   {localized_text('next_keys_promocodes_after')}: {remain_time(remain)}{WHITE}"
-                            print(message)
-                            time.sleep(sleep_between_gemes)
-                            time_to_sleep = sleep_between_gemes
+                            sleep_between_games = random_delay() / 3
+                            message = f"⏳   {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
+
+                            print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                            hamster_client().send_to_chat(self.chat_id, message)
+
+                            time.sleep(sleep_between_games)
+                            time_to_sleep = sleep_between_games
 
                     else:
                         print(f"\n{LIGHT_YELLOW}⚠️  {localized_text('all_promocodes_recieved')}: {remain_time(remain)}{WHITE}")
@@ -268,6 +271,7 @@ class HamsterUltimate:
 
         for thread in threads:
             thread.start()
+            time.sleep(2)
 
         for thread in threads:
             thread.join()
