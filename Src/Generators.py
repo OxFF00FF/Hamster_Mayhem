@@ -17,7 +17,6 @@ choice_text = kali(localized_text('yes_enter'), '~/Playground', localized_text('
 
 
 def generate_promocodes(prefix='', apply_promo=False):
-    # count = input(f"\n{DARK_GRAY}{localized_text('count_promocodes_to_generate')}{CYAN}\n▶️  {localized_text('enter_one')}: {WHITE}")
     count = input(kali(localized_text('enter_one'), '~/Playground', localized_text('count_promocodes_to_generate')))
     if count == '':
         count = 1
@@ -60,7 +59,6 @@ async def genetare_for_all_games(task_count=None):
         choice = input(choice_text)
         apply_promo = str(choice.lower()) == 'y'.lower()
 
-    # count = input(f"\n{DARK_GRAY}{localized_text('count_promocodes_to_generate_all_games')}{CYAN}\n▶️  {localized_text('enter_one')}: {WHITE}")
     count = input(kali(localized_text('enter_one'), '~/Generate for all', localized_text('count_promocodes_to_generate_all_games')))
     if count == '':
         count = 1
