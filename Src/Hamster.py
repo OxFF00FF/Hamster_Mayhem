@@ -751,19 +751,17 @@ class HamsterKombatClicker:
             upgrades = response.json()['upgradesForBuy']
             for card in upgrades:
                 cooldown = card.get('cooldownSeconds', 0)
-                level = card.get('level', 1)
-                current_profit = card.get('currentProfitPerHour', 0)
+                card["remain"] = int(cooldown)
 
-                if card['isAvailable'] and not card['isExpired'] and cooldown == 0:
+                if card['isAvailable'] and not card['isExpired'] and (cooldown == 0 or config.all_cards_in_top):
                     expired_at = card.get('expiresAt', None)
                     if expired_at:
                         date_time = datetime.strptime(card['expiresAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
                         current_time = datetime.now()
                         time_left = date_time - current_time
-                        remain = remain_time(int(time_left.total_seconds()))
-                        card["remain"] = f"· {YELLOW}Осталось:{WHITE} {LIGHT_GREEN}{remain}{WHITE}"
+                        card["expired_at"] = remain_time(int(time_left.total_seconds()))
                     else:
-                        card["remain"] = ''
+                        card["expired_at"] = None
 
                     if card["profitPerHourDelta"] != 0:
                         payback_seconds = card["price"] / card["profitPerHour"] * 3600

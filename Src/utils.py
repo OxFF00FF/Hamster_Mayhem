@@ -15,7 +15,7 @@ lang = config.lang
 
 
 def check_environment(required=False):
-    required_values = ['TELEGRAM_BOT_TOKEN', 'CHAT_ID', 'GROUP_URL']
+    required_values = ['TELEGRAM_BOT_TOKEN', 'CHAT_ID']
     missing_values = [value for value in required_values if os.environ.get(value) is None or os.environ.get(value) == '']
     if len(missing_values) > 0:
         logging.error(f'The following environment values are missing in your .env: {", ".join(missing_values)}')

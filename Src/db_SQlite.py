@@ -36,6 +36,8 @@ class ConfigDB:
             'group_url': os.getenv('GROUP_URL'),
             'chat_id': os.getenv('CHAT_ID'),
             'cards_in_top': 10,
+            'all_cards_in_top': False,
+
             'balance_threshold': 1_000_000,
             'complete_taps': False,
             'complete_tasks': False,
@@ -307,5 +309,13 @@ class ConfigDB:
     @complete_promocodes.setter
     def complete_promocodes(self, value):
         self.set('complete_promocodes', value)
+
+    @property
+    def all_cards_in_top(self):
+        return self.get('all_cards_in_top')
+
+    @all_cards_in_top.setter
+    def all_cards_in_top(self, value):
+        self.set('all_cards_in_top', value)
 
     # --- /PROPERTIES --- #

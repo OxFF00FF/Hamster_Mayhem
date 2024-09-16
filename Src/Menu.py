@@ -158,6 +158,7 @@ def settings_menu():
     complete_combo = get_status(config.complete_combo)
     complete_autobuy_upgrades = get_status(config.complete_autobuy_upgrades)
     complete_promocodes = get_status(config.complete_promocodes)
+    all_cards_in_top = get_status(config.all_cards_in_top)
 
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
@@ -167,6 +168,7 @@ def settings_menu():
         f"  {LIGHT_YELLOW}a | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}f | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}t | {YELLOW} {align_settins(localized_text('setting_cards_in_top'))} · {WHITE}{GREEN}{config.cards_in_top}{WHITE} (5/10)\n"
+        f"  {LIGHT_YELLOW}s | {YELLOW} {align_settins(localized_text('setting_all_cards_in_top'))} · {WHITE}{GREEN}{all_cards_in_top}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_loading_indicator'))} · {WHITE}{GREEN}{config.spinner.upper()}{WHITE} (spinner_<num>/default/list) \n"
     )
 

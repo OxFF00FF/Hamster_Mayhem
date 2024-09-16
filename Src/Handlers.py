@@ -10,7 +10,7 @@ from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game
 from Src.Login import hamster_client
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu, main_menu_not_logged
-from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text, kali
+from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text, kali, remain_time
 
 config = ConfigDB()
 
@@ -64,13 +64,30 @@ def handle_main_menu_choice(choice):
 
         print(localized_text('top_profit_cards'))
         for e, card in enumerate(profitable_cards):
-            price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
-            print(
-                f"#️⃣  {e + 1}. {GREEN}{card['name']}{WHITE} · {card['level']} level {card['remain']}\n"
-                f"💰  {YELLOW}{localized_text('price')}: {price}\n"
-                f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
-                f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
-            )
+            remain = card['remain']
+            expired_at = card['expired_at']
+
+            if remain == 0:
+                card_name = f"{GREEN}{card['name']}{WHITE}"
+            else:
+                card_name = f"{LIGHT_RED}{card['name']}{WHITE}"
+
+            price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · " \
+                    f"{LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · " \
+                    f"{MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
+
+            text = f"#️⃣  {e + 1}. {card_name} · {card['level']} level\n" \
+                   f"💰  {YELLOW}{localized_text('price')}: {price}\n" \
+                   f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n" \
+                   f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
+
+            if remain != 0:
+                text += f"\n\n🔄  {YELLOW}Будет доступна через: {LIGHT_GREEN}{remain_time(remain)}{WHITE}"
+
+            if expired_at:
+                text += f"\n📅  {YELLOW}Осталось:{WHITE} {LIGHT_GREEN}{expired_at}{WHITE}"
+
+            print(text)
             if e < len(profitable_cards) - 1:
                 print("-" * 30)
 
@@ -222,6 +239,9 @@ def handle_settings_menu_choice():
 
         elif choice == '8':
             config.complete_promocodes = not config.complete_promocodes
+
+        elif choice == 's':
+            config.all_cards_in_top = not config.all_cards_in_top
 
         elif choice == 't':
             if config.cards_in_top == 10:

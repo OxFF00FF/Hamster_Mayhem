@@ -155,7 +155,8 @@
         "warning_auto_combo_off": "Автоматическое прохождение комбо отключено",
         "warning_auto_upgrades_off": "Автоматическая покупка карт отключена",
         "warning_auto_promocodes_off": "Автоматическое получение промокодов отключено",
-        "bying_upgrade": "Покупаем: {0} за {1} монет"
+        "bying_upgrade": "Покупаем: {0} за {1} монет",
+        "setting_all_cards_in_top": "Все карты в топе"
     },
 
     "en": {
@@ -314,6 +315,7 @@
         "warning_auto_combo_off": "Automatic combo is disabled",
         "warning_auto_upgrades_off": "Automatic card purchase is disabled",
         "warning_auto_promocodes_off": "Automatic receipt of promocodes is disabled",
-        "bying_upgrade": "Bying: {0} for {1} coins"
+        "bying_upgrade": "Bying: {0} for {1} coins",
+        "setting_all_cards_in_top": "Show all cards in top"
     }
 }
