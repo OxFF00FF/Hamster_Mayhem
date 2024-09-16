@@ -110,9 +110,14 @@ class HamsterUltimate:
 
                 remain = hamster_client().send_balance_to_group(update_time_sec=5000, chat_id=int(self.chat_id))
                 print(f"{LIGHT_YELLOW}⏳   {localized_text('next_balance_after')}: {remain_time(remain)}{WHITE}")
+                time_to_sleep = remain
 
                 line_after(blank_line=False)
-            time.sleep(remain + random_delay())
+
+            if time_to_sleep:
+                time.sleep(time_to_sleep + random_delay())
+            else:
+                return
 
     def process_minigame_tiles(self):
         while True:
