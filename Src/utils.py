@@ -14,6 +14,15 @@ config = ConfigDB()
 lang = config.lang
 
 
+def check_environment(required=False):
+    required_values = ['TELEGRAM_BOT_TOKEN', 'CHAT_ID', 'GROUP_URL']
+    missing_values = [value for value in required_values if os.environ.get(value) is None]
+    if len(missing_values) > 0:
+        logging.error(f'The following environment values are missing in your .env: {", ".join(missing_values)}')
+        if required:
+            exit(1)
+
+
 def banner():
     CYN = '\x1b[36m'
     YLW = '\x1b[33m'

@@ -4,6 +4,7 @@ import datetime
 import hashlib
 import logging
 import os
+import platform
 import random
 import time
 import traceback
@@ -20,9 +21,9 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
-from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner, loading_v2, kali
-
-import platform
+from Src.utils import (text_to_morse, remain_time, get_games_data, line_before,
+                       generation_status, get_salt, localized_text, align_daily_info,
+                       align_summary, line_after, update_spinner, loading_v2, kali)
 
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

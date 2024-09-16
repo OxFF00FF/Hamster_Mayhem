@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from Src.Colors import *
 from Src.Login import hamster_client
 from Src.db_SQlite import ConfigDB
-from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay
+from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, check_environment
 
 load_dotenv()
 config = ConfigDB()
@@ -22,7 +22,8 @@ class HamsterUltimate:
         :param TOKEN: Bearer token
         """
         self.Client = hamster_client(token=TOKEN).login(show_info=False)
-        
+
+        check_environment(required=True)
         self.chat_id = os.getenv('BOT_LOGS_GROUP_ID')
         if self.chat_id is None:
             self.chat_id = os.getenv('CHAT_ID')
