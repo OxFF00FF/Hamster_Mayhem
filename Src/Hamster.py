@@ -867,7 +867,7 @@ class HamsterKombatClicker:
 
                 config.hamster_token = True
                 if show_info:
-                    print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}\n")
+                    print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}")
 
                 config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
                 return user_info

@@ -30,22 +30,24 @@ def choose_account():
                 user_id = account_info.get('id', 'n/a')
 
                 if user_name == current_account.get('name', 'n/a'):
-                    print(f"[{e + 1}] · {LIGHT_BLUE}{user_name} ({user_id}){WHITE} ({localized_text('logged_in')})")
+                    print(f"[{e + 1}] · {LIGHT_BLUE}{user_name} [{user_id}]{WHITE} ({localized_text('logged_in')})")
                 else:
-                    print(f"[{e + 1}] · {user_name} ({user_id})")
+                    print(f"[{e + 1}] · {user_name} [{user_id}]")
                 account_dict[str(e + 1)] = token
 
             except Exception as e:
                 print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}{WHITE}")
                 logging.error(e)
 
+        print(f"[0] · Остатьтся в текущем аккаунте (Выйти в главное меню)")
         accounts_numbers = '/'.join([f"{e + 1}" for e in range(len(accounts))])
         account_choice = input(kali(f"{accounts_numbers}/0", '~/Accounts', localized_text('choose_account')))
-        if account_choice.isdigit() and int(account_choice) <= len(accounts):
-            return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else "HAMSTER_TOKEN_1"
-
-        elif account_choice == '0':
+        if account_choice == '0':
             main_menu()
+            return config.account
+
+        elif int(account_choice) <= len(accounts):
+            return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else "HAMSTER_TOKEN_1"
 
     else:
         print(localized_text('one_account_detected'))

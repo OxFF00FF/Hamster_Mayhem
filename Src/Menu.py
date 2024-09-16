@@ -27,7 +27,7 @@ def main_menu():
     def line(index, emoji, label, status, cooldown):
         return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
-    menu = f"📚  {localized_text('main_menu_header')}"
+    menu = f"\n📚  {localized_text('main_menu_header')}"
     menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
     menu += f"  {LIGHT_YELLOW}@ |  {RESET}🤖 {YELLOW}{localized_text('main_menu_run_bot')} {WHITE} \n"
 
