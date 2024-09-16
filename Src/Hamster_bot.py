@@ -277,7 +277,7 @@ class HamsterUltimate:
 
         for thread in threads:
             thread.start()
-            time.sleep(2)
+            time.sleep(3)
 
         for thread in threads:
             thread.join()
