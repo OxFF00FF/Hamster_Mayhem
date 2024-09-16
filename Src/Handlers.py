@@ -59,19 +59,19 @@ def handle_main_menu_choice(choice):
 
     elif choice == '$':
         line_before()
-        cards = hamster_client().get_most_profitable_cards()
+        profitable_cards = hamster_client().get_most_profitable_cards()
         print(localized_text('info_rent_coeff_coefficient'))
 
         print(localized_text('top_profit_cards'))
-        for e, card in enumerate(cards):
+        for e, card in enumerate(profitable_cards):
             price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · {LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · {MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
             print(
-                f"#️⃣  {e + 1}. {GREEN}{card['name']}{WHITE} ({card['id']}) · {card['section']}\n"
+                f"#️⃣  {e + 1}. {GREEN}{card['name']}{WHITE} · {card['level']} level {card['remain']}\n"
                 f"💰  {YELLOW}{localized_text('price')}: {price}\n"
                 f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n"
                 f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
             )
-            if e < len(cards) - 1:
+            if e < len(profitable_cards) - 1:
                 print("-" * 30)
 
     elif choice.startswith('$'):

@@ -743,30 +743,48 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
 
     def get_most_profitable_cards(self, top=False) -> list:
-        response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
-        response.raise_for_status()
+        try:
+            response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
+            response.raise_for_status()
 
-        evaluated_cards = []
-        upgrades = response.json()['upgradesForBuy']
-        for card in upgrades:
-            cooldown = card.get('cooldownSeconds', 0)
-            if card['isAvailable'] and not card['isExpired'] and cooldown == 0:
-                if card["profitPerHourDelta"] != 0:
-                    payback_seconds = int(card["price"] / card["profitPerHour"]) * 3600
-                    card["payback_period"] = remain_time(payback_seconds)
-                    card["payback_days"] = f"{payback_seconds / 86400:.0f}"
-                    card["profitability_ratio"] = (card["profitPerHour"] / card["price"]) * 100
-                else:
-                    card["payback_period"] = float('inf')
-                    card["profitability_ratio"] = 0
-                evaluated_cards.append(card)
+            evaluated_cards = []
+            upgrades = response.json()['upgradesForBuy']
+            for card in upgrades:
+                cooldown = card.get('cooldownSeconds', 0)
+                level = card.get('level', 1)
+                current_profit = card.get('currentProfitPerHour', 0)
 
-        sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
-        if top:
-            return [card.get('id') for card in sorted_cards[:top]]
+                if card['isAvailable'] and not card['isExpired'] and cooldown == 0:
+                    expired_at = card.get('expiresAt', None)
+                    if expired_at:
+                        date_time = datetime.strptime(card['expiresAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
+                        current_time = datetime.now()
+                        time_left = date_time - current_time
+                        remain = remain_time(int(time_left.total_seconds()))
+                        card["remain"] = f"· {YELLOW}Осталось:{WHITE} {LIGHT_GREEN}{remain}{WHITE}"
+                    else:
+                        card["remain"] = ''
 
-        else:
-            return sorted_cards[:config.cards_in_top]
+                    if card["profitPerHourDelta"] != 0:
+                        payback_seconds = card["price"] / card["profitPerHour"] * 3600
+                        card["payback_period"] = remain_time(payback_seconds)
+                        card["payback_days"] = f"{payback_seconds / 86400:.0f}"
+                        card["profitability_ratio"] = (card["profitPerHour"] / card["price"]) * 100
+                    else:
+                        card["payback_period"] = float('inf')
+                        card["profitability_ratio"] = 0
+                    evaluated_cards.append(card)
+
+            sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
+            if top:
+                return [card.get('id') for card in sorted_cards[:top]]
+
+            else:
+                return sorted_cards[:config.cards_in_top]
+
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
 
     def get_account_info(self):
         try:
