@@ -20,7 +20,7 @@ from fuzzywuzzy import fuzz
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
-from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner, loading_v2
+from Src.utils import text_to_morse, remain_time, get_games_data, line_before, generation_status, get_salt, localized_text, align_daily_info, align_summary, line_after, update_spinner, loading_v2, kali
 
 import platform
 
@@ -91,7 +91,7 @@ class HamsterKombatClicker:
             response = requests.post(f'{self.base_url}/clicker/upgrades-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            upgradesForBuy = response.json().get('upgradesForBuy')
+            upgradesForBuy = response.json().get('upgradesForBuy', {})
             for upgrade in upgradesForBuy:
                 for upgrade_name in combo_from_site:
                     name_from_site = str(upgrade_name.strip().lower())
@@ -123,22 +123,26 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
 
     def _get_balance(self) -> dict:
+        clicker = {}
         try:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            clicker = response.json().get('clickerUser')
-            return {
-                'balanceCoins': int(clicker.get('balanceCoins')),
-                'total': int(clicker.get('totalCoins')),
-                'keys': int(clicker.get('balanceKeys')),
-                'date': int(clicker.get('lastSyncUpdate')),
-                'earn_per_hour': int(clicker.get('earnPassivePerHour'))
-            }
+            clicker = response.json().get('clickerUser', {})
+            if clicker:
+                return {
+                    'balanceCoins': int(clicker.get('balanceCoins', 0)),
+                    'total': int(clicker.get('totalCoins', 0)),
+                    'keys': int(clicker.get('balanceKeys', 0)),
+                    'date': int(clicker.get('lastSyncUpdate', 0)),
+                    'earn_per_hour': int(clicker.get('earnPassivePerHour', 0))
+                }
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             logging.error(traceback.format_exc())
+
+        return clicker
 
     def _activity_cooldowns(self) -> list:
         result = []
@@ -272,15 +276,15 @@ class HamsterKombatClicker:
             upgrades_for_buy_response.raise_for_status()
 
             balance = self._get_balance()
-            earn_per_hour = balance.get('earn_per_hour')
+            earn_per_hour = balance.get('earn_per_hour', 0)
             free_balance = balance.get('balanceCoins') - config.balance_threshold
 
-            upgradesForBuy = upgrades_for_buy_response.json().get('upgradesForBuy')
+            upgradesForBuy = upgrades_for_buy_response.json().get('upgradesForBuy', [])
             for upgrade in upgradesForBuy:
-                upgrade_name = upgrade.get('name')
-                upgrade_level = upgrade.get('level')
-                upgrade_available = upgrade.get('isAvailable')
-                upgrade_expire = upgrade.get('isExpired')
+                upgrade_name = upgrade.get('name', 'n/a')
+                upgrade_level = upgrade.get('level', 'n/a')
+                upgrade_available = upgrade.get('isAvailable', 'n/a')
+                upgrade_expire = upgrade.get('isExpired', 'n/a')
                 upgrade_cooldown = upgrade.get('cooldownSeconds', 0)
 
                 if upgradeId == upgrade['id']:
@@ -403,15 +407,17 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
 
     def complete_taps(self):
+        remain = 0
         try:
             response = requests.post(f'{self.base_url}/clicker/sync', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
 
-            clickerUser = response.json().get('clickerUser')
-            available_taps = int(clickerUser.get('availableTaps'))
-            max_taps = int(clickerUser.get('maxTaps'))
-            earn_per_sec = int(clickerUser.get('earnPerTap'))
-            taps_recoverper_sec = int(clickerUser.get('tapsRecoverPerSec'))
+            clicker_user = response.json().get('clickerUser', {})
+            if clicker_user:
+                available_taps = int(clicker_user.get('availableTaps'))
+                max_taps = int(clicker_user.get('maxTaps'))
+                earn_per_sec = int(clicker_user.get('earnPerTap'))
+                taps_recoverper_sec = int(clicker_user.get('tapsRecoverPerSec'))
 
             total_remain_time = max_taps / taps_recoverper_sec
             current_remain_time = available_taps / taps_recoverper_sec
@@ -429,7 +435,7 @@ class HamsterKombatClicker:
             else:
                 print(f"{RED}🚫  {localized_text('info_no_accumulate_yet')}{WHITE}")
 
-            boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy')
+            boostsForBuy = requests.post(f'{self.base_url}/clicker/boosts-for-buy', headers=self._get_headers(self.HAMSTER_TOKEN)).json().get('boostsForBuy', [])
             for boost in boostsForBuy:
                 if boost['id'] == 'BoostFullAvailableTaps':
                     boost_remain = boost['cooldownSeconds']
@@ -458,6 +464,8 @@ class HamsterKombatClicker:
         except Exception as e:
             print(f"{RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
             logging.error(traceback.format_exc())
+
+        return remain
 
     def complete_daily_tasks(self):
         try:
@@ -526,31 +534,39 @@ class HamsterKombatClicker:
             free_balance = balance.get('balanceCoins') - config.balance_threshold
 
             combo = response.json().get('dailyCombo')
-            already_purchased_cards = set(combo.get('upgradeIds'))
-            remain = combo.get('remainSeconds')
+            already_purchased_cards = set(combo.get('upgradeIds', []))
+            remain = combo.get('remainSeconds', 0)
 
             cards = set(self._get_daily_combo().get('combo'))
             upgrades_for_buy = response.json().get('upgradesForBuy', [])
             cards_for_buy = list(cards - already_purchased_cards)
+            cards_for_buy_names = ', '.join(cards_for_buy)
 
             is_claimed = combo.get('isClaimed')
             if not is_claimed:
+                if not buy_anyway:
+                    print(f"{LIGHT_YELLOW}⚠️  {localized_text('not_all_carda_available')}\n⭐️  {YELLOW}{cards_for_buy_names}{WHITE}")
+                    choice = input(kali(localized_text('yes_enter'), '~/Buy combo', localized_text('continue')))
+                    if choice.lower() != 'y' or choice == '':
+                        print(f"\n{LIGHT_YELLOW}🚫  {localized_text('combo_cancel')}{WHITE}\n")
+                        return
+
                 for card in cards_for_buy:
                     for upgrade in upgrades_for_buy:
-                        if card.lower().strip() == upgrade.get('id').lower().strip():
-                            if not buy_anyway:
-                                choice = input(f"{YELLOW}⚠️  {localized_text('not_all_carda_available')}{WHITE}\n{localized_text('continue')}\n{CYAN}▶️  {localized_text('yes_enter')}: {WHITE}")
-                                if choice.lower() != 'y':
-                                    print(f"{RED}🚫  {localized_text('combo_cancel')}{WHITE}")
-                                    break
+                        card_id = card.lower().strip()
+                        upgrade_id = upgrade.get('id').lower().strip()
 
+                        if card_id == upgrade_id:
                             price = int(upgrade['price'])
                             max_price_limit = max(earn_per_hour, 50000) * 24
+
                             if int(free_balance * 0.8) >= price and price < int(max_price_limit):
+                                print(f"\n{YELLOW}ℹ️  {localized_text('bying_upgrade', upgrade['id'], price)} {WHITE}")
                                 self._buy_upgrade(upgrade['id'])
-                                claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
-                                claim_combo.raise_for_status()
-                                print(f"{GREEN}✅  {localized_text('info_combo_completed')}{WHITE}")
+
+                claim_combo = requests.post(f'{self.base_url}/clicker/claim-daily-combo', headers=self._get_headers(self.HAMSTER_TOKEN))
+                claim_combo.raise_for_status()
+                print(f"\n{GREEN}✅  {localized_text('info_combo_completed')}{WHITE}")
 
             else:
                 print(f"{YELLOW}ℹ️  {localized_text('info_combo_already_complete')}{WHITE}")

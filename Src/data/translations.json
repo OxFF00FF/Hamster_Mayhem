@@ -126,7 +126,7 @@
         "processing": "Обработка...",
         "setting_account": "Аккаунт",
         "setting_cards_in_top": "Карт в топе",
-        "not_all_carda_available": "Не все карты доступны. Будут куплены только доступные!",
+        "not_all_carda_available": "Будут куплены только доступные карты!",
         "continue": "Продолжить?",
         "combo_cancel": "Покупка комбо отменена",
         "setting_balance_threshold": "Мин. остаток на балансе",
@@ -154,7 +154,8 @@
         "warning_auto_minigames_off": "Автоматическое прохождение миниигр отключено",
         "warning_auto_combo_off": "Автоматическое прохождение комбо отключено",
         "warning_auto_upgrades_off": "Автоматическая покупка карт отключена",
-        "warning_auto_promocodes_off": "Автоматическое получение промокодов отключено"
+        "warning_auto_promocodes_off": "Автоматическое получение промокодов отключено",
+        "bying_upgrade": "Покупаем: {0} за {1} монет"
     },
 
     "en": {
@@ -284,7 +285,7 @@
         "processing": "Processing...",
         "setting_account": "Account",
         "setting_cards_in_top": "Cards in top",
-        "not_all_carda_available": "Not all cards are available. Only available ones will be purchased!",
+        "not_all_carda_available": "Only available cards will be purchased!",
         "continue": "Continue?",
         "combo_cancel": "Сombo purchase canceled",
         "setting_balance_threshold": "Saved balance limit",
@@ -312,6 +313,7 @@
         "warning_auto_minigames_off": "Automatic minigames are disabled",
         "warning_auto_combo_off": "Automatic combo is disabled",
         "warning_auto_upgrades_off": "Automatic card purchase is disabled",
-        "warning_auto_promocodes_off": "Automatic receipt of promocodes is disabled"
+        "warning_auto_promocodes_off": "Automatic receipt of promocodes is disabled",
+        "bying_upgrade": "Bying: {0} for {1} coins"
     }
 }

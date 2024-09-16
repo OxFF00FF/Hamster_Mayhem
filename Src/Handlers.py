@@ -38,13 +38,7 @@ def handle_main_menu_choice(choice):
 
     elif choice == '4':
         line_before()
-        upgrades_info = hamster_client()._collect_upgrades_info()
-        if all(card['available'] for card in upgrades_info['cards']):
-            hamster_client().complete_daily_combo()
-        else:
-            choice = input(f"{localized_text('not_all_cards_available_today')}\n{CYAN}▶️  {localized_text('yes_enter')}: {WHITE}")
-            if str(choice.lower()) == 'y'.lower():
-                hamster_client().complete_daily_combo(buy_anyway=True)
+        hamster_client().complete_daily_combo()
 
     elif choice == '5':
         line_before()
