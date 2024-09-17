@@ -151,7 +151,7 @@ def handle_playground_menu_choice():
 
     while True:
         playground_menu()
-        choice = input(kali(f"{'/'.join(games)}/</0", '~/Playground', localized_text('choose_action')))
+        choice = input(kali(f"{'/'.join(games)}/./0", '~/Playground', localized_text('choose_action')))
 
         line_before()
 
@@ -166,7 +166,7 @@ def handle_playground_menu_choice():
                 games_count = int(choice.strip('*'))
                 asyncio.run(genetare_for_all_games(games_count))
 
-        elif choice == '<':
+        elif choice == '.':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
             return
 
@@ -186,7 +186,7 @@ def handle_minigames_choice():
     while True:
         minigames_menu()
         choices = [str(i + 1) for i in range(len(minigames))]
-        choice = input(kali(f"{'/'.join(choices)}/</0", '~/Minigames', localized_text('choose_action')))
+        choice = input(kali(f"{'/'.join(choices)}/./0", '~/Minigames', localized_text('choose_action')))
         line_before()
 
         if choice in choices:
@@ -194,7 +194,7 @@ def handle_minigames_choice():
             hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
             line_after()
 
-        elif choice == '<':
+        elif choice == '.':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
             return
 
@@ -213,7 +213,7 @@ def handle_settings_menu_choice():
 
     while True:
         settings_menu()
-        choice = input(kali('1/2/3/4/5/6/7/8/9/l/g/a/f</0', '~/Settings', localized_text('choose_action')))
+        choice = input(kali('1/2/3/4/5/6/7/8/9/l/g/a/f./0', '~/Settings', localized_text('choose_action')))
         line_before()
 
         if choice.startswith('1'):
@@ -303,7 +303,7 @@ def handle_settings_menu_choice():
             print(f"ℹ️  {localized_text('info_spinner_changed_to')} `{spinner_name}`")
             line_after()
 
-        elif choice == '<':
+        elif choice == '.':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
             return
 
