@@ -137,7 +137,7 @@ class HamsterUltimate:
 
                 if config.complete_minigames:
                     remain = hamster_client().complete_daily_minigame('tiles')
-                    message = f"🔄   Tiles. {localized_text('next_minigame_after')}: {remain_time(remain)}"
+                    message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
 
                     print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '🪙  Миниигра Tiles пройдена')
@@ -162,7 +162,7 @@ class HamsterUltimate:
 
                 if config.complete_minigames:
                     remain = hamster_client().complete_daily_minigame('candles')
-                    message = f"🔄   Candles. {localized_text('next_minigame_after')}: {remain_time(remain)}"
+                    message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
 
                     print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '🔑  Миниигра Candles пройдена')
@@ -219,7 +219,7 @@ class HamsterUltimate:
                         hamster_client()._buy_upgrade(card)
 
                     print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '💲  Улучшения куплены')
+                    hamster_client().send_to_chat(self.chat_id, message, '🛍  Улучшения куплены')
                     time_to_sleep = remain
 
                 else:
@@ -251,7 +251,7 @@ class HamsterUltimate:
                             message = f"🔄   {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
 
                             print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
-                            hamster_client().send_to_chat(self.chat_id, message, f'Получено {keys_count} промокодов для {promo_title}')
+                            hamster_client().send_to_chat(self.chat_id, message, f'🎁  Получено {keys_count} промокодов для {promo_title}')
 
                             time.sleep(sleep_between_games)
                             time_to_sleep = sleep_between_games
