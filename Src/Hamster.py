@@ -661,7 +661,7 @@ class HamsterKombatClicker:
     def send_to_chat(self, chat_id: int = None, message: str = None, completed=None):
         try:
             mesage = f">🙍‍♂️‍  {config.user_name} \n" \
-                     f">🆔  {config.tg_user_id} \n\n" \
+                     f">🆔  {config.tg_user_id} \n" \
                      f"*{completed}*\n" \
                      f"{message}"
             try:
