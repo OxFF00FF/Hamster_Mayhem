@@ -14,8 +14,8 @@
             "title": "Hide Ball",
             "eventsCount": 20,
             "registerEventTimeout": 20000,
-            "text": "\ud83e\udea9",
-            "emoji": "\ud83e\udea9",
+            "text": "\uD83E\uDD4E",
+            "emoji": "\uD83E\uDD4E",
             "available": true
         },
         {
@@ -25,8 +25,8 @@
             "title": "Bouncemasters",
             "eventsCount": 7,
             "registerEventTimeout": 150000,
-            "text": "\uD83E\uDD4E",
-            "emoji": "\uD83E\uDD4E",
+            "text": "\uD83D\uDC27",
+            "emoji": "\uD83D\uDC27",
             "available": true
         },
         {
