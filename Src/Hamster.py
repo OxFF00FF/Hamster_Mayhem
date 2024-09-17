@@ -279,6 +279,10 @@ class HamsterKombatClicker:
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour', 0)
             free_balance = balance.get('balanceCoins') - config.balance_threshold
+            if config.balance_threshold == 0:
+                max_price_limit = 0
+            else:
+                max_price_limit = max(earn_per_hour, 50000) * 24
 
             upgradesForBuy = upgrades_for_buy_response.json().get('upgradesForBuy', [])
             for upgrade in upgradesForBuy:
@@ -290,8 +294,7 @@ class HamsterKombatClicker:
 
                 if upgradeId == upgrade['id']:
                     price = int(upgrade['price'])
-                    max_price_limit = max(earn_per_hour, 50000) * 24
-                    if int(free_balance * 0.8) >= price and price < int(max_price_limit):
+                    if int(free_balance * 0.8) >= price and (max_price_limit == 0 or price < int(max_price_limit)):
                         if upgrade.get('isAvailable') and not upgrade.get('isExpired') and upgrade_cooldown == 0:
                             json_data = {'upgradeId': upgradeId, 'timestamp': int(time.time())}
                             response = requests.post(f'{self.base_url}/clicker/buy-upgrade', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
@@ -299,7 +302,7 @@ class HamsterKombatClicker:
 
                             print(f"{GREEN}✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level + 1)}{WHITE}")
 
-                        elif upgrade_available and upgrade_expire:
+                        elif upgrade_available and upgrade_expire and upgrade_cooldown != 0:
                             logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade_name)}")
 
                         else:

@@ -217,7 +217,10 @@ def handle_settings_menu_choice():
         line_before()
 
         if choice.startswith('1'):
-            config.balance_threshold = choice.split('_')[-1]
+            if choice == '1':
+                config.balance_threshold = 0
+            else:
+                config.balance_threshold = choice.split('_')[-1]
 
         elif choice == '2':
             config.complete_taps = not config.complete_taps

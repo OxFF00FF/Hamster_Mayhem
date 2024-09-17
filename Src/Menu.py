@@ -151,6 +151,11 @@ def settings_menu():
     chat_id = os.getenv('CHAT_ID')
     group_url = os.getenv('GROUP_URL')
 
+    if config.balance_threshold == 0:
+        balance_threshold = get_status(config.balance_threshold)
+    else:
+        balance_threshold = f"{config.balance_threshold:_}"
+
     complete_taps = get_status(config.complete_taps)
     complete_tasks = get_status(config.complete_tasks)
     complete_cipher = get_status(config.complete_cipher)
@@ -180,7 +185,7 @@ def settings_menu():
 
     menu += '  ' + '─' * 50 + '\n'
     menu += (
-        f"  {LIGHT_YELLOW}1 | {YELLOW} {align_settins(localized_text('setting_balance_threshold'))} · {WHITE}{GREEN}{config.balance_threshold:_}{WHITE} (1_<new_value>)\n"
+        f"  {LIGHT_YELLOW}1 | {YELLOW} {align_settins(localized_text('setting_balance_threshold'))} · {WHITE}{GREEN}{balance_threshold}{WHITE} (1_<new_value>/1 - disable)\n"
         f"  {LIGHT_YELLOW}2 | {YELLOW} {align_settins(localized_text('setting_complete_taps'))} · {WHITE}{GREEN}{complete_taps}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}3 | {YELLOW} {align_settins(localized_text('setting_complete_tasks'))} · {WHITE}{GREEN}{complete_tasks}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}4 | {YELLOW} {align_settins(localized_text('setting_complete_cipher'))} · {WHITE}{GREEN}{complete_cipher}{WHITE} {localized_text('setting_on_off')}\n"
