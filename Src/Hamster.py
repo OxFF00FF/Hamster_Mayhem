@@ -810,8 +810,7 @@ class HamsterKombatClicker:
                 raise ValueError("Account info not found in the response")
 
         except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
+            print(f"\n🚫  {localized_text('error_occured')}: {e}\n")
 
     def get_cooldowns(self) -> dict:
         def _post_request(endpoint):
@@ -907,8 +906,8 @@ class HamsterKombatClicker:
             config.hamster_token = True
             if show_info:
                 print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}")
-                config.user_name = username
 
+            config.user_name = username
             config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
             return user_info
 
