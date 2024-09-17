@@ -660,9 +660,9 @@ class HamsterKombatClicker:
 
     def send_to_chat(self, chat_id: int = None, message: str = None, completed=None):
         try:
-            mesage = f"🙍‍♂️‍  >{config.user_name} \n" \
-                     f"🆔  `{config.tg_user_id}` \n\n" \
-                     f"*{completed}* \n" \
+            mesage = f">🙍‍♂️‍  {config.user_name} \n" \
+                     f">🆔  {config.tg_user_id} \n\n" \
+                     f"*{completed}*\n" \
                      f"{message}"
             try:
                 response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": mesage, "parse_mode": "Markdown"})
