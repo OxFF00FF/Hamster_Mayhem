@@ -658,6 +658,22 @@ class HamsterKombatClicker:
 
         return remain
 
+    def send_to_chat(self, chat_id: int = None, message: str = None, completed=None):
+        try:
+            mesage = f"🙍‍♂️‍  *{config.user_name}* \n" \
+                     f"🆔  `{config.tg_user_id}` \n\n" \
+                     f"*{completed}* \n" \
+                     f"*{message}*"
+            try:
+                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": mesage, "parse_mode": "Markdown"})
+            except:
+                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": mesage, "parse_mode": "Markdown"})
+            response.raise_for_status()
+
+        except Exception as e:
+            print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
+
     def send_balance_to_group(self, update_time_sec: int = None, chat_id: int = None):
         try:
             while True:
@@ -665,16 +681,19 @@ class HamsterKombatClicker:
                 user_id = self._get_telegram_user_id()
 
                 update_date = datetime.fromtimestamp(info['date']).strftime('%Y-%m-%d %H:%M:%S')
-                result = f"💰  Баланс: {info['balanceCoins']:,} \n" \
-                         f"⭐️  Всего: {info['total']:,} \n" \
-                         f"🆔  ID пользователя: {user_id} \n" \
-                         f"🔄  Обновление: {update_date}"
+                result = f"🙍‍  *{config.user_name}* \n" \
+                         f"🆔  `{user_id}` \n\n" \
+                         f"💰  Баланс: *{info['balanceCoins']:,}* \n" \
+                         f"🌟  Всего: *{info['total']:,}* \n" \
+                         f"📈  Доход: *{info['earn_per_hour']:,}* \n" \
+                         f"🔑  Ключей: *{info['keys']:,}* \n\n" \
+                         f"🔄  {update_date}"
                 balance = result.replace(',', ' ')
 
                 try:
-                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": balance})
+                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": balance, "parse_mode": "Markdown"})
                 except:
-                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": balance})
+                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": balance, "parse_mode": "Markdown"})
                 response.raise_for_status()
 
                 if update_time_sec is None:
@@ -684,18 +703,6 @@ class HamsterKombatClicker:
                     print(f"{GREEN}✅  Баланс успешно отправлен в чат{WHITE}")
                     print(f"\n{balance}\n")
                     return update_time_sec
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-
-    def send_to_chat(self, chat_id: int = None, message: str = None):
-        try:
-            try:
-                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": message})
-            except:
-                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": message})
-            response.raise_for_status()
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -893,6 +900,10 @@ class HamsterKombatClicker:
                 print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. Сheck your `{config.account}` for correct")
                 exit(1)
 
+            if response.status_code == 404:
+                print(f"{RED}❌  Не удалось получить ответ от хомяка!{WHITE}")
+                exit(1)
+
             data = response.json()
             if 'accountInfo' in data:
                 account_info = data['accountInfo']
@@ -904,6 +915,7 @@ class HamsterKombatClicker:
                 config.hamster_token = True
                 if show_info:
                     print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}")
+                    config.user_name = username
 
                 config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
                 return user_info
