@@ -896,32 +896,21 @@ class HamsterKombatClicker:
     def login(self, show_info=True):
         try:
             response = requests.post(f'{self.base_url}/auth/account-info', headers=self._get_headers(self.HAMSTER_TOKEN))
-            if response.status_code == 401:
-                print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. Сheck your `{config.account}` for correct")
-                exit(1)
-
-            if response.status_code == 404:
-                print(f"{RED}❌  Не удалось получить ответ от хомяка!{WHITE}")
-                exit(1)
+            response.raise_for_status()
 
             data = response.json()
-            if 'accountInfo' in data:
-                account_info = data['accountInfo']
+            account_info = data['accountInfo']
+            username = account_info.get('name', 'n/a')
+            user_id = account_info.get('id', 'n/a')
+            user_info = f"{username} ({user_id})"
 
-                username = account_info.get('name', 'n/a')
-                user_id = account_info.get('id', 'n/a')
-                user_info = f"{username} ({user_id})"
+            config.hamster_token = True
+            if show_info:
+                print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}")
+                config.user_name = username
 
-                config.hamster_token = True
-                if show_info:
-                    print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}")
-                    config.user_name = username
-
-                config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
-                return user_info
-
-            else:
-                raise ValueError("Account info not found in the response")
+            config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
+            return user_info
 
         except Exception as e:
             try:
@@ -932,14 +921,22 @@ class HamsterKombatClicker:
                               f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
                 else:
                     print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
+                    print(e)
                     logging.error(traceback.format_exc())
+
             except:
-                pass
+                if response.status_code == 401:
+                    print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. Сheck your `{config.account}` for correct")
+                    exit(1)
+
+                if response.status_code == 502 or response.status_code == 503 or response.status_code == 404:
+                    print(f"{RED}❌  Кажется хомяк не работает!{WHITE} · Статус: {response.status_code}\n")
+
+                else:
+                    print(f"{RED}❌  {localized_text('error_hamster_token_not_specified')}{WHITE}")
+                    print(f"{YELLOW}⚠️ {localized_text('warning_hamster_combat_unavailable')}{WHITE}\n")
 
             config.hamster_token = False
-            print(f"{RED}❌  {localized_text('error_hamster_token_not_specified')}{WHITE}")
-            print(f"{YELLOW}⚠️ {localized_text('warning_hamster_combat_unavailable')}{WHITE}")
-            logging.error(e)
 
     def get_purhase_count(self):
         result = {}

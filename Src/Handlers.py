@@ -128,6 +128,9 @@ def handle_main_menu_not_logged_choice(choice):
     if choice == '6':
         handle_playground_menu_choice()
 
+    if choice == 's':
+        handle_settings_menu_choice()
+
     elif choice == 'm':
         line_before()
         main_menu_not_logged()
@@ -213,7 +216,7 @@ def handle_settings_menu_choice():
 
     while True:
         settings_menu()
-        choice = input(kali('1/2/3/4/5/6/7/8/9/l/g/a/f./0', '~/Settings', localized_text('choose_action')))
+        choice = input(kali('1/2/3/4/5/6/7/8/9/l/g/a/f/./0', '~/Settings', localized_text('choose_action')))
         line_before()
 
         if choice.startswith('1'):
