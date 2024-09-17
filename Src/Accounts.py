@@ -35,9 +35,8 @@ def choose_account():
                     print(f"[{e + 1}] · {user_name} [{user_id}]")
                 account_dict[str(e + 1)] = token
 
-            except Exception as e:
+            except:
                 print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}{WHITE}")
-                logging.error(e)
 
         print(f"[0] · Остатьтся в текущем аккаунте (Выйти в главное меню)")
         accounts_numbers = '/'.join([f"{e + 1}" for e in range(len(accounts))])

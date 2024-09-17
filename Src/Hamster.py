@@ -911,7 +911,7 @@ class HamsterKombatClicker:
             config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
             return user_info
 
-        except Exception as e:
+        except:
             try:
                 error = data.get('error_code')
                 if error:
@@ -920,7 +920,6 @@ class HamsterKombatClicker:
                               f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
                 else:
                     print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
-                    print(e)
                     logging.error(traceback.format_exc())
 
             except:
@@ -928,7 +927,7 @@ class HamsterKombatClicker:
                     print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. Сheck your `{config.account}` for correct")
                     exit(1)
 
-                if response.status_code == 502 or response.status_code == 503 or response.status_code == 404:
+                if response.status_code == 502 or response.status_code == 503 or response.status_code == 404 or response.status_code == 500:
                     print(f"{RED}❌  Кажется хомяк не работает!{WHITE} · Статус: {response.status_code}\n")
 
                 else:
