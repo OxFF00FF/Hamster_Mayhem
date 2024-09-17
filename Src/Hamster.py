@@ -665,9 +665,9 @@ class HamsterKombatClicker:
                      f"*{completed}*\n" \
                      f"{message}"
             try:
-                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": mesage, "parse_mode": "Markdown"})
+                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": mesage, "parse_mode": "MarkdownV2"})
             except:
-                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": mesage, "parse_mode": "Markdown"})
+                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": mesage, "parse_mode": "MarkdownV2"})
             response.raise_for_status()
 
         except Exception as e:
