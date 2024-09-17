@@ -37,6 +37,7 @@ class ConfigDB:
             'chat_id': os.getenv('CHAT_ID'),
             'cards_in_top': 10,
             'all_cards_in_top': False,
+            'user_name': '',
 
             'balance_threshold': 1_000_000,
             'complete_taps': False,
@@ -109,7 +110,6 @@ class ConfigDB:
             'token': token,
             'tg_user_id': account_info.get('id', 'n/a'),
             'is_subscriber': False,
-            'user_name': account_info.get('user_name', 'n/a'),
         }
         self._ADD_missing_values(user_info, 'config')
 
@@ -317,5 +317,13 @@ class ConfigDB:
     @all_cards_in_top.setter
     def all_cards_in_top(self, value):
         self.set('all_cards_in_top', value)
+
+    @property
+    def user_name(self):
+        return self.get('user_name')
+
+    @user_name.setter
+    def user_name(self, value):
+        self.set('user_name', value)
 
     # --- /PROPERTIES --- #
