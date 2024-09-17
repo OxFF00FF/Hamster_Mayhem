@@ -1,4 +1,6 @@
 # docker build -t oxff00ff/hamster_mayhem_service:latest .
+# docker push oxff00ff/hamster_mayhem_service:latest
+# docker pull oxff00ff/hamster_mayhem_service:latest
 
 FROM python:3.9-alpine
 
