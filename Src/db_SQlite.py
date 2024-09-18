@@ -25,10 +25,14 @@ class ConfigDB:
     def SET_default_config(self):
         # Настройки по умолчанию
         default_values = {
+            'user_name': '',
+            'tg_user_id': '',
+            'token': '',
+            'hamster_token': False,
+
             'send_to_group': False,
             'save_to_file': False,
             'apply_promo': False,
-            'hamster_token': False,
             'account': 'HAMSTER_TOKEN_1',
             'spinner': 'default',
             'lang': 'ru',
@@ -37,8 +41,6 @@ class ConfigDB:
             'chat_id': os.getenv('CHAT_ID'),
             'cards_in_top': 10,
             'all_cards_in_top': False,
-            'user_name': '',
-            'tg_user_id': '',
 
             'balance_threshold': 1_000_000,
             'complete_taps': False,
