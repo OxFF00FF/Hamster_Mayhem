@@ -349,3 +349,11 @@ def kali(variants=None, menu=None, text=None):
     return f"\n{LIGHT_CYAN}┌─[{DARK_GRAY}{text}{LIGHT_CYAN}]\n" \
            f"{LIGHT_CYAN}├──({LIGHT_BLUE}{variants}{LIGHT_CYAN})-[{RESET}{BOLD}{menu}{LIGHT_CYAN}]\n" \
            f"└─{LIGHT_BLUE}${RESET} "
+
+
+def bot_start():
+    print(f'\n{LIGHT_BLUE}{BOLD}⚡️  Bot is running', end='', flush=True)
+    for i in range(3):
+        print('.', end='', flush=True)
+        time.sleep(0.5)
+    print(f'{RESET}\n')
