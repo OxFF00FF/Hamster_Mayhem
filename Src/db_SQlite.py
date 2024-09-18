@@ -38,6 +38,7 @@ class ConfigDB:
             'cards_in_top': 10,
             'all_cards_in_top': False,
             'user_name': '',
+            'tg_user_id': '',
 
             'balance_threshold': 1_000_000,
             'complete_taps': False,
@@ -95,25 +96,6 @@ class ConfigDB:
     # --- /CONFIG --- #
 
     ####################################################
-
-    # --- USERS --- #
-
-    def user_exist(self, tg_user_id: int) -> bool:
-        self.cur.execute("SELECT COUNT(*) FROM `config` WHERE `tg_user_id` = ?", (tg_user_id,))
-        if self.cur.fetchone()[0] > 0:
-            return True
-        else:
-            return False
-
-    def ADD_subscriber(self, account_info, token):
-        user_info = {
-            'token': token,
-            'tg_user_id': account_info.get('id', 'n/a'),
-            'is_subscriber': False,
-        }
-        self._ADD_missing_values(user_info, 'config')
-
-    # --- /USERS --- #
 
     ####################################################
 

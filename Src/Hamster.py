@@ -909,7 +909,6 @@ class HamsterKombatClicker:
 
             config.user_name = username
             config.tg_user_id = user_id
-            config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
             return user_info
 
         except:
