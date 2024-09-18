@@ -40,9 +40,9 @@ class HamsterUltimate:
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = hamster_client()._get_balance()
                 balance = f"✅  Баланс получен \n" \
-                          f"💰  Баланс:  {info['balanceCoins']:,} \n" \
-                          f"🌟  Всего:      {info['total']:,} \n" \
-                          f"📈  Доход:     {info['earn_per_hour']:,} в час\n" \
+                          f"💰  Баланс: {info['balanceCoins']:,} \n" \
+                          f"🌟  Всего: {info['total']:,} \n" \
+                          f"📈  Доход: {info['earn_per_hour']:,} в час\n" \
                           f"🔑  Ключей: {info['keys']:,} \n"
                 hamster_client().send_to_chat(self.chat_id, message, balance.replace(',', ' '))
                 time_to_sleep = remain

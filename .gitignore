@@ -8,3 +8,4 @@ tests
 Src/data/Config.db
 generated keys
 /Src/database
+/Src/db
