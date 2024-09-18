@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from Src.Colors import *
 from Src.Login import hamster_client
 from Src.db_SQlite import ConfigDB
-from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, check_environment
+from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, check_environment, bot_start
 
 load_dotenv()
 config = ConfigDB()
@@ -35,7 +35,7 @@ class HamsterUltimate:
                 current_time(self.Client)
 
                 remain = 5000 + random_delay()
-                message = f"🔄   {localized_text('next_balance_after')}: {remain_time(remain)}"
+                message = f"🔄  {localized_text('next_balance_after')}: {remain_time(remain)}"
 
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = hamster_client()._get_balance()
@@ -59,229 +59,141 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_taps:
-                    remain = hamster_client().complete_taps()
-                    message = f"🔄   {localized_text('next_taps_after')}: {remain_time(remain)}"
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '👆  Тапы выполнены')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_taps_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = hamster_client().complete_taps()
+                message = f"🔄   {localized_text('next_taps_after')}: {remain_time(remain)}"
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '👆  Тапы выполнены')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+                time.sleep(remain + random_delay())
 
     def process_cipher(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_cipher:
-                    remain = hamster_client().complete_daily_chipher()
-                    message = f"🔄   {localized_text('next_cipher_after')}: {remain_time(remain)}"
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '🔍  Шифр получен')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_cipher_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = hamster_client().complete_daily_chipher()
+                message = f"🔄   {localized_text('next_cipher_after')}: {remain_time(remain)}"
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '🔍  Шифр получен')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+                time.sleep(remain + random_delay())
 
     def process_tasks(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_tasks:
-                    remain = hamster_client().complete_daily_tasks()
-                    message = f"🔄   {localized_text('next_tasks_after')}: {remain_time(remain)}"
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '📑  Задания выполнены')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_tasks_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = hamster_client().complete_daily_tasks()
+                message = f"🔄   {localized_text('next_tasks_after')}: {remain_time(remain)}"
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '📑  Задания выполнены')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+                time.sleep(remain + random_delay())
 
     def process_minigame_tiles(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_minigames:
-                    remain = hamster_client().complete_daily_minigame('tiles')
-                    message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '🪙  Миниигра Tiles пройдена')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_minigames_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = hamster_client().complete_daily_minigame('tiles')
+                message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '🪙  Миниигра Tiles пройдена')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+                time.sleep(remain + random_delay())
 
     def process_minigame_candles(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_minigames:
-                    remain = hamster_client().complete_daily_minigame('candles')
-                    message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '🔑  Миниигра Candles пройдена')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_minigames_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = hamster_client().complete_daily_minigame('candles')
+                message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '🔑  Миниигра Candles пройдена')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+                time.sleep(remain + random_delay())
 
     def process_combo(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_combo:
-                    remain = hamster_client().complete_daily_combo(buy_anyway=True)
-                    message = f"🔄   {localized_text('next_combo_after')}: {remain_time(remain)}"
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '💰  Комбо выполнено')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_combo_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = hamster_client().complete_daily_combo(buy_anyway=True)
+                message = f"🔄   {localized_text('next_combo_after')}: {remain_time(remain)}"
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '💰  Комбо выполнено')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+                time.sleep(remain + random_delay())
 
     def process_autobuy_upgrades(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
-                if config.complete_autobuy_upgrades:
-                    remain = random_delay()
-                    message = f"🔄   {localized_text('next_purhase_after')}: {remain_time(remain)}"
-
-                    most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
-                    for card in most_profitable_cards:
-                        hamster_client()._buy_upgrade(card)
-
-                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                    hamster_client().send_to_chat(self.chat_id, message, '🛍  Улучшения куплены')
-                    time_to_sleep = remain
-
-                else:
-                    print(f"{YELLOW}⛔️  {localized_text('auto_upgrades_off')}{WHITE}")
-                    time_to_sleep = False
-
+                remain = random_delay()
+                message = f"🔄   {localized_text('next_purhase_after')}: {remain_time(remain)}"
+                most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
+                [hamster_client()._buy_upgrade(card) for card in most_profitable_cards]
+                print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                hamster_client().send_to_chat(self.chat_id, message, '🛍  Улучшения куплены')
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep)
-            else:
-                return
+                time.sleep(remain + random_delay())
 
-    def process_keys_minigames(self):
+    def process_promocodes(self):
         while True:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+                remain = hamster_client().get_keys_minigames_for_generate()
+                if isinstance(remain, list) and remain != []:
+                    for game in remain:
+                        keys_count = int(game['count'])
+                        promo_title = game['prefix']
+                        asyncio.run(hamster_client().get_promocodes(count=keys_count, prefix=promo_title, apply_promo=True, one_game=True))
 
-                if config.complete_promocodes:
-                    remain = hamster_client().get_keys_minigames_for_generate()
-                    if isinstance(remain, list) and remain != []:
-                        for game in remain:
-                            keys_count = int(game['count'])
-                            promo_title = game['prefix']
-                            asyncio.run(hamster_client().get_promocodes(count=keys_count, prefix=promo_title, apply_promo=True, one_game=True))
+                        sleep_between_games = random_delay() / 3
+                        message = f"🔄   {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
 
-                            sleep_between_games = random_delay() / 3
-                            message = f"🔄   {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
-
-                            print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                            hamster_client().send_to_chat(self.chat_id, message, f'🎁  Получено {keys_count} промокодов для {promo_title}')
-                            time.sleep(sleep_between_games)
-                    else:
-                        print(f"\n{LIGHT_YELLOW}⚠️  {localized_text('all_promocodes_recieved')}: {remain_time(remain)}{WHITE}")
-                        time_to_sleep = random_delay()
-
+                        print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                        hamster_client().send_to_chat(self.chat_id, message, f'🎁  Получено {keys_count} промокодов для {promo_title}')
+                        time.sleep(sleep_between_games)
                 else:
-                    print(f"{YELLOW}⛔️  {localized_text('warning_auto_promocodes_off')}{WHITE}")
-                    time_to_sleep = False
+                    print(f"\n{LIGHT_YELLOW}⚠️  {localized_text('all_promocodes_recieved')}: {remain_time(remain)}{WHITE}")
+                    line_after(blank_line=False)
 
-                line_after(blank_line=False)
-
-                if time_to_sleep:
-                    time.sleep(time_to_sleep + random_delay())
-                else:
-                    return
+                    time.sleep(remain + random_delay())
 
     def run(self):
-        print('\nBot is running...\n')
+        bot_start()
 
-        threads = [
-            threading.Thread(target=self.process_balance),
-            threading.Thread(target=self.process_taps),
-            threading.Thread(target=self.process_tasks),
-            threading.Thread(target=self.process_cipher),
-            threading.Thread(target=self.process_combo),
-            threading.Thread(target=self.process_minigame_tiles),
-            threading.Thread(target=self.process_minigame_candles),
-            threading.Thread(target=self.process_autobuy_upgrades),
-            threading.Thread(target=self.process_keys_minigames),
+        processes = [
+            (True, self.process_balance, localized_text('auto_balance_off')),
+            (config.complete_taps, self.process_taps, localized_text('warning_auto_taps_off')),
+            (config.complete_tasks, self.process_tasks, localized_text('warning_auto_tasks_off')),
+            (config.complete_cipher, self.process_cipher, localized_text('warning_auto_cipher_off')),
+            (config.complete_combo, self.process_combo, localized_text('warning_auto_combo_off')),
+            (config.complete_minigames, self.process_minigame_tiles, localized_text('warning_auto_minigames_off')),
+            (config.complete_minigames, self.process_minigame_candles, localized_text('warning_auto_minigames_off')),
+            (config.complete_autobuy_upgrades, self.process_autobuy_upgrades, localized_text('warning_auto_upgrades_off')),
+            (config.complete_promocodes, self.process_promocodes, localized_text('warning_auto_promocodes_off')),
         ]
+
+        threads = []
+
+        for available, process, message in processes:
+            if available:
+                threads.append(threading.Thread(target=process))
+            else:
+                print(f"{YELLOW}⛔️  {message}{WHITE}")
+        print()
 
         for thread in threads:
             thread.start()
