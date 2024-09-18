@@ -60,7 +60,7 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
                 remain = hamster_client().complete_taps()
-                message = f"🔄   {localized_text('next_taps_after')}: {remain_time(remain)}"
+                message = f"🔄  {localized_text('next_taps_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, '👆  Тапы выполнены')
                 line_after(blank_line=False)
@@ -73,7 +73,7 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
                 remain = hamster_client().complete_daily_chipher()
-                message = f"🔄   {localized_text('next_cipher_after')}: {remain_time(remain)}"
+                message = f"🔄  {localized_text('next_cipher_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, '🔍  Шифр получен')
                 line_after(blank_line=False)
@@ -86,7 +86,7 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
                 remain = hamster_client().complete_daily_tasks()
-                message = f"🔄   {localized_text('next_tasks_after')}: {remain_time(remain)}"
+                message = f"🔄  {localized_text('next_tasks_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, '📑  Задания выполнены')
                 line_after(blank_line=False)
@@ -125,7 +125,7 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
                 remain = hamster_client().complete_daily_combo(buy_anyway=True)
-                message = f"🔄   {localized_text('next_combo_after')}: {remain_time(remain)}"
+                message = f"🔄  {localized_text('next_combo_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, '💰  Комбо выполнено')
                 line_after(blank_line=False)
@@ -138,7 +138,7 @@ class HamsterUltimate:
                 line_before(blank_line=False)
                 current_time(self.Client)
                 remain = random_delay()
-                message = f"🔄   {localized_text('next_purhase_after')}: {remain_time(remain)}"
+                message = f"🔄  {localized_text('next_purhase_after')}: {remain_time(remain)}"
                 most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
                 [hamster_client()._buy_upgrade(card) for card in most_profitable_cards]
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
@@ -160,7 +160,7 @@ class HamsterUltimate:
                         asyncio.run(hamster_client().get_promocodes(count=keys_count, prefix=promo_title, apply_promo=True, one_game=True))
 
                         sleep_between_games = random_delay() / 3
-                        message = f"🔄   {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
+                        message = f"🔄  {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
 
                         print(f"{LIGHT_YELLOW}{message}{WHITE}")
                         hamster_client().send_to_chat(self.chat_id, message, f'🎁  Получено {keys_count} промокодов для {promo_title}')
