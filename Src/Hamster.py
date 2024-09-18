@@ -908,6 +908,7 @@ class HamsterKombatClicker:
                 print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {user_info}{WHITE}")
 
             config.user_name = username
+            config.tg_user_id = user_id
             config.ADD_subscriber(account_info, self.HAMSTER_TOKEN)
             return user_info
 

@@ -64,7 +64,7 @@ class HamsterUltimate:
                     remain = hamster_client().complete_taps()
                     message = f"🔄   {localized_text('next_taps_after')}: {remain_time(remain)}"
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '👆  Тапы выполнены')
                     time_to_sleep = remain
 
@@ -89,7 +89,7 @@ class HamsterUltimate:
                     remain = hamster_client().complete_daily_chipher()
                     message = f"🔄   {localized_text('next_cipher_after')}: {remain_time(remain)}"
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '🔍  Шифр получен')
                     time_to_sleep = remain
 
@@ -114,7 +114,7 @@ class HamsterUltimate:
                     remain = hamster_client().complete_daily_tasks()
                     message = f"🔄   {localized_text('next_tasks_after')}: {remain_time(remain)}"
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '📑  Задания выполнены')
                     time_to_sleep = remain
 
@@ -139,7 +139,7 @@ class HamsterUltimate:
                     remain = hamster_client().complete_daily_minigame('tiles')
                     message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '🪙  Миниигра Tiles пройдена')
                     time_to_sleep = remain
 
@@ -164,7 +164,7 @@ class HamsterUltimate:
                     remain = hamster_client().complete_daily_minigame('candles')
                     message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '🔑  Миниигра Candles пройдена')
                     time_to_sleep = remain
 
@@ -189,7 +189,7 @@ class HamsterUltimate:
                     remain = hamster_client().complete_daily_combo(buy_anyway=True)
                     message = f"🔄   {localized_text('next_combo_after')}: {remain_time(remain)}"
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '💰  Комбо выполнено')
                     time_to_sleep = remain
 
@@ -218,7 +218,7 @@ class HamsterUltimate:
                     for card in most_profitable_cards:
                         hamster_client()._buy_upgrade(card)
 
-                    print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     hamster_client().send_to_chat(self.chat_id, message, '🛍  Улучшения куплены')
                     time_to_sleep = remain
 
@@ -250,15 +250,12 @@ class HamsterUltimate:
                             sleep_between_games = random_delay() / 3
                             message = f"🔄   {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
 
-                            print(f"\n{LIGHT_YELLOW}{message}{WHITE}")
+                            print(f"{LIGHT_YELLOW}{message}{WHITE}")
                             hamster_client().send_to_chat(self.chat_id, message, f'🎁  Получено {keys_count} промокодов для {promo_title}')
-
                             time.sleep(sleep_between_games)
-                            time_to_sleep = sleep_between_games
-
                     else:
                         print(f"\n{LIGHT_YELLOW}⚠️  {localized_text('all_promocodes_recieved')}: {remain_time(remain)}{WHITE}")
-                        time_to_sleep = remain
+                        time_to_sleep = random_delay()
 
                 else:
                     print(f"{YELLOW}⛔️  {localized_text('warning_auto_promocodes_off')}{WHITE}")
