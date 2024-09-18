@@ -33,10 +33,8 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
-
                 remain = 5000 + random_delay()
                 message = f"🔄  {localized_text('next_balance_after')}: {remain_time(remain)}"
-
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = hamster_client()._get_balance()
                 balance = f"✅  Баланс получен \n" \
@@ -45,14 +43,9 @@ class HamsterUltimate:
                           f"📈  Доход: {info['earn_per_hour']:,} в час\n" \
                           f"🔑  Ключей: {info['keys']:,} \n"
                 hamster_client().send_to_chat(self.chat_id, message, balance.replace(',', ' '))
-                time_to_sleep = remain
-
                 line_after(blank_line=False)
 
-            if time_to_sleep:
-                time.sleep(time_to_sleep + random_delay())
-            else:
-                return
+            time.sleep(remain + random_delay())
 
     def process_taps(self):
         while True:
@@ -65,7 +58,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '👆  Тапы выполнены')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_cipher(self):
         while True:
@@ -78,7 +71,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '🔍  Шифр получен')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_tasks(self):
         while True:
@@ -91,7 +84,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '📑  Задания выполнены')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_minigame_tiles(self):
         while True:
@@ -104,7 +97,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '🪙  Миниигра Tiles пройдена')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_minigame_candles(self):
         while True:
@@ -117,7 +110,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '🔑  Миниигра Candles пройдена')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_combo(self):
         while True:
@@ -130,7 +123,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '💰  Комбо выполнено')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_autobuy_upgrades(self):
         while True:
@@ -145,7 +138,7 @@ class HamsterUltimate:
                 hamster_client().send_to_chat(self.chat_id, message, '🛍  Улучшения куплены')
                 line_after(blank_line=False)
 
-                time.sleep(remain + random_delay())
+            time.sleep(remain + random_delay())
 
     def process_promocodes(self):
         while True:
