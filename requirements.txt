@@ -6,6 +6,3 @@ fake-useragent==1.5.1
 spinners==0.0.24
 python-Levenshtein==0.25.1
 aiohttp==3.10.4
-pydantic==2.8.2
-Pyrogram==2.0.106
-TgCrypto==1.2.5
