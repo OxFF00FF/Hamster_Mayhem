@@ -982,9 +982,7 @@ class HamsterKombatClicker:
             else:
                 print(f"{YELLOW}ℹ️  Промокоды для {LIGHT_YELLOW}`{promo_name}`{YELLOW} сегодня уже получены{WHITE}")
 
-        if result:
-            print(f"{GREEN}✅  {localized_text('all_promocodes_recieved')}{WHITE}")
-        else:
+        if not result:
             print(f"{YELLOW}ℹ️  {localized_text('info_all_promocodes_already_recieved')}{WHITE}")
 
         return result, remain

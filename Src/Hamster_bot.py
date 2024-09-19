@@ -139,17 +139,21 @@ class HamsterUltimate:
                 current_time(self.Client)
                 games, remain = hamster_client().get_keys_minigames_for_generate()
                 remain += random_delay()
-                if isinstance(games, list) and games != []:
-                    for game in games:
-                        keys_count = int(game['count'])
-                        promo_prefix = game['prefix']
-                        asyncio.run(hamster_client().get_promocodes(count=keys_count, prefix=promo_prefix, apply_promo=True, one_game=True))
-                        sleep_between_games = random_delay() / 5
-                        message = f"🔄  {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
-                        print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                        keys_recieved = localized_text('info_keys_recieved').split()[-1]
-                        hamster_client().send_to_chat(self.chat_id, message, f"🎁  {promo_prefix} · {keys_recieved}: {keys_count}")
-                        time.sleep(sleep_between_games)
+
+                for game in games:
+                    keys_count = int(game['count'])
+                    promo_prefix = game['prefix']
+                    asyncio.run(hamster_client().get_promocodes(count=keys_count, prefix=promo_prefix, apply_promo=True, one_game=True))
+                    sleep_between_games = 1
+                    message = f"🔄  {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
+                    print(f"{LIGHT_YELLOW}{message}{WHITE}")
+                    keys_recieved = localized_text('info_keys_recieved').split()[-1]
+                    hamster_client().send_to_chat(self.chat_id, message, f"🎁  {promo_prefix} · {keys_recieved}: {keys_count}")
+                    time.sleep(sleep_between_games)
+
+                if games:
+                    print(f"{GREEN}✅  {localized_text('all_promocodes_recieved')}{WHITE}")
+
                 message = f"🔄  {localized_text('info_next_keys_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"🎉  {localized_text('all_promocodes_recieved')}")
@@ -160,7 +164,7 @@ class HamsterUltimate:
         bot_start()
 
         processes = [
-            (True, self.process_balance, localized_text('auto_balance_off')),
+            # (True, self.process_balance, localized_text('auto_balance_off')),
             (config.complete_taps, self.process_taps, localized_text('warning_auto_taps_off')),
             (config.complete_tasks, self.process_tasks, localized_text('warning_auto_tasks_off')),
             (config.complete_cipher, self.process_cipher, localized_text('warning_auto_cipher_off')),
