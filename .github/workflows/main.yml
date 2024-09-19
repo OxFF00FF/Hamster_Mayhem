@@ -13,7 +13,7 @@ jobs:
       - name: Get current version from __init__.py
         id: get_version
         run: |
-          VERSION=$(grep -Po "(?<=__version__ = ')[^']+" src/__init__.py)
+          VERSION=$(grep -Po "(?<=__version__ = ')[^']+" Src/__init__.py)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Increment version
