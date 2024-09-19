@@ -205,3 +205,4 @@ class HamsterUltimate:
 
         for thread in threads:
             thread.join()
+
