@@ -23,7 +23,7 @@ jobs:
           NEW_LAST_PART=$(printf "%03d" $((10#$LAST_PART + 1)))
           NEW_VERSION=$(echo $VERSION | awk -F'.' -v new_last_part=$NEW_LAST_PART '{print $1"."$2"."$3"."new_last_part}')
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          sed -i "s/__version__ = '$VERSION'/__version__ = '$NEW_VERSION'/" src/__init__.py
+          sed -i "s/__version__ = '$VERSION'/__version__ = '$NEW_VERSION'/" Src/__init__.py
 
       - name: Commit version update
         run: |
