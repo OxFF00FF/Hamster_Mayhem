@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 from random import randint
 
+import requests
 from spinners import Spinners
 from Src.db_SQlite import ConfigDB
 from Src.Colors import *
@@ -262,8 +263,14 @@ def align_settins(text):
 
 
 def get_games_data():
-    with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
-        games_data = json.loads(f.read())
+    try:
+        r = requests.get('https://raw.githubusercontent.com/OxFF00FF/Hamster_Mayhem/master/Src/data/playground_games_data.json')
+        games_data = r.json()
+
+    except:
+        with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
+            games_data = json.loads(f.read())
+
     return games_data
 
 
