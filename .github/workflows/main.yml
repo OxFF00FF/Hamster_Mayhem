@@ -10,14 +10,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get the current version
-        id: version
-        run: echo "version=$(date +'%Y.%m.%d-%H%M%S')" >> $GITHUB_ENV
+      - name: Get current version from __init__.py
+        id: get_version
+        run: |
+          VERSION=$(grep -Po "(?<=__version__ = ')[^']+" src/__init__.py)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Increment version
+        id: increment_version
+        run: |
+          LAST_PART=$(echo $VERSION | awk -F'.' '{print $4}')
+          NEW_LAST_PART=$(printf "%03d" $((10#$LAST_PART + 1)))
+          NEW_VERSION=$(echo $VERSION | awk -F'.' -v new_last_part=$NEW_LAST_PART '{print $1"."$2"."$3"."new_last_part}')
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          sed -i "s/__version__ = '$VERSION'/__version__ = '$NEW_VERSION'/" src/__init__.py
+
+      - name: Commit version update
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add src/__init__.py
+          git commit -m "Update version to $NEW_VERSION"
+          git push
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          tag: v${{ env.version }}
-          name: "Release v${{ env.version }}"
-          body: Test
+          tag: ${{ env.NEW_VERSION }}
+          name: "Release ${{ env.NEW_VERSION }}"
           token: ${{ secrets.GITHUB_TOKEN }}
