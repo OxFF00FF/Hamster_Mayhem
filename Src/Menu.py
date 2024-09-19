@@ -55,6 +55,7 @@ def main_menu_not_logged():
     menu = localized_text('main_menu_header')
     menu += (
         f"  {LIGHT_YELLOW}6 | {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}s | {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m | {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
         f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
     )

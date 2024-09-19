@@ -154,7 +154,7 @@ def handle_playground_menu_choice():
 
     while True:
         playground_menu()
-        choice = input(kali(f"{'/'.join(games)}/./0", '~/Playground', localized_text('choose_action')))
+        choice = input(kali(f"{'/'.join(games)}/*/./0", '~/Playground', localized_text('choose_action')))
 
         line_before()
 

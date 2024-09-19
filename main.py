@@ -22,7 +22,7 @@ def main():
                 handle_main_menu_choice(choice)
 
             else:
-                choice = input(kali('6/s/0', '~', localized_text('choose_action')))
+                choice = input(kali('6/s/m/0', '~', localized_text('choose_action')))
                 handle_main_menu_not_logged_choice(choice)
 
             line_after()
