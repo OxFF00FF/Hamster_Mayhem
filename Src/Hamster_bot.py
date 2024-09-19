@@ -114,7 +114,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                hamster_client().send_to_chat(self.chat_id, message, f"🪙  {localized_text('info_minigame_complete'), 'Tiles'}")
+                hamster_client().send_to_chat(self.chat_id, message, f"🪙  {localized_text('info_minigame_complete', 'Tiles')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -128,7 +128,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-                hamster_client().send_to_chat(self.chat_id, message, f"🔑  {localized_text('info_minigame_complete'), 'Candles'}")
+                hamster_client().send_to_chat(self.chat_id, message, f"🔑  {localized_text('info_minigame_complete', 'Candles')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
