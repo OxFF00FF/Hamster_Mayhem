@@ -43,7 +43,7 @@ class HamsterUltimate:
                           f"💰  Баланс: {info['balanceCoins']:,} \n" \
                           f"🌟  Всего: {info['total']:,} \n" \
                           f"📈  Доход: {info['earn_per_hour']:,} в час\n" \
-                          f"🔑  Ключей: {info['keys']:,} \n"
+                          f"🔑  Ключей: {info['keys']:,}"
                 hamster_client().send_to_chat(self.chat_id, message, balance.replace(',', ' '))
                 line_after(blank_line=False)
             time.sleep(remain)
@@ -205,4 +205,3 @@ class HamsterUltimate:
 
         for thread in threads:
             thread.join()
-
