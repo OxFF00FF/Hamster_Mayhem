@@ -1,0 +1,33 @@
+name: CI/CD
+
+on: push
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Lint Flake8
+        run: flake8 .
+
+create-release:
+  runs-on: ubuntu-latest
+  if: github.ref == 'refs/heads/main'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get the current version
+      id: version
+      run: echo "::set-output name=version::$(date +'%Y.%m.%d-%H%M%S')"
+
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: v${{ steps.version.outputs.version }}
+        name: "Release v${{ steps.version.outputs.version }}"
+        body: 'Test'
+        token: ${{ secrets.GITHUB_TOKEN }}
