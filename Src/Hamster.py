@@ -982,6 +982,11 @@ class HamsterKombatClicker:
             else:
                 print(f"{YELLOW}ℹ️  Промокоды для {LIGHT_YELLOW}`{promo_name}`{YELLOW} сегодня уже получены{WHITE}")
 
+        if result:
+            print(f"{GREEN}✅  {localized_text('all_promocodes_recieved')}{WHITE}")
+        else:
+            print(f"{YELLOW}ℹ️  {localized_text('info_all_promocodes_already_recieved')}{WHITE}")
+
         return result, remain
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
