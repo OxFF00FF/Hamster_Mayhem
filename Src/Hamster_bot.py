@@ -33,7 +33,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = 5000 + random_delay()
+
                 message = f"🔄  {localized_text('next_balance_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = hamster_client()._get_balance()
@@ -51,7 +53,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = hamster_client().complete_taps() + random_delay()
+
                 message = f"🔄  {localized_text('next_taps_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"👆  {localized_text('info_taps_completed')}")
@@ -63,7 +67,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = hamster_client().complete_daily_tasks() + random_delay()
+
                 message = f"🔄  {localized_text('next_tasks_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"📑  {localized_text('info_all_tasks_complete')}")
@@ -75,7 +81,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = hamster_client().complete_daily_chipher() + random_delay()
+
                 message = f"🔄  {localized_text('next_cipher_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"🔍  {localized_text('info_cipher_completed')}")
@@ -87,7 +95,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = hamster_client().complete_daily_combo(buy_anyway=True) + random_delay()
+
                 message = f"🔄  {localized_text('next_combo_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"💰  {localized_text('info_combo_completed')}")
@@ -99,7 +109,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = hamster_client().complete_daily_minigame('tiles') + random_delay()
+
                 message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"🪙  {localized_text('info_minigame_complete'), 'Tiles'}")
@@ -111,7 +123,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = hamster_client().complete_daily_minigame('candles') + random_delay()
+
                 message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 hamster_client().send_to_chat(self.chat_id, message, f"🔑  {localized_text('info_minigame_complete'), 'Candles'}")
@@ -123,7 +137,9 @@ class HamsterUltimate:
             with print_lock:
                 line_before(blank_line=False)
                 current_time(self.Client)
+
                 remain = random_delay()
+
                 message = f"🔄  {localized_text('next_purhase_after')}: {remain_time(remain)}"
                 most_profitable_cards = hamster_client().get_most_profitable_cards(top=5)
                 [hamster_client()._buy_upgrade(card) for card in most_profitable_cards]
@@ -150,7 +166,6 @@ class HamsterUltimate:
                     keys_recieved = localized_text('info_keys_recieved').split()[-1]
                     hamster_client().send_to_chat(self.chat_id, message, f"🎁  {promo_prefix} · {keys_recieved}: {keys_count}")
                     time.sleep(sleep_between_games)
-
                 if games:
                     print(f"{GREEN}✅  {localized_text('all_promocodes_recieved')}{WHITE}")
 
@@ -164,7 +179,7 @@ class HamsterUltimate:
         bot_start()
 
         processes = [
-            # (True, self.process_balance, localized_text('auto_balance_off')),
+            (True, self.process_balance, localized_text('auto_balance_off')),
             (config.complete_taps, self.process_taps, localized_text('warning_auto_taps_off')),
             (config.complete_tasks, self.process_tasks, localized_text('warning_auto_tasks_off')),
             (config.complete_cipher, self.process_cipher, localized_text('warning_auto_cipher_off')),
