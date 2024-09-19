@@ -13,21 +13,21 @@ jobs:
       - name: Lint Flake8
         run: flake8 .
 
-create-release:
-  runs-on: ubuntu-latest
-  if: github.ref == 'refs/heads/master'
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  create-release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Get the current version
-      id: version
-      run: echo "::set-output name=version::$(date +'%Y.%m.%d-%H%M%S')"
+      - name: Get the current version
+        id: version
+        run: echo "::set-output name=version::$(date +'%Y.%m.%d-%H%M%S')"
 
-    - name: Create GitHub Release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: v${{ steps.version.outputs.version }}
-        name: "Release v${{ steps.version.outputs.version }}"
-        body: 'Test'
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ steps.version.outputs.version }}
+          name: "Release v${{ steps.version.outputs.version }}"
+          body: 'Test'
+          token: ${{ secrets.GITHUB_TOKEN }}
