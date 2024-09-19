@@ -959,7 +959,6 @@ class HamsterKombatClicker:
         promos = self._get_promos()
 
         result = []
-        all_claimed = True
         remain = promos[0]['seconds']
 
         for game in games_data:
@@ -980,14 +979,10 @@ class HamsterKombatClicker:
 
             if not is_claimed:
                 result.append({'prefix': prefix, 'count': count})
-                all_claimed = False
             else:
                 print(f"{YELLOW}ℹ️  Промокоды для {LIGHT_YELLOW}`{promo_name}`{YELLOW} сегодня уже получены{WHITE}")
 
-        if all_claimed:
-            return remain
-
-        return result
+        return result, remain
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
         games_data = [app for app in get_games_data()['apps'] if app.get('available')]
