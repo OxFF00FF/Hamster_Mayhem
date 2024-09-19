@@ -157,7 +157,8 @@
         "warning_auto_upgrades_off": "Автматическая покупка карт отключена",
         "warning_auto_promocodes_off": "Активация промокодов отключена",
         "bying_upgrade": "Покупаем: {0} за {1} монет",
-        "setting_all_cards_in_top": "Все карты в топе"
+        "setting_all_cards_in_top": "Все карты в топе",
+        "upgrades_purhased": "Улучшения куплены"
     },
 
     "en": {
@@ -318,6 +319,7 @@
         "warning_auto_upgrades_off": "Automatic card buying disabled",
         "warning_auto_promocodes_off": "Activation of promocodes is disabled",
         "bying_upgrade": "Bying: {0} for {1} coins",
-        "setting_all_cards_in_top": "Show all cards in top"
+        "setting_all_cards_in_top": "Show all cards in top",
+        "upgrades_purhased": "Upgrades purhased"
     }
 }
