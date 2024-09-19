@@ -2,7 +2,7 @@ import asyncio
 import base64
 import datetime
 import hashlib
-import json
+# import json
 import logging
 import os
 import platform
@@ -12,7 +12,7 @@ import traceback
 import uuid
 from datetime import datetime
 from random import randint
-from urllib.parse import unquote
+# from urllib.parse import unquote
 
 import aiohttp
 import requests
@@ -20,8 +20,8 @@ from bs4 import BeautifulSoup as BS
 from dotenv import load_dotenv
 from fake_useragent import UserAgent
 from fuzzywuzzy import fuzz
-from pyrogram import Client
-from pyrogram.raw.functions.messages import RequestWebView
+# from pyrogram import Client
+# from pyrogram.raw.functions.messages import RequestWebView
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
@@ -940,46 +940,46 @@ class HamsterKombatClicker:
 
             config.hamster_token = False
 
-    async def login_by_phone_number(self, session_name: str = 'hamster_mayhen_session') -> str:
-        ua = UserAgent()
-
-        if not os.path.exists('sessions'):
-            os.makedirs('sessions')
-
-        try:
-            async with Client(name=session_name, api_id=os.getenv('TELEGRAM_API_ID'), api_hash=os.getenv('TELEGRAM_API_HASH'), workdir="sessions/") as client:
-                peer = await client.resolve_peer('hamster_kombat_bot')
-                web_view = await client.invoke(RequestWebView(peer=peer, bot=peer, platform='android', from_bot_menu=False, url=self.base_url))
-                auth_url = web_view.url
-                init_data_raw = unquote(auth_url.split('tgWebAppData=')[1].split('&tgWebAppVersion')[0])
-
-            headers = {
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Connection': 'keep-alive',
-                'Origin': 'https://hamsterkombatgame.io',
-                'Referer': 'https://hamsterkombatgame.io/',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-site',
-                'User-Agent': ua.random,
-                'accept': 'application/json',
-                'content-type': 'application/json'
-            }
-            response = requests.post(url=f'{self.base_url}/auth/auth-by-telegram-webapp', headers=headers, data=json.dumps({"initDataRaw": init_data_raw}))
-            response.raise_for_status()
-
-            data = response.json()
-            if data:
-                auth_token = data.get('authToken')
-                bearer_token = f"Bearer {auth_token}"
-
-                config.hamster_token = True
-                return bearer_token if auth_token else None
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            config.hamster_token = False
-            exit(1)
+    # async def login_by_phone_number(self, session_name: str = 'hamster_mayhen_session') -> str:
+    #     ua = UserAgent()
+    #
+    #     if not os.path.exists('sessions'):
+    #         os.makedirs('sessions')
+    #
+    #     try:
+    #         async with Client(name=session_name, api_id=os.getenv('TELEGRAM_API_ID'), api_hash=os.getenv('TELEGRAM_API_HASH'), workdir="sessions/") as client:
+    #             peer = await client.resolve_peer('hamster_kombat_bot')
+    #             web_view = await client.invoke(RequestWebView(peer=peer, bot=peer, platform='android', from_bot_menu=False, url=self.base_url))
+    #             auth_url = web_view.url
+    #             init_data_raw = unquote(auth_url.split('tgWebAppData=')[1].split('&tgWebAppVersion')[0])
+    #
+    #         headers = {
+    #             'Accept-Language': 'en-US,en;q=0.9',
+    #             'Connection': 'keep-alive',
+    #             'Origin': 'https://hamsterkombatgame.io',
+    #             'Referer': 'https://hamsterkombatgame.io/',
+    #             'Sec-Fetch-Dest': 'empty',
+    #             'Sec-Fetch-Mode': 'cors',
+    #             'Sec-Fetch-Site': 'same-site',
+    #             'User-Agent': ua.random,
+    #             'accept': 'application/json',
+    #             'content-type': 'application/json'
+    #         }
+    #         response = requests.post(url=f'{self.base_url}/auth/auth-by-telegram-webapp', headers=headers, data=json.dumps({"initDataRaw": init_data_raw}))
+    #         response.raise_for_status()
+    #
+    #         data = response.json()
+    #         if data:
+    #             auth_token = data.get('authToken')
+    #             bearer_token = f"Bearer {auth_token}"
+    #
+    #             config.hamster_token = True
+    #             return bearer_token if auth_token else None
+    #
+    #     except Exception as e:
+    #         print(f"An error occurred: {e}")
+    #         config.hamster_token = False
+    #         exit(1)
 
     def get_purhase_count(self):
         result = {}
