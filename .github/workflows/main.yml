@@ -10,11 +10,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get the current version
+        id: version
+        run: echo "version=$(date +'%Y.%m.%d-%H%M%S')" >> $GITHUB_ENV
+
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          tag: v1.2.3
-          name: "Release v1.2.3"
-          body: |
-            'Test' | 🏖️
+          tag: v${{ env.version }}
+          name: "Release v${{ env.version }}"
+          body: Test
           token: ${{ secrets.GITHUB_TOKEN }}
