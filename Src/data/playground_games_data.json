@@ -8,6 +8,28 @@
     },
     "apps": [
         {
+            "appToken": "daab8f83-8ea2-4ad0-8dd5-d33363129640",
+            "promoId": "daab8f83-8ea2-4ad0-8dd5-d33363129640",
+            "prefix": "WATER",
+            "title": "Among Water",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDEA4",
+            "emoji": "\uD83D\uDEA4",
+            "available": true
+        },
+        {
+            "appToken": "eb518c4b-e448-4065-9d33-06f3039f0fcb",
+            "promoId": "eb518c4b-e448-4065-9d33-06f3039f0fcb",
+            "prefix": "INFCT",
+            "title": "Infected Frontier",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDFCD",
+            "emoji": "\uD83C\uDFCD",
+            "available": true
+        },
+        {
             "appToken": "4bdc17da-2601-449b-948e-f8c7bd376553",
             "promoId": "4bdc17da-2601-449b-948e-f8c7bd376553",
             "prefix": "COUNT",
