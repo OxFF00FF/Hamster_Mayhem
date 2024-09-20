@@ -8,10 +8,10 @@ from Src.utils import get_games_data, localized_text, kali
 
 import platform
 
+config = ConfigDB()
+
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-config = ConfigDB()
 
 choice_text = kali(localized_text('yes_enter'), '~/Playground', localized_text('apply_promo_after_generate'))
 

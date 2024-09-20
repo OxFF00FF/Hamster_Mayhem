@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     @property
     def DB_URL_sqlite(self):
-        return f"sqlite:///Hamster_db.sqlite3"
+        return f"sqlite:///database/db/Hamster_db.sqlite3"
 
     model_config = SettingsConfigDict(env_file='../.env')
 
