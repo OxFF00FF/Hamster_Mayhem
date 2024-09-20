@@ -7,3 +7,5 @@ venv
 tests
 generated keys
 database
+database/db/Config.db
+database/db/Hamster_db.sqlite3
