@@ -12,7 +12,7 @@ load_dotenv()
 
 class ConfigDB:
     def __init__(self):
-        self.con = sqlite3.connect('Src/data/Config.db', check_same_thread=False)
+        self.con = sqlite3.connect('database/Config.db', check_same_thread=False)
         self.cur = self.con.cursor()
 
         self.SET_default_config()

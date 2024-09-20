@@ -161,7 +161,7 @@ def generation_status(status):
 
 def get_salt(salt):
     try:
-        with open('Src/data/salt.json', 'r', encoding='utf-8') as f:
+        with open('data/salt.json', 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
         return data[salt]
 
@@ -197,7 +197,7 @@ def spinners_table(num_columns=3):
 
 def localized_text(key, *args, **kwargs):
     try:
-        with open('Src/data/translations.json', 'r', encoding='utf-8') as f:
+        with open('data/translations.json', 'r', encoding='utf-8') as f:
             translations = json.load(f)
     except json.JSONDecodeError:
         logging.error(f"Failed to decode file `translations.json`")
@@ -264,11 +264,11 @@ def align_settins(text):
 
 def get_games_data():
     try:
-        r = requests.get('https://raw.githubusercontent.com/OxFF00FF/Hamster_Mayhem/master/Src/data/playground_games_data.json')
+        r = requests.get('https://raw.githubusercontent.com/OxFF00FF/Hamster_Mayhem/master/data/playground_games_data.json')
         games_data = r.json()
 
     except:
-        with open('Src/data/playground_games_data.json', 'r', encoding='utf-8') as f:
+        with open('data/playground_games_data.json', 'r', encoding='utf-8') as f:
             games_data = json.loads(f.read())
 
     return games_data
@@ -290,7 +290,7 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
 
     games_data.append(new_app)
 
-    with open('Src/data/playground_games_data.json', 'w', encoding='utf-8') as file:
+    with open('data/playground_games_data.json', 'w', encoding='utf-8') as file:
         json.dump(games_data, file, ensure_ascii=False, indent=4)
 
 
