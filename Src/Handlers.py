@@ -21,7 +21,7 @@ def handle_main_menu_choice(choice):
         print(hamster_client().daily_info())
 
     elif choice == '@':
-        bot = HamsterUltimate(TOKEN=hamster_client().HAMSTER_TOKEN)
+        bot = HamsterUltimate(token=hamster_client().HAMSTER_TOKEN)
         bot.run()
 
     elif choice == '1':
