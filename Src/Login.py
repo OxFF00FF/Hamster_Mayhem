@@ -33,7 +33,7 @@ def hamster_client(account: str = None, token: str = None):
 
         HAMSTER_TOKEN = app_config.HAMSTER_TOKEN_1
         return HamsterKombatClicker(HAMSTER_TOKEN)
-    
+
     except Exception as e:
         print(f"{RED}🚫  {localized_text('error_occured')}: {e}")
 
