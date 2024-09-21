@@ -25,6 +25,9 @@ load_dotenv()
 
 class ConfigDB:
     def __init__(self):
+        if not os.path.exists('database/db/'):
+            os.makedirs('database/db/')
+
         self.con = sqlite3.connect('database/db/Config.db', check_same_thread=False)
         self.cur = self.con.cursor()
 
