@@ -33,9 +33,9 @@ jobs:
           git commit -m "build v$NEW_VERSION"
           git push
 
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: v${{ env.NEW_VERSION }}
-          name: "build v${{ env.NEW_VERSION }}"
-          token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Create GitHub Release
+#        uses: ncipollo/release-action@v1
+#        with:
+#          tag: v${{ env.NEW_VERSION }}
+#          name: "build v${{ env.NEW_VERSION }}"
+#          token: ${{ secrets.GITHUB_TOKEN }}
