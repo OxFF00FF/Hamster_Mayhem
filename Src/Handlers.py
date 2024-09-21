@@ -5,40 +5,39 @@ from spinners import Spinners
 
 from Src.Colors import *
 from Src.Hamster_bot import HamsterUltimate
-from Src.db_SQlite import ConfigDB
 from Src.Accounts import choose_account
-from Src.Generators import genetare_for_all_games, generate_for_game
-from Src.Login import hamster_client
+from Src.Generators import genetare_for_all_games, generate_for_game, generate_for_available_games
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu, main_menu_not_logged
 from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text, kali, remain_time
+from Src.Login import HamsterClient as client
 
-config = ConfigDB()
+config = client.user_config
 
 
 def handle_main_menu_choice(choice):
     if choice == '#':
         line_before()
-        print(hamster_client().daily_info())
+        print(client.daily_info())
 
     elif choice == '@':
-        bot = HamsterUltimate(token=hamster_client().HAMSTER_TOKEN)
+        bot = HamsterUltimate(token=client.HAMSTER_TOKEN)
         bot.run()
 
     elif choice == '1':
         line_before()
-        hamster_client().complete_taps()
+        client.complete_taps()
 
     elif choice == '2':
         line_before()
-        hamster_client().complete_daily_tasks()
+        client.complete_daily_tasks()
 
     elif choice == '3':
         line_before()
-        hamster_client().complete_daily_chipher()
+        client.complete_daily_chipher()
 
     elif choice == '4':
         line_before()
-        hamster_client().complete_daily_combo()
+        client.complete_daily_combo()
 
     elif choice == '5':
         line_before()
@@ -55,11 +54,11 @@ def handle_main_menu_choice(choice):
         config.account = choose_account()
 
         line_before()
-        hamster_client().login()
+        client.login()
 
     elif choice == '$':
         line_before()
-        profitable_cards = hamster_client().get_most_profitable_cards()
+        profitable_cards = client.get_most_profitable_cards()
         print(localized_text('info_rent_coeff_coefficient'))
 
         print(localized_text('top_profit_cards'))
@@ -93,21 +92,21 @@ def handle_main_menu_choice(choice):
 
     elif choice.startswith('$'):
         line_before()
-        cards = hamster_client().get_most_profitable_cards()
+        cards = client.get_most_profitable_cards()
         card_index = int(choice[1:]) - 1
 
         if 0 <= card_index < len(cards):
             card = cards[card_index]
             upgrade_id = card['id']
-            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
-            hamster_client().get_most_profitable_cards()
+            client._buy_upgrade(upgradeId=upgrade_id)
+            client.get_most_profitable_cards()
 
     elif choice.startswith('+'):
         line_before()
         match = re.search(pattern=r'\+(.*?)$', string=choice)
         if match:
             upgrade_id = match.group(1)
-            hamster_client()._buy_upgrade(upgradeId=upgrade_id)
+            client._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
         line_before()
@@ -167,7 +166,7 @@ def handle_playground_menu_choice():
 
             else:
                 games_count = int(choice.strip('*'))
-                asyncio.run(genetare_for_all_games(games_count))
+                asyncio.run(generate_for_available_games(games_count))
 
         elif choice == '.':
             print(f"ℹ️  {localized_text('reached_main_menu')}")
@@ -194,7 +193,7 @@ def handle_minigames_choice():
 
         if choice in choices:
             selected_index = int(choice) - 1
-            hamster_client().complete_daily_minigame(minigames[selected_index]['title'])
+            client.complete_daily_minigame(minigames[selected_index]['title'])
             line_after()
 
         elif choice == '.':
