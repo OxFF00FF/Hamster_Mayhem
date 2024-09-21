@@ -6,13 +6,26 @@ from dotenv import load_dotenv
 
 from Src.Colors import *
 
-logging.basicConfig(format=f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}", level=logging.ERROR)
+formatter = logging.Formatter(f"{WHITE}%(asctime)s - %(name)s - %(levelname)s |  %(message)s  | %(filename)s - %(funcName)s() - %(lineno)d{WHITE}")
+logging.basicConfig(format=formatter._fmt, level=logging.ERROR)
+
+sqlalchemy_logger = logging.getLogger('sqlalchemy.engine')
+sqlalchemy_logger.setLevel(logging.ERROR)
+
+sqlalchemy_logger.propagate = False
+
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+
+sqlalchemy_logger.handlers = []
+sqlalchemy_logger.addHandler(handler)
+
 load_dotenv()
 
 
 class ConfigDB:
     def __init__(self):
-        self.con = sqlite3.connect('Src/data/Config.db', check_same_thread=False)
+        self.con = sqlite3.connect('database/db/Config.db', check_same_thread=False)
         self.cur = self.con.cursor()
 
         self.SET_default_config()
