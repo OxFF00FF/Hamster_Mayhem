@@ -1,11 +1,10 @@
-import logging
 import os
 
 from Src.Colors import *
-from Src.Menu import main_menu
-from Src.db_SQlite import ConfigDB
 from Src.Hamster import HamsterKombatClicker
 from Src.Login import hamster_client
+from Src.Menu import main_menu
+from Src.db_SQlite import ConfigDB
 from Src.utils import localized_text, kali
 
 config = ConfigDB()
