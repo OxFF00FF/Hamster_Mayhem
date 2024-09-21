@@ -5,12 +5,9 @@ from Src.Handlers import handle_main_menu_choice, handle_main_menu_not_logged_ch
 from Src.Menu import main_menu
 from Src.utils import banner, line_after, localized_text, kali, check_environment
 from Src.Login import HamsterClient as client
-from database.queries import init_db
 
 
 def main():
-    init_db()
-
     config = client.user_config
     try:
         banner()

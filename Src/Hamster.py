@@ -18,13 +18,15 @@ from bs4 import BeautifulSoup as BS
 from fake_useragent import UserAgent
 from fuzzywuzzy import fuzz
 from config import app_config
-from database.queries import SyncORM as db, ConfigManager
+from database.queries import SyncORM as db
+from database.queries import ConfigManager
 
 from Src.Colors import *
 from Src.db_SQlite import ConfigDB
 from Src.utils import (text_to_morse, remain_time, get_games_data, line_before,
                        generation_status, get_salt, localized_text, align_daily_info,
                        align_summary, line_after, update_spinner, loading_v2, kali)
+from database.queries import init_db
 
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -36,6 +38,8 @@ config_manager = ConfigManager()
 class HamsterKombatClicker:
 
     def __init__(self, hamster_token):
+        init_db()
+
         if hamster_token is None:
             self.HAMSTER_TOKEN = app_config.HAMSTER_TOKEN_1
         else:
