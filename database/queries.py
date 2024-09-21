@@ -34,7 +34,7 @@ class SyncORM:
 
             default_config = {
                 'FK__subscribers_id': new_user.id,
-                'account': '',
+                'account': 'HAMSTER_TOKEN_1',
                 'send_to_group': False,
                 'save_to_file': False,
                 'apply_promo': False,

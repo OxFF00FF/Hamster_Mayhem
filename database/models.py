@@ -30,9 +30,9 @@ class User(Base):
     # Account settings
     tg_user_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     hamster_token: Mapped[str] = mapped_column(String(100), nullable=True)
-    username: Mapped[str] = mapped_column(String(30), unique=True)
-    account: Mapped[str] = mapped_column(String(30), default='HAMSTER_TOKEN_1')
-    is_subscriber: Mapped[bool] = mapped_column(Boolean, default=1)
+    username: Mapped[str] = mapped_column(String(30))
+    account: Mapped[str] = mapped_column(String(30))
+    is_subscriber: Mapped[int] = mapped_column(Integer, default=1)
 
     created_at: Mapped[created_at_type]
     updated_at: Mapped[updated_at_type]
@@ -47,6 +47,7 @@ class UserSetting(Base):
     FK__subscribers_id: Mapped[int] = mapped_column(ForeignKey("subscribers.id", ondelete='CASCADE'))
 
     # App settings
+    account: Mapped[str] = mapped_column(String(30))
     send_to_group: Mapped[int] = mapped_column(Integer)
     save_to_file: Mapped[int] = mapped_column(Integer)
     apply_promo: Mapped[int] = mapped_column(Integer)
@@ -56,8 +57,8 @@ class UserSetting(Base):
     group_url: Mapped[str] = mapped_column(String(50), nullable=True)
     chat_id: Mapped[int] = mapped_column(Integer, nullable=True)
     cards_in_top: Mapped[int] = mapped_column(Integer)
-    all_cards_in_top: Mapped[int] = mapped_column()
-    has_hamster_token: Mapped[int] = mapped_column()
+    all_cards_in_top: Mapped[int] = mapped_column(Integer)
+    has_hamster_token: Mapped[int] = mapped_column(Integer)
 
     # Bot settings
     balance_threshold: Mapped[int] = mapped_column(Integer)
@@ -69,4 +70,4 @@ class UserSetting(Base):
     complete_autobuy_upgrades: Mapped[int] = mapped_column(Integer)
     complete_promocodes: Mapped[int] = mapped_column(Integer)
 
-    user: Mapped["User"] = relationship("User", back_populates="settings")
+    user = relationship("User", back_populates="settings")
