@@ -7,5 +7,4 @@ venv
 tests
 Src/data/Config.db
 generated keys
-database
 database/db
