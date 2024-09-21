@@ -181,7 +181,6 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
             return
 
     def _get_balance(self) -> dict or None:
@@ -488,10 +487,10 @@ class HamsterKombatClicker:
 
             user = response.json().get(f'{self.season}User', {})
             if user:
-                available_taps = int(user.get('availableTaps'))
-                max_taps = int(user.get('maxTaps'))
-                earn_per_sec = int(user.get('earnPerTap'))
-                taps_recoverper_sec = int(user.get('tapsRecoverPerSec'))
+                available_taps = int(user.get('availableTaps', 0))
+                max_taps = int(user.get('maxTaps', 0))
+                earn_per_sec = int(user.get('earnPerTap', 1))
+                taps_recoverper_sec = int(user.get('tapsRecoverPerSec', 1))
 
             total_remain_time = max_taps / taps_recoverper_sec
             current_remain_time = available_taps / taps_recoverper_sec
@@ -536,11 +535,11 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"{RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
-            logging.error(traceback.format_exc())
 
         return remain
 
     def complete_daily_tasks(self) -> int or None:
+        remain = 0
         try:
             response = requests.post(f'{self.season_url}/list-tasks', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
@@ -570,10 +569,10 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return
+            return remain
 
     def complete_daily_chipher(self) -> int or None:
+        remain = 0
         try:
             response = requests.post(f'{self.season_url}/config', headers=self._get_headers(self.HAMSTER_TOKEN))
             response.raise_for_status()
@@ -596,8 +595,7 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"{RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
-            logging.error(traceback.format_exc())
-            return
+            return remain
 
     def complete_daily_combo(self, buy_anyway=False) -> int or None:
         remain = 0
@@ -655,7 +653,6 @@ class HamsterKombatClicker:
                     return
             except:
                 print(f"{LIGHT_RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
-                logging.error(traceback.format_exc())
                 return
 
         return remain
@@ -730,7 +727,6 @@ class HamsterKombatClicker:
 
             except:
                 print(f"🚫  {localized_text('error_occured')}: {e}")
-                logging.error(traceback.format_exc())
                 return
 
         return remain

@@ -104,16 +104,16 @@ def playground_menu():
         menu += f"{promo_name}  {promo_status}"
 
     menu += (
-        f"  {LIGHT_YELLOW}*  | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}<  | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0  | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}* | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}. | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
     )
     print(menu)
 
 
 def minigames_menu():
     minigames = []
-    if config.hamster_token:
+    if config.has_hamster_token:
         minigames = client._get_minigames()
 
     games_data = get_games_data()['minigames']
@@ -138,7 +138,7 @@ def minigames_menu():
         menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu += (
-        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}. |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
     )
     print(menu)

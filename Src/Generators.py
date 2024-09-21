@@ -34,7 +34,7 @@ def generate_promocodes(prefix='', apply_promo=False):
 
 
 def generate_for_game(prefix):
-    if config.hamster_token:
+    if config.has_hamster_token:
         if config.apply_promo:
             generate_promocodes(prefix=prefix, apply_promo=config.apply_promo)
         else:
