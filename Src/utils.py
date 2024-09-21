@@ -293,15 +293,6 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
         json.dump(games_data, file, ensure_ascii=False, indent=4)
 
 
-# add_new_app(app_token='e68b39d2-4880-4a31-b3aa-0393e7df10c7',
-#             promo_id='e68b39d2-4880-4a31-b3aa-0393e7df10c7',
-#             prefix='TILE ',
-#             title='Tile Trio',
-#             events_count='22',
-#             register_event_timeout='20000',
-#             text='🀄️',
-#             emoji='🀄️')
-
 async def update_spinner(event, progress_dict, prefix):
     frame_index = 0
     while not event.is_set():
