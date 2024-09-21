@@ -6,10 +6,9 @@ from Src.Menu import main_menu
 from Src.utils import banner, line_after, localized_text, kali, check_environment
 from Src.Login import HamsterClient as client
 
-config = client.user_config
-
 
 def main():
+    config = client.user_config
     try:
         banner()
         client.login()
