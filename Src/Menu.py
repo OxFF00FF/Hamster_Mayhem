@@ -2,7 +2,6 @@ import os
 
 from Src.Colors import *
 from Src.Login import HamsterClient as client
-from Src.Login import hamster_client
 from Src.utils import get_status, get_games_data, remain_time, localized_text, align_main_menu, align_settins
 
 config = client.user_config
@@ -64,8 +63,8 @@ def main_menu_not_logged():
 
 def playground_menu():
     promos = []
-    if config.hamster_token:
-        promos = hamster_client()._get_promos()
+    if config.has_hamster_token:
+        promos = client._get_promos()
 
     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
     games_info = {game['title']: {"emoji": game['emoji']} for game in games_data}
@@ -115,7 +114,7 @@ def playground_menu():
 def minigames_menu():
     minigames = []
     if config.hamster_token:
-        minigames = hamster_client()._get_minigames()
+        minigames = client._get_minigames()
 
     games_data = get_games_data()['minigames']
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
@@ -169,7 +168,7 @@ def settings_menu():
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
         f"  {LIGHT_YELLOW}l | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}{config.account.upper()}{WHITE}\n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}config.account.upper(){WHITE}\n"
         f"  {LIGHT_YELLOW}g | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}a | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}f | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
