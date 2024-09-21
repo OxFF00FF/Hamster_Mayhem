@@ -1,9 +1,5 @@
 import logging
-import os
-import re
 
-from Src.utils import localized_text
-from Src.Colors import *
 from config import app_config
 from Src.Hamster import HamsterKombatClicker
 
@@ -35,7 +31,9 @@ def hamster_client(account: str = None, token: str = None):
         return HamsterKombatClicker(HAMSTER_TOKEN)
 
     except Exception as e:
-        print(f"{RED}🚫  {localized_text('error_occured')}: {e}")
+        logging.error(e)
 
 
 HamsterClient = hamster_client()
+
+user_config = HamsterClient.user_config
