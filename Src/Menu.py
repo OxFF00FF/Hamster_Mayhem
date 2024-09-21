@@ -1,17 +1,17 @@
 import os
 
 from Src.Colors import *
-from Src.db_SQlite import ConfigDB
+from Src.Login import HamsterClient as client
 from Src.Login import hamster_client
 from Src.utils import get_status, get_games_data, remain_time, localized_text, align_main_menu, align_settins
 
-config = ConfigDB()
+config = client.user_config
 
 not_available = f"{RED}❌{WHITE}"
 
 
 def main_menu():
-    activities = hamster_client()._activity_cooldowns()
+    activities = client._activity_cooldowns()
 
     status_dict = {'taps': (not_available, 'n/a'),
                    'tasks': (not_available, 'n/a'),
@@ -45,7 +45,7 @@ def main_menu():
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
     )
-    if config.hamster_token:
+    if config.has_hamster_token:
         print(menu)
     else:
         main_menu_not_logged()
