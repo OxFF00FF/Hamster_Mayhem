@@ -96,6 +96,7 @@ class HamsterKombatClicker:
             return config
 
         except Exception as e:
+            config.has_hamster_token = False
             logging.error(f"🚫  Не удалось установить соединение с хомяком. Проверье подключение к интеренту")
             logging.error(f"🚫  Ошибка: {e}")
             exit(1)

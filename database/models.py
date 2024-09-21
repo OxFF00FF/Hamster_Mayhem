@@ -31,7 +31,6 @@ class User(Base):
     tg_user_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     hamster_token: Mapped[str] = mapped_column(String(100), nullable=True)
     username: Mapped[str] = mapped_column(String(30))
-    account: Mapped[str] = mapped_column(String(30))
     is_subscriber: Mapped[int] = mapped_column(Integer, default=1)
 
     created_at: Mapped[created_at_type]
