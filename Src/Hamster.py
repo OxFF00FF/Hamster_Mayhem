@@ -93,7 +93,7 @@ class HamsterKombatClicker:
 
         except Exception as e:
             logging.error(f"🚫  Не удалось установить соединение с хомяком. Проверье подключение к интеренту")
-            logging.error(f"🚫  Ошибка сети: {e}")
+            logging.error(f"🚫  Ошибка: {e}")
             exit(1)
 
         except:
@@ -821,10 +821,10 @@ class HamsterKombatClicker:
 
                 elif reward['type'] == 'coins':
                     print(f"{LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['amount']:,}{WHITE}\n".replace(',', ' '))
+            print()
 
         except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
+            logging.error(f"🚫  {localized_text('error_occured')}: {e}")
 
     def get_most_profitable_cards(self, top=False) -> list:
         try:
@@ -984,7 +984,7 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
             return result
 
-    def get_keys_minigames_for_generate(self):
+    def minigames_for_generate(self) -> tuple:
         result, remain = [], 0
         try:
             games_data = [app for app in get_games_data()['apps'] if app.get('available')]
@@ -1057,7 +1057,7 @@ class HamsterKombatClicker:
                     return client_token
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
                 return client_token
 
         async def __emulate_progress(session, client_token: str) -> str:
@@ -1075,7 +1075,7 @@ class HamsterKombatClicker:
                     return has_code
 
             except Exception as e:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
+                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
                 return has_code
 
         async def __get_promocode(session, client_token: str) -> str:
@@ -1093,7 +1093,7 @@ class HamsterKombatClicker:
                     return promo_code
 
             except Exception as e:
-                print(f"\n🚫  {localized_text('error_occured')}: {e}")
+                logging.error(f"🚫  {localized_text('error_occured')}: {e}")
                 return promo_code
 
         async def __key_generation(session, index: int, keys_count: int, progress_increment=None, progress_dict=None):
@@ -1133,7 +1133,7 @@ class HamsterKombatClicker:
 
         async def __start_generate(keys_count: int) -> list:
             remain = f"{remain_time((EVENTS_COUNT * EVENTS_DELAY) / 1000)}"
-            print(f"\n{LIGHT_YELLOW}{EMOJI}  {TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~{remain}\n")
+            print(f"{LIGHT_YELLOW}{EMOJI}  {TITLE} · {localized_text('generating_promocodes')}: {keys_count}{WHITE} ~{remain}")
 
             try:
                 if one_game:
