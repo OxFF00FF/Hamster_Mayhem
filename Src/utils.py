@@ -86,8 +86,7 @@ def remain_time(seconds):
         s = str(s).zfill(2)
         return f"{h}:{m}:{s}"
 
-    except Exception as e:
-        print(e)
+    except:
         return 'n/a'
 
 
