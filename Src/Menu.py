@@ -1,7 +1,7 @@
 import os
 
 from Src.Colors import *
-from Src.utils import get_status, get_games_data, remain_time, localized_text, align_settins
+from Src.utils import get_status, get_games_data, remain_time, localized_text, align_settins, align_main_menu
 from Src.HamsterClient import client, config
 
 not_available = f"{RED}❌{WHITE}"
@@ -21,15 +21,15 @@ def main_menu():
                 if key in activity:
                     status_dict[key] = (get_status(activity[key]['isClaimed']), activity[key]['remain'])
 
-    # def line(index, emoji, label, status, cooldown):
-    #     return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
+    def line(index, emoji, label, status, cooldown):
+        return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu = f"\n📚  {localized_text('main_menu_header')}"
     # menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
     # menu += f"  {LIGHT_YELLOW}@ |  {RESET}🤖 {YELLOW}{localized_text('main_menu_run_bot')} {WHITE} \n"
 
     # menu += line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
-    # menu += line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
+    menu += line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
     # menu += line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
     # menu += line(4, '💰', f"{align_main_menu(localized_text('main_menu_combo'))}", *status_dict['combo'])
     menu += (
