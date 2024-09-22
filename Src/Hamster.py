@@ -383,7 +383,6 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
             return
 
     def _collect_upgrades_info(self) -> dict or None:
