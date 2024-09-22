@@ -4,9 +4,7 @@ from Src.Colors import *
 from Src.Hamster import HamsterKombatClicker
 from Src.Menu import main_menu
 from Src.utils import localized_text, kali
-from Src.Login import HamsterClient as client
-
-config = client.user_config
+from Src.HamsterClient import client, config
 
 
 def choose_account():

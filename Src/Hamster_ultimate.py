@@ -4,22 +4,18 @@ import time
 
 from Src.Colors import *
 from config import app_config
-from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, check_environment, bot_start
-from Src.Login import HamsterClient as client
+from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, bot_start
+from Src.HamsterClient import client
 
 print_lock = threading.Lock()
 
 
 class HamsterUltimate:
 
-    def __init__(self, token: str):
-        """
-        :param token: Bearer token
-        """
+    def __init__(self):
         self.config = client.user_config
         self.user_info = f"{self.config.user_name} ({self.config.tg_user_id})"
 
-        check_environment(required=True)
         self.chat_id = app_config.BOT_LOGS_GROUP_ID
         if self.chat_id is None:
             self.chat_id = app_config.CHAT_ID

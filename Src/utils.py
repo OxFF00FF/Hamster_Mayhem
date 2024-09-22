@@ -8,20 +8,7 @@ from random import randint
 
 import requests
 from spinners import Spinners
-from Src.db_SQlite import ConfigDB
 from Src.Colors import *
-
-config = ConfigDB()
-lang = config.lang
-
-
-def check_environment(required=False):
-    required_values = ['TELEGRAM_BOT_TOKEN', 'CHAT_ID']
-    missing_values = [value for value in required_values if os.environ.get(value) is None or os.environ.get(value) == '']
-    if len(missing_values) > 0:
-        logging.error(f'The following environment values are missing in your .env: {", ".join(missing_values)}')
-        if required:
-            exit(1)
 
 
 def banner():
@@ -44,6 +31,63 @@ def banner():
     {YLW}█    {RST}  {RED}    ██║ ╚═╝ ██║  ██║  ██║     ██║     ██║  ██║  ███████╗  ██║ ╚═╝ ██║   {RST}  {YLW}█    {RST}
     {YLW}     {RST}  {RED}    ╚═╝     ╚═╝  ╚═╝  ╚═╝     ╚═╝     ╚═╝  ╚═╝  ╚══════╝  ╚═╝     ╚═╝   {RST}  {YLW}     {RST}
     """)
+
+
+def localized_text(key, *args, **kwargs):
+    lang = 'ru'
+    try:
+        with open('data/translations.json', 'r', encoding='utf-8') as f:
+            translations = json.load(f)
+    except json.JSONDecodeError:
+        logging.error(f"Failed to decode file `translations.json`")
+        exit(1)
+
+    # Перевод для указанного языка
+    message = translations.get(lang, {}).get(key)
+
+    if message is None:
+        # Логирование отсутствующего перевода
+        logging.warning(f"No translation available for language code `{lang}` and key `{key}`")
+
+        # Проверка наличия английского перевода
+        message = translations.get('en', {}).get(key)
+        if message is None:
+            logging.warning(f"No English definition found for key `{key}` in translations.json")
+            return key
+
+    try:
+        return message.format(**kwargs)
+    except:
+        return message.format(*args)
+
+
+async def update_spinner(spinner_name, event, progress_dict, prefix):
+    frame_index = 0
+    while not event.is_set():
+        spinner_frame = get_spinner_frame(spinner_name, frame_index)
+        progress_message = progress_dict.get(prefix, "")
+        print(f"\r|{spinner_frame}| {WHITE}{progress_message}", end='', flush=True)
+        frame_index += 1
+        await asyncio.sleep(0.25)
+
+
+async def loading_v2(spinner_name, event):
+    if spinner_name is not None:
+        spinners = [spinner_name.name for spinner_name in Spinners]
+        for spinner_item in spinners:
+            if spinner_item == spinner_name:
+                spinner = Spinners[spinner_name]
+                while not event.is_set():
+                    for frame in spinner.value['frames']:
+                        if event.is_set():
+                            break
+                        print(f"\r{YELLOW}| {frame.strip()} | {WHITE}", end='', flush=True)
+                        await asyncio.sleep(0.3)
+        logging.warning(f'Spinner `{spinner_name}` not found')
+        await loading(event)
+
+    else:
+        await loading(event)
 
 
 def text_to_morse(text: str) -> str:
@@ -98,26 +142,6 @@ async def loading(event):
                 break
             print(f"\r{YELLOW}| {frame} | {WHITE}", end='', flush=True)
             await asyncio.sleep(0.3)
-
-
-async def loading_v2(event):
-    spinner_name = config.spinner
-    if spinner_name is not None:
-        spinners = [spinner_name.name for spinner_name in Spinners]
-        for spinner_item in spinners:
-            if spinner_item == spinner_name:
-                spinner = Spinners[spinner_name]
-                while not event.is_set():
-                    for frame in spinner.value['frames']:
-                        if event.is_set():
-                            break
-                        print(f"\r{YELLOW}| {frame.strip()} | {WHITE}", end='', flush=True)
-                        await asyncio.sleep(0.3)
-        logging.warning(f'Spinner `{spinner_name}` not found')
-        await loading(event)
-
-    else:
-        await loading(event)
 
 
 def spinners_list():
@@ -194,33 +218,6 @@ def spinners_table(num_columns=3):
     return "\n".join(table_)
 
 
-def localized_text(key, *args, **kwargs):
-    try:
-        with open('data/translations.json', 'r', encoding='utf-8') as f:
-            translations = json.load(f)
-    except json.JSONDecodeError:
-        logging.error(f"Failed to decode file `translations.json`")
-        exit(1)
-
-    # Перевод для указанного языка
-    message = translations.get(lang, {}).get(key)
-
-    if message is None:
-        # Логирование отсутствующего перевода
-        logging.warning(f"No translation available for language code `{lang}` and key `{key}`")
-
-        # Проверка наличия английского перевода
-        message = translations.get('en', {}).get(key)
-        if message is None:
-            logging.warning(f"No English definition found for key `{key}` in translations.json")
-            return key
-
-    try:
-        return message.format(**kwargs)
-    except:
-        return message.format(*args)
-
-
 def align_daily_info(text):
     max_length = max(
         len(localized_text('balance')),
@@ -291,16 +288,6 @@ def add_new_app(app_token, promo_id, prefix, title, events_count, register_event
 
     with open('data/playground_games_data.json', 'w', encoding='utf-8') as file:
         json.dump(games_data, file, ensure_ascii=False, indent=4)
-
-
-async def update_spinner(event, progress_dict, prefix):
-    frame_index = 0
-    while not event.is_set():
-        spinner_frame = get_spinner_frame(config.spinner, frame_index)
-        progress_message = progress_dict.get(prefix, "")
-        print(f"\r|{spinner_frame}| {WHITE}{progress_message}", end='', flush=True)
-        frame_index += 1
-        await asyncio.sleep(0.25)
 
 
 def get_spinner_frame(spinner_name, frame_index):

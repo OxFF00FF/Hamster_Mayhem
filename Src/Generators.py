@@ -3,9 +3,8 @@ import logging
 import asyncio
 import platform
 from Src.utils import get_games_data, localized_text, kali
-from Src.Login import HamsterClient as client
+from Src.HamsterClient import client, config
 
-config = client.user_config
 
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

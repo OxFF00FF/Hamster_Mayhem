@@ -22,7 +22,6 @@ from database.queries import SyncORM as db
 from database.queries import ConfigManager
 
 from Src.Colors import *
-from Src.db_SQlite import ConfigDB
 from Src.utils import (text_to_morse, remain_time, get_games_data, line_before,
                        generation_status, get_salt, localized_text, align_daily_info,
                        align_summary, line_after, update_spinner, loading_v2, kali)
@@ -30,9 +29,6 @@ from database.queries import init_db
 
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-settings = ConfigDB()
-config_manager = ConfigManager()
 
 
 class HamsterKombatClicker:
@@ -89,14 +85,16 @@ class HamsterKombatClicker:
             if not db.user_exist(user_id):
                 db.ADD_subscriber({'tg_user_id': user_id, 'username': username})
 
-            config = config_manager.get_user_config(user_id)
-            config.has_hamster_token = True
-            config.user_name = username
-            config.tg_user_id = user_id
-            return config
+            config_manager = ConfigManager()
+            user_config = config_manager.get_user_config(user_id)
+
+            user_config.has_hamster_token = True
+            user_config.user_name = username
+            user_config.tg_user_id = user_id
+            return user_config
 
         except Exception as e:
-            config.has_hamster_token = False
+            user_config.has_hamster_token = False
             logging.error(f"🚫  Не удалось установить соединение с хомяком. Проверье подключение к интеренту")
             logging.error(f"🚫  Ошибка: {e}")
             exit(1)
@@ -344,8 +342,8 @@ class HamsterKombatClicker:
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour', 0)
-            free_balance = balance.get('balanceCoins') - settings.balance_threshold
-            if settings.balance_threshold == 0:
+            free_balance = balance.get('balanceCoins') - self.user_config.balance_threshold
+            if self.user_config.balance_threshold == 0:
                 max_price_limit = 0
             else:
                 max_price_limit = max(earn_per_hour, 50000) * 24
@@ -606,7 +604,7 @@ class HamsterKombatClicker:
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour')
-            free_balance = balance.get('balanceCoins') - settings.balance_threshold
+            free_balance = balance.get('balanceCoins') - self.user_config.balance_threshold
 
             combo = response.json().get('dailyCombo')
             already_purchased_cards = set(combo.get('upgradeIds', []))
@@ -676,9 +674,9 @@ class HamsterKombatClicker:
                 if minigame.get('id') == 'Tiles':
                     try:
                         one_point_bonus = self.bonus_for_one_point(minigame)
-                        settings.bonus_for_one_point = one_point_bonus
+                        self.user_config.bonus_for_one_point = one_point_bonus
                     except:
-                        one_point_bonus = settings.bonus_for_one_point
+                        one_point_bonus = self.user_config.bonus_for_one_point
 
                     max_coins = one_point_bonus * max_points
                     print(f"{YELLOW}ℹ️  {localized_text('info_coinf_for_one_point')}:  {LIGHT_BLUE}{one_point_bonus}{WHITE} \n"
@@ -734,8 +732,8 @@ class HamsterKombatClicker:
 
     def send_to_chat(self, chat_id: int = None, message: str = None, completed=None):
         try:
-            mesage = f">🙍‍♂️‍  {settings.user_name} \n" \
-                     f">🆔  {settings.tg_user_id} \n" \
+            mesage = f">🙍‍♂️‍  {self.user_config.user_name} \n" \
+                     f">🆔  {self.user_config.tg_user_id} \n" \
                      f"*{completed}*\n" \
                      f"{message}"
             try:
@@ -756,7 +754,7 @@ class HamsterKombatClicker:
                 user_id = self._get_telegram_user_id()
 
                 update_date = datetime.fromtimestamp(info['date']).strftime('%Y-%m-%d %H:%M:%S')
-                result = f"🙍‍  *{settings.user_name}* \n" \
+                result = f"🙍‍  *{self.user_config.user_name}* \n" \
                          f"🆔  `{user_id}` \n\n" \
                          f"💰  Баланс: *{info['balanceCoins']:,}* \n" \
                          f"🌟  Всего: *{info['total']:,}* \n" \
@@ -838,7 +836,7 @@ class HamsterKombatClicker:
                 cooldown = card.get('cooldownSeconds', 0)
                 card["remain"] = int(cooldown)
 
-                if card['isAvailable'] and not card['isExpired'] and (cooldown == 0 or settings.all_cards_in_top):
+                if card['isAvailable'] and not card['isExpired'] and (cooldown == 0 or self.user_config.all_cards_in_top):
                     expired_at = card.get('expiresAt', None)
                     if expired_at:
                         date_time = datetime.strptime(card['expiresAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -863,7 +861,7 @@ class HamsterKombatClicker:
                 return [card.get('id') for card in sorted_cards[:top]]
 
             else:
-                return sorted_cards[:settings.cards_in_top]
+                return sorted_cards[:self.user_config.cards_in_top]
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -1144,7 +1142,7 @@ class HamsterKombatClicker:
                     progress_dict = {prefix: ""}
 
                     loading_event = asyncio.Event()
-                    spinner_task = asyncio.create_task(update_spinner(loading_event, progress_dict, prefix))
+                    spinner_task = asyncio.create_task(update_spinner(self.user_config.spinner, loading_event, progress_dict, prefix))
                     async with aiohttp.ClientSession() as session:
                         tasks = [__key_generation(session, i + 1, keys_count, progress_increment, progress_dict) for i in range(keys_count)]
                         keys = await asyncio.gather(*tasks)
@@ -1154,7 +1152,7 @@ class HamsterKombatClicker:
 
                 else:
                     loading_event = asyncio.Event()
-                    spinner_task = asyncio.create_task(loading_v2(loading_event))
+                    spinner_task = asyncio.create_task(loading_v2(self.user_config.spinner, loading_event))
                     async with aiohttp.ClientSession() as session:
                         tasks = [__key_generation(session, i + 1, keys_count) for i in range(keys_count)]
                         keys = await asyncio.gather(*tasks)
@@ -1177,11 +1175,11 @@ class HamsterKombatClicker:
         line_after()
 
         if apply_promo:
-            settings.send_to_group = False
-            print(f"⚠️  {localized_text('not_sent_to_group')}")
+            self.user_config.send_to_group = False
+            # print(f"⚠️  {localized_text('not_sent_to_group')}")
 
-            settings.save_to_file = False
-            print(f"⚠️  {localized_text('not_saved_to_file')}\n")
+            self.user_config.save_to_file = False
+            # print(f"⚠️  {localized_text('not_saved_to_file')}\n")
 
             for promocode in promocodes:
                 self.apply_promocode(promocode, PROMO_ID)

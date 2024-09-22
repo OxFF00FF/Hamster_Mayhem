@@ -1,6 +1,6 @@
 import logging
 
-from Src.Hamster_bot import HamsterUltimate
+from Src.Hamster_ultimate import HamsterUltimate
 
 if __name__ == '__main__':
     try:
