@@ -35,12 +35,12 @@ def main_menu():
     menu += (
         f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}{localized_text('main_menu_minigames')} {WHITE} \n"
         f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}{localized_text('main_menu_accounts')} {WHITE} \n"
+        # f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}{localized_text('main_menu_accounts')} {WHITE} \n"
         # f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}{localized_text('main_menu_most_profitable_cards')} {WHITE} \n"
         # f"  {LIGHT_YELLOW}+ |  {RESET}📥 {YELLOW}{localized_text('main_menu_buy_card')} {WHITE} \n"
         f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}\n"
     )
     if config.has_hamster_token:
         print(menu)
@@ -54,7 +54,7 @@ def main_menu_not_logged():
         f"  {LIGHT_YELLOW}6 | {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
         f"  {LIGHT_YELLOW}s | {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m | {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
@@ -104,7 +104,7 @@ def playground_menu():
     menu += (
         f"  {LIGHT_YELLOW}* | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
         f"  {LIGHT_YELLOW}. | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
@@ -137,7 +137,7 @@ def minigames_menu():
 
     menu += (
         f"  {LIGHT_YELLOW}. |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
@@ -190,6 +190,6 @@ def settings_menu():
         f"  {LIGHT_YELLOW}5 | {YELLOW} {align_settins(localized_text('setting_complete_minigames'))} · {WHITE}{GREEN}{complete_minigames}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}6 | {YELLOW} {align_settins(localized_text('setting_complete_combo'))} · {WHITE}{GREEN}{complete_combo}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}7 | {YELLOW} {align_settins(localized_text('setting_complete_autobuy_upgrades'))} · {WHITE}{GREEN}{complete_autobuy_upgrades}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}8 | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}"
+        f"  {LIGHT_YELLOW}8 | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}\n"
     )
     print(menu)
