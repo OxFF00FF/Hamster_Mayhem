@@ -851,7 +851,7 @@ class HamsterKombatClicker:
                         payback_seconds = card["price"] / card["profitPerHour"] * 3600
                         card["payback_period"] = remain_time(payback_seconds)
                         card["payback_days"] = f"{payback_seconds / 86400:.0f}"
-                        card["profitability_ratio"] = (card["profitPerHour"] / card["price"]) * 100
+                        card["profitability_ratio"] = 100 if card["price"] == 0 else (card["profitPerHour"] / card["price"]) * 100
                     else:
                         card["payback_period"] = float('inf')
                         card["profitability_ratio"] = 0
