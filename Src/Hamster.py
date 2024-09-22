@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup as BS
 from fake_useragent import UserAgent
 from fuzzywuzzy import fuzz
 from config import app_config
-from database.queries import SyncORM as db
+from database.queries import SyncORM as db, UserConfig
 from database.queries import ConfigManager
 
 from Src.Colors import *
@@ -46,10 +46,11 @@ class HamsterKombatClicker:
         self.GROUP_URL = app_config.GROUP_URL
 
         self.season = 'interlude'
+        self.currency = 'Diamonds'
         self.base_url = f'https://api.hamsterkombatgame.io'
         self.season_url = f'https://api.hamsterkombatgame.io/{self.season}'
 
-        self.user_config = self.get_user_config()
+        self.user_config: UserConfig = self.get_user_config()
 
     def _get_headers(self, hamster_token: str) -> dict:
         ua = UserAgent()
@@ -190,8 +191,8 @@ class HamsterKombatClicker:
             user = response.json().get(f'{self.season}User', {})
             if user:
                 return {
-                    'balanceCoins': int(user.get('balanceCoins', 0)),
-                    'total': int(user.get('totalCoins', 0)),
+                    f'balance{self.currency}': int(user.get(f'balance{self.currency}', 0)),
+                    'total': int(user.get(f'total{self.currency}', 0)),
                     'keys': int(user.get('balanceKeys', 0)),
                     'date': int(user.get('lastSyncUpdate', 0)),
                     'earn_per_hour': int(user.get('earnPassivePerHour', 0))
@@ -342,7 +343,7 @@ class HamsterKombatClicker:
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour', 0)
-            free_balance = balance.get('balanceCoins') - self.user_config.balance_threshold
+            free_balance = balance.get(f'balance{self.currency}') - self.user_config.balance_threshold
             if self.user_config.balance_threshold == 0:
                 max_price_limit = 0
             else:
@@ -464,7 +465,7 @@ class HamsterKombatClicker:
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
-            info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('balance'))}{WHITE}{balance['balanceCoins']:,}\n"
+            info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('balance'))}{WHITE}{balance[f'balance{self.currency}']:,}\n"
             info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('total'))}{WHITE}{balance['total']:,}\n"
             info += f"🔑  {LIGHT_YELLOW}{align_daily_info(localized_text('keys'))}{WHITE}{balance['keys']:,}\n"
             info += f"🔥  {LIGHT_YELLOW}{align_daily_info(localized_text('total_purhased_cards_count'))}{WHITE}{purhase_counts['cards_count']}\n"
@@ -604,7 +605,7 @@ class HamsterKombatClicker:
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour')
-            free_balance = balance.get('balanceCoins') - self.user_config.balance_threshold
+            free_balance = balance.get(f'balance{self.currency}') - self.user_config.balance_threshold
 
             combo = response.json().get('dailyCombo')
             already_purchased_cards = set(combo.get('upgradeIds', []))
@@ -678,18 +679,18 @@ class HamsterKombatClicker:
                     except:
                         one_point_bonus = self.user_config.bonus_for_one_point
 
-                    max_coins = one_point_bonus * max_points
+                    max_currency = one_point_bonus * max_points
                     print(f"{YELLOW}ℹ️  {localized_text('info_coinf_for_one_point')}:  {LIGHT_BLUE}{one_point_bonus}{WHITE} \n"
-                          f"{YELLOW}{localized_text('info_max_coins')}: {LIGHT_YELLOW}{max_coins:,}{WHITE}\n".replace(',', ' '))
+                          f"{YELLOW}ℹ️  {localized_text('info_max_coins')}: {LIGHT_YELLOW}{max_currency:,}{WHITE}\n".replace(',', ' '))
 
                 json_data = {'miniGameId': game}
                 start_game = requests.post(f'{self.season_url}/start-keys-minigame', headers=self._get_headers(self.HAMSTER_TOKEN), json=json_data)
                 start_game.raise_for_status()
 
-                initial_balance = int(start_game.json().get(f'{self.season}User').get('balanceCoins'))
+                initial_balance = int(start_game.json().get(f'{self.season}User').get(f'balance{self.currency}'))
                 print(f"{YELLOW}ℹ️  {localized_text('balance')}: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
-                current_balance = int(self._sync().get('balanceCoins'))
+                current_balance = int(self._sync().get(f'balance{self.currency}'))
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 print(f"{YELLOW}ℹ️  {localized_text('balance')}: {balance} | {localized_text('passive')}".replace(',', ' '))
@@ -700,7 +701,7 @@ class HamsterKombatClicker:
                 end_game.raise_for_status()
 
                 end_game_data = end_game.json()
-                current_balance = int(self._sync().get('balanceCoins'))
+                current_balance = int(self._sync().get(f'balance{self.currency}'))
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
@@ -756,7 +757,7 @@ class HamsterKombatClicker:
                 update_date = datetime.fromtimestamp(info['date']).strftime('%Y-%m-%d %H:%M:%S')
                 result = f"🙍‍  *{self.user_config.user_name}* \n" \
                          f"🆔  `{user_id}` \n\n" \
-                         f"💰  Баланс: *{info['balanceCoins']:,}* \n" \
+                         f"💰  Баланс: *{info[f'balance{self.currency}']:,}* \n" \
                          f"🌟  Всего: *{info['total']:,}* \n" \
                          f"📈  Доход: *{info['earn_per_hour']:,}* \n" \
                          f"🔑  Ключей: *{info['keys']:,}* \n\n" \
@@ -818,7 +819,7 @@ class HamsterKombatClicker:
                 if reward['type'] == 'keys':
                     print(f"{LIGHT_GREEN}🎉  {localized_text('info_keys_recieved')}: {keys_today + reward['amount']}/{keys_limit} {WHITE}\n")
 
-                elif reward['type'] == 'coins':
+                elif reward['type'] == self.currency.lower():
                     print(f"{LIGHT_GREEN}🎉  {localized_text('info_coins_recieved')}: {reward['amount']:,}{WHITE}\n".replace(',', ' '))
             print()
 
