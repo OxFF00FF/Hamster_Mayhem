@@ -2,17 +2,14 @@ import os
 
 from Src.Colors import *
 from Src.Hamster import HamsterKombatClicker
-from Src.Login import hamster_client
 from Src.Menu import main_menu
-from Src.db_SQlite import ConfigDB
 from Src.utils import localized_text, kali
-
-config = ConfigDB()
+from Src.HamsterClient import client, config
 
 
 def choose_account():
     accounts = [{'key': key, 'token': value} for key, value in os.environ.items() if key.startswith('HAMSTER')]
-    current_account = hamster_client().get_account_info()
+    current_account = client.get_account_info()
 
     if len(accounts) > 1:
         print(f"{localized_text('detected_accounts')} {len(accounts)}: ")

@@ -1,23 +1,20 @@
 import logging
 import traceback
 
-from Src.db_SQlite import ConfigDB
 from Src.Handlers import handle_main_menu_choice, handle_main_menu_not_logged_choice
-from Src.Login import hamster_client
 from Src.Menu import main_menu
-from Src.utils import banner, line_after, localized_text, kali, check_environment
-
-config = ConfigDB()
+from Src.utils import banner, localized_text, kali, line_after
+from Src.HamsterClient import client, config
 
 
 def main():
     try:
         banner()
-        hamster_client().login()
+        client.login()
         main_menu()
 
         while True:
-            if config.hamster_token:
+            if config.has_hamster_token:
                 choice = input(kali('#/@/1/2/3/4/5/6/a/$/+/s/m/0', '~/Main menu', localized_text('choose_action')))
                 handle_main_menu_choice(choice)
 
@@ -34,5 +31,4 @@ def main():
 
 
 if __name__ == '__main__':
-    check_environment()
     main()

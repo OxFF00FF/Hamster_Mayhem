@@ -1,17 +1,14 @@
 import os
 
 from Src.Colors import *
-from Src.db_SQlite import ConfigDB
-from Src.Login import hamster_client
-from Src.utils import get_status, get_games_data, remain_time, localized_text, align_main_menu, align_settins
-
-config = ConfigDB()
+from Src.utils import get_status, get_games_data, remain_time, localized_text, align_settins, align_main_menu
+from Src.HamsterClient import client, config
 
 not_available = f"{RED}❌{WHITE}"
 
 
 def main_menu():
-    activities = hamster_client()._activity_cooldowns()
+    activities = client._activity_cooldowns()
 
     status_dict = {'taps': (not_available, 'n/a'),
                    'tasks': (not_available, 'n/a'),
@@ -28,24 +25,24 @@ def main_menu():
         return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu = f"\n📚  {localized_text('main_menu_header')}"
-    menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
-    menu += f"  {LIGHT_YELLOW}@ |  {RESET}🤖 {YELLOW}{localized_text('main_menu_run_bot')} {WHITE} \n"
+    # menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
+    # menu += f"  {LIGHT_YELLOW}@ |  {RESET}🤖 {YELLOW}{localized_text('main_menu_run_bot')} {WHITE} \n"
 
-    menu += line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
+    # menu += line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
     menu += line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
-    menu += line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
-    menu += line(4, '💰', f"{align_main_menu(localized_text('main_menu_combo'))}", *status_dict['combo'])
+    # menu += line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
+    # menu += line(4, '💰', f"{align_main_menu(localized_text('main_menu_combo'))}", *status_dict['combo'])
     menu += (
         f"  {LIGHT_YELLOW}5 |  {RESET}🔑 {YELLOW}{localized_text('main_menu_minigames')} {WHITE} \n"
         f"  {LIGHT_YELLOW}6 |  {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}{localized_text('main_menu_accounts')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}{localized_text('main_menu_most_profitable_cards')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}+ |  {RESET}📥 {YELLOW}{localized_text('main_menu_buy_card')} {WHITE} \n"
+        # f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}{localized_text('main_menu_accounts')} {WHITE} \n"
+        # f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}{localized_text('main_menu_most_profitable_cards')} {WHITE} \n"
+        # f"  {LIGHT_YELLOW}+ |  {RESET}📥 {YELLOW}{localized_text('main_menu_buy_card')} {WHITE} \n"
         f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}\n"
     )
-    if config.hamster_token:
+    if config.has_hamster_token:
         print(menu)
     else:
         main_menu_not_logged()
@@ -57,15 +54,15 @@ def main_menu_not_logged():
         f"  {LIGHT_YELLOW}6 | {RESET}🎁 {YELLOW}{localized_text('main_menu_promocodes')} {WHITE} \n"
         f"  {LIGHT_YELLOW}s | {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m | {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
 
 def playground_menu():
     promos = []
-    if config.hamster_token:
-        promos = hamster_client()._get_promos()
+    if config.has_hamster_token:
+        promos = client._get_promos()
 
     games_data = [app for app in get_games_data()['apps'] if app.get('available')]
     games_info = {game['title']: {"emoji": game['emoji']} for game in games_data}
@@ -105,17 +102,17 @@ def playground_menu():
         menu += f"{promo_name}  {promo_status}"
 
     menu += (
-        f"  {LIGHT_YELLOW}*  | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}<  | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0  | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}* | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}. | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
 
 def minigames_menu():
     minigames = []
-    if config.hamster_token:
-        minigames = hamster_client()._get_minigames()
+    if config.has_hamster_token:
+        minigames = client._get_minigames()
 
     games_data = get_games_data()['minigames']
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
@@ -139,8 +136,8 @@ def minigames_menu():
         menu += f"  {LIGHT_YELLOW}{i} |  {RESET}{emoji} {YELLOW} {color}{game_name:<{max_width}} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu += (
-        f"  {LIGHT_YELLOW}< |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}"
+        f"  {LIGHT_YELLOW}. |  {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
@@ -169,7 +166,7 @@ def settings_menu():
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
         f"  {LIGHT_YELLOW}l | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}{config.account.upper()}{WHITE}\n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}config.account.upper(){WHITE}\n"
         f"  {LIGHT_YELLOW}g | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}a | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}f | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
@@ -193,6 +190,6 @@ def settings_menu():
         f"  {LIGHT_YELLOW}5 | {YELLOW} {align_settins(localized_text('setting_complete_minigames'))} · {WHITE}{GREEN}{complete_minigames}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}6 | {YELLOW} {align_settins(localized_text('setting_complete_combo'))} · {WHITE}{GREEN}{complete_combo}{WHITE} {localized_text('setting_on_off')}\n"
         f"  {LIGHT_YELLOW}7 | {YELLOW} {align_settins(localized_text('setting_complete_autobuy_upgrades'))} · {WHITE}{GREEN}{complete_autobuy_upgrades}{WHITE} {localized_text('setting_on_off')}\n"
-        f"  {LIGHT_YELLOW}8 | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}"
+        f"  {LIGHT_YELLOW}8 | {YELLOW} {align_settins(localized_text('setting_complete_promocodes'))} · {WHITE}{GREEN}{complete_promocodes}{WHITE} {localized_text('setting_on_off')}\n"
     )
     print(menu)

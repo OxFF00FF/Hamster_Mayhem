@@ -5,7 +5,6 @@ __pycache__
 venv
 /.cache
 tests
+Src/data/Config.db
 generated keys
-database
-database/db/Config.db
-database/db/Hamster_db.sqlite3
+database/db
