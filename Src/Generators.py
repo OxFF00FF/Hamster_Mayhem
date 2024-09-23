@@ -6,8 +6,6 @@ from Src.utils import get_games_data, localized_text, kali
 from Src.HamsterClient import client, config
 
 
-config = ConfigDB()
-
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
