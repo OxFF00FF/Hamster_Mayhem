@@ -258,7 +258,7 @@ def align_settins(text):
     return text.ljust(max_length)
 
 
-def get_games_data():
+def get_games_data(apps=True):
     try:
         r = requests.get('https://raw.githubusercontent.com/OxFF00FF/Hamster_Mayhem/master/data/playground_games_data.json')
         games_data = r.json()
@@ -267,27 +267,8 @@ def get_games_data():
         with open('data/playground_games_data.json', 'r', encoding='utf-8') as f:
             games_data = json.loads(f.read())
 
-    return games_data
-
-
-def add_new_app(app_token, promo_id, prefix, title, events_count, register_event_timeout, text, emoji):
-    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
-
-    new_app = {
-        "appToken": app_token,
-        "promoId": promo_id,
-        "prefix": prefix,
-        "title": title,
-        "eventsCount": int(events_count),
-        "registerEventTimeout": int(register_event_timeout),
-        "text": text,
-        "emoji": emoji
-    }
-
-    games_data.append(new_app)
-
-    with open('data/playground_games_data.json', 'w', encoding='utf-8') as file:
-        json.dump(games_data, file, ensure_ascii=False, indent=4)
+    result = [app for app in games_data['apps'] if app.get('available')]
+    return result if apps else games_data['minigames']
 
 
 def get_spinner_frame(spinner_name, frame_index):

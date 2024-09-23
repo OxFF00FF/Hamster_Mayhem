@@ -1,15 +1,19 @@
 import os
 
+from dotenv import load_dotenv
+
 from Src.Colors import *
 from Src.Hamster import HamsterKombatClicker
 from Src.Menu import main_menu
 from Src.utils import localized_text, kali
 from Src.HamsterClient import client, config
+from Src.Api.Endpoints import HamsterEndpoints
 
 
 def choose_account():
+    load_dotenv()
     accounts = [{'key': key, 'token': value} for key, value in os.environ.items() if key.startswith('HAMSTER')]
-    current_account = client.get_account_info()
+    current_account = HamsterEndpoints.get_account_info(client.headers)
 
     if len(accounts) > 1:
         print(f"{localized_text('detected_accounts')} {len(accounts)}: ")
@@ -21,11 +25,11 @@ def choose_account():
 
             try:
                 hamster = HamsterKombatClicker(token)
-                account_info = hamster.get_account_info()
-                user_name = account_info.get('name', 'n/a')
-                user_id = account_info.get('id', 'n/a')
+                account_info = HamsterEndpoints.get_account_info(hamster.headers)
+                user_name = account_info.name
+                user_id = account_info.id
 
-                if user_name == current_account.get('name', 'n/a'):
+                if user_name == current_account.name:
                     print(f"[{e + 1}] · {LIGHT_BLUE}{user_name} [{user_id}]{WHITE} ({localized_text('logged_in')})")
                 else:
                     print(f"[{e + 1}] · {user_name} [{user_id}]")
@@ -34,7 +38,7 @@ def choose_account():
             except:
                 print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}{WHITE}")
 
-        print(f"[0] · Остатьтся в текущем аккаунте (Выйти в главное меню)")
+        print(f"[0] · Остатьтся в текущем аккаунте (Выйти в главное меню)\n")
         accounts_numbers = '/'.join([f"{e + 1}" for e in range(len(accounts))])
         account_choice = input(kali(f"{accounts_numbers}/0", '~/Accounts', localized_text('choose_account')))
         if account_choice == '0':

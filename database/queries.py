@@ -1,5 +1,6 @@
 from sqlalchemy import select
 
+from Src.Logger import set_logger
 from database.db import engine, Session
 from database.models import Base, User, UserSetting
 
@@ -7,6 +8,7 @@ from config import app_config
 
 
 def init_db():
+    set_logger()
     # Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 

@@ -144,7 +144,7 @@ def handle_main_menu_not_logged_choice(choice):
 
 
 def handle_playground_menu_choice():
-    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
+    games_data = get_games_data()
     games_prefix = {str(index + 1): game['prefix'] for index, game in enumerate(games_data)}
     games = [str(i + 1) for i in range(len(games_data))]
     line_before()
@@ -181,7 +181,7 @@ def handle_playground_menu_choice():
 
 
 def handle_minigames_choice():
-    minigames = get_games_data()['minigames']
+    minigames = get_games_data(apps=False)
 
     while True:
         minigames_menu()

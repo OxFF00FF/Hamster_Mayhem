@@ -14,8 +14,8 @@ from random import randint
 
 import aiohttp
 import requests
-from bs4 import BeautifulSoup as BS
-from fuzzywuzzy import fuzz
+# from bs4 import BeautifulSoup as BS
+# from fuzzywuzzy import fuzz
 from config import app_config
 from database.queries import SyncORM as db, UserConfig
 from database.queries import ConfigManager
@@ -51,8 +51,8 @@ class HamsterKombatClicker:
         self.season_url = f'https://api.hamsterkombatgame.io/{self.season}'
 
         self.headers = self._get_headers()
-        self.user_config: UserConfig = self.get_user_config()
-    
+        self.user_config: UserConfig = self._get_user_config()
+
     def _get_headers(self) -> dict:
         return {
             'Accept-Language': 'ru-RU,ru;q=0.9',
@@ -70,18 +70,13 @@ class HamsterKombatClicker:
             'Sec-Ch-Ua-Mobile': '?1',
             'Sec-Ch-Ua-Platform': '"Android"'
         }
-    
-    def get_user_config(self):
-        response = None
+
+    def _get_user_config(self):
+        user_config = {}
         try:
-            response = requests.post(f'{self.base_url}/auth/account-info', headers=self.headers)
-            response.raise_for_status()
-
-            data = response.json()
-
-            account_info = data.get('accountInfo', {})
-            user_id = int(account_info.get('id', 'n/a'))
-            username = account_info.get('name', 'n/a')
+            account_info = HamsterEndpoints.get_account_info(self.headers)
+            user_id = int(account_info.id)
+            username = account_info.name
 
             if not db.user_exist(user_id):
                 db.ADD_subscriber({'tg_user_id': user_id, 'username': username})
@@ -96,76 +91,16 @@ class HamsterKombatClicker:
 
         except Exception as e:
             user_config.has_hamster_token = False
-            logging.error(f"🚫  Не удалось установить соединение с хомяком. Проверье подключение к интеренту")
-            logging.error(f"🚫  Ошибка: {e}")
+            logging.error(f"🚫  {localized_text('error_occured')}: {e}")
             exit(1)
-
-        except:
-            error = data.get('error_code')
-            if error:
-                if error == 'BAD_AUTH_TOKEN':
-                    print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}\n"
-                          f"    {localized_text('error_hamster_token_not_specified')}{WHITE}")
-                    return
-                else:
-                    print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
-                    return
-
-            if response:
-                if response.status_code == 401:
-                    print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. check your hamster_token for corrcect")
-                    exit(1)
-                elif response.status_code in [502, 503, 404, 500]:
-                    print(f"{RED}❌  Кажется хомяк не работает!{WHITE} · Статус: {response.status_code}\n")
-                    exit(1)
 
     def login(self):
         print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {self.user_config.user_name} ({self.user_config.tg_user_id}) {WHITE}")
 
-    def _get_daily_combo(self) -> dict or None:
-        try:
-            response = requests.get('https://hamsterkombo.com/')
-            response.raise_for_status()
-
-            html = BS(response.content, 'html.parser')
-            hamster_block = html.select('div[class="w-full flex flex-col gap-4"]')[0]
-            combo_block = hamster_block.select('span[class="font-medium text-[12px] md:text-[16px] lg:font-semibold"]')[:3]
-            date_block = hamster_block.select('span[class="text-center font-light opacity-70 mb-[16px]"]')
-
-            date = f"{date_block[0].text.split(':')[-1].strip()} {datetime.today().year}"
-            combo_from_site = [item.text.strip() for item in combo_block]
-            logging.warning(f"⚙️  {combo_from_site}")
-            combo_ids = []
-
-            response = requests.post(f'{self.season_url}/upgrades-for-buy', headers=self.headers)
-            response.raise_for_status()
-
-            upgradesForBuy = response.json().get('upgradesForBuy', {})
-            for upgrade in upgradesForBuy:
-                for upgrade_name in combo_from_site:
-                    name_from_site = str(upgrade_name.strip().lower())
-                    name_from_hamster = str(upgrade.get('name').strip().lower())
-
-                    match = fuzz.ratio(name_from_site, name_from_hamster)
-                    if match > 85:
-                        combo_ids.append(upgrade.get('id'))
-
-            logging.warning(f"⚙️  {combo_ids}")
-            return {'combo': combo_ids, 'date': date}
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return
-
     def _get_daily_cipher(self) -> str or None:
         try:
-            response = requests.post(f'{self.season_url}/config', headers=self.headers)
-            response.raise_for_status()
-
-            encoded_cipher = response.json()['dailyCipher']['cipher']
+            encoded_cipher = HamsterEndpoints.get_config(self.headers, 'cipher')
             cipher = base64.b64decode(encoded_cipher[:3] + encoded_cipher[3 + 1:]).decode('utf-8')
-            logging.info(cipher)
             return cipher
 
         except Exception as e:
@@ -174,23 +109,18 @@ class HamsterKombatClicker:
 
     def _get_balance(self) -> dict or None:
         try:
-            response = requests.post(f'{self.season_url}/sync', headers=self.headers)
-            response.raise_for_status()
-
-            user = response.json().get(f'{self.season}User', {})
-            if user:
-                return {
-                    f'balance{self.currency}': int(user.get(f'balance{self.currency}', 0)),
-                    'total': int(user.get(f'total{self.currency}', 0)),
-                    'keys': int(user.get('balanceKeys', 0)),
-                    'date': int(user.get('lastSyncUpdate', 0)),
-                    'earn_per_hour': int(user.get('earnPassivePerHour', 0))
-                }
+            user = HamsterEndpoints.get_user(self.headers).to_dict()
+            return {
+                f'balance_{self.currency.lower()}': int(user.get(f'balance{self.currency}', 0)),
+                'total': int(user.get(f'total{self.currency}', 0)),
+                'keys': int(user.get('balanceKeys', 0)),
+                'date': int(user.get('lastSyncUpdate', 0)),
+                'earn_per_hour': int(user.get('earnPassivePerHour', 0))
+            }
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return
+            return {}
 
     def _activity_cooldowns(self) -> list or None:
         try:
@@ -214,6 +144,7 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             tasks = response.json().get('tasks', [])
+            remain_task = 0
             for task in tasks:
                 if task.get('id') == 'streak_days_special':
                     remain_task = remain_time(task.get('remainSeconds', 'n/a'))
@@ -247,47 +178,6 @@ class HamsterKombatClicker:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             logging.error(traceback.format_exc())
             return
-
-    def _get_promos(self) -> list or None:
-        try:
-            result = []
-            response = requests.post(f'{self.season_url}/get-promos', headers=self.headers)
-            response.raise_for_status()
-
-            promos = response.json().get('promos', [{}])
-            states = response.json().get('states', [{}])
-
-            for promo in promos:
-                keys_per_day = promo['keysPerDay']
-                for state in states:
-                    if promo['promoId'] == state['promoId']:
-                        promo_name = promo['title']['en']
-                        recieved_keys = state['receiveKeysToday']
-                        remain_promo = int(state['receiveKeysRefreshSec'])
-                        is_claimed = True if recieved_keys == keys_per_day else False
-                        result.append({'remain': remain_time(remain_promo), 'keys': recieved_keys, 'name': promo_name, 'isClaimed': is_claimed, "per_day": keys_per_day, 'seconds': remain_promo})
-            return result
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return
-
-    def _get_minigames(self) -> list:
-        result = []
-        try:
-            response = requests.post(f'{self.season_url}/config', headers=self.headers)
-            response.raise_for_status()
-
-            games = response.json().get('dailyKeysMiniGames', [{}])
-            for game in games.values():
-                result.append(game)
-            return result
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return result
 
     def _get_mini_game_cipher(self, mini_game: dict, one_point=False) -> str:
         minigame_cipher = ''
@@ -380,11 +270,12 @@ class HamsterKombatClicker:
             response.raise_for_status()
 
             cipher = self._get_daily_cipher()
-            combo = self._get_daily_combo()
+            combo = HamsterEndpoints.get_combo()
+            daily_combo: list = combo.combo
 
             total_price, total_profit, cards, cards_info = 0, 0, [], ''
             upgradesForBuy = response.json()['upgradesForBuy']
-            for upgradeId in combo['combo']:
+            for upgradeId in daily_combo:
                 for upgrade in upgradesForBuy:
                     if upgradeId == upgrade['id']:
                         available = upgrade['isAvailable']
@@ -414,7 +305,7 @@ class HamsterKombatClicker:
                       f"🌟  {LIGHT_YELLOW}{align_summary(localized_text('total_price'))}{WHITE}{YELLOW}{total_price:,}{WHITE}".replace(',', ' ')
 
             logging.warning(f"⚙️  {cards_info}{YELLOW}💰 {total_price:,}{WHITE} | {MAGENTA}📈 +{total_profit:,}{WHITE}")
-            return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo['date']}
+            return {'cards': cards, 'summary': summary, 'cipher': cipher, 'combo_date': combo.date}
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
@@ -599,7 +490,7 @@ class HamsterKombatClicker:
             already_purchased_cards = set(combo.get('upgradeIds', []))
             remain = combo.get('remainSeconds', 0)
 
-            cards = set(self._get_daily_combo().get('combo'))
+            cards = set(HamsterEndpoints.get_combo().combo)
             upgrades_for_buy = response.json().get('upgradesForBuy', [])
             cards_for_buy = list(cards - already_purchased_cards)
             cards_for_buy_names = ', '.join(cards_for_buy)
@@ -678,7 +569,7 @@ class HamsterKombatClicker:
                 initial_balance = int(start_game.json().get(f'{self.season}User').get(f'balance{self.currency}'))
                 print(f"{YELLOW}ℹ️  {localized_text('balance')}: {LIGHT_MAGENTA}{initial_balance:,}{WHITE}".replace(',', ' '))
 
-                current_balance = int(self._sync().get(f'balance{self.currency}'))
+                current_balance = int(HamsterEndpoints.get_user(self.headers).balanceDiamonds)
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 print(f"{YELLOW}ℹ️  {localized_text('balance')}: {balance} | {localized_text('passive')}".replace(',', ' '))
@@ -689,7 +580,7 @@ class HamsterKombatClicker:
                 end_game.raise_for_status()
 
                 end_game_data = end_game.json()
-                current_balance = int(self._sync().get(f'balance{self.currency}'))
+                current_balance = int(HamsterEndpoints.get_user(self.headers).balanceDiamonds)
                 balance_increase = current_balance - initial_balance
                 balance = f"{LIGHT_MAGENTA}{current_balance:,}{WHITE} ({LIGHT_GREEN}+{balance_increase:,}{WHITE})"
                 bonus = f"{LIGHT_BLUE}+{int(end_game_data.get('bonus')):,}{WHITE}"
@@ -858,6 +749,7 @@ class HamsterKombatClicker:
 
     def get_account_info(self):
         try:
+
             response = requests.post(f'{self.season_url}/auth/account-info', headers=self.headers)
             response.raise_for_status()
 
@@ -975,21 +867,20 @@ class HamsterKombatClicker:
     def minigames_for_generate(self) -> tuple:
         result, remain = [], 0
         try:
-            games_data = [app for app in get_games_data()['apps'] if app.get('available')]
-            promos = self._get_promos()
+            games_data = get_games_data()
+            promos = HamsterEndpoints.get_promos(self.headers)
 
-            result = []
-            remain = promos[0]['seconds']
-
+            remain = promos[0].seconds
             for game in games_data:
                 prefix = game.get('prefix', 'n/a')
-                promo = next((p for p in promos if p['name'] == game['title']), None)
+                promo = next((p for p in promos if p.name == game['title']), None)
+
                 if promo:
-                    is_claimed = promo['isClaimed']
-                    recieved_keys = promo.get('keys', 0)
-                    keys_per_day = promo.get('per_day', 0)
+                    is_claimed = promo.is_claimed
+                    recieved_keys = promo.keys
+                    keys_per_day = promo.per_day
                     count = int(keys_per_day - recieved_keys)
-                    promo_name = promo['name']
+                    promo_name = promo.name
                 else:
                     is_claimed = False
                     recieved_keys = 0
@@ -1011,7 +902,7 @@ class HamsterKombatClicker:
         return result, remain
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
-        games_data = [app for app in get_games_data()['apps'] if app.get('available')]
+        games_data = get_games_data()
 
         for promo in games_data:
             if promo['prefix'] == prefix:
@@ -1023,6 +914,9 @@ class HamsterKombatClicker:
                 EMOJI = promo['emoji']
 
         async def delay_random():
+            """
+            :return:
+            """
             return random.random() / 3 + 1
 
         async def __generate_client_id() -> str:

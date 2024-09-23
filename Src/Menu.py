@@ -1,5 +1,6 @@
 import os
 
+from Src.Api.Endpoints import HamsterEndpoints
 from Src.Colors import *
 from Src.utils import get_status, get_games_data, remain_time, localized_text, align_settins, align_main_menu
 from Src.HamsterClient import client, config
@@ -64,7 +65,7 @@ def playground_menu():
     if config.has_hamster_token:
         promos = client._get_promos()
 
-    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
+    games_data = get_games_data()
     games_info = {game['title']: {"emoji": game['emoji']} for game in games_data}
     max_width = max(len(game) for game in games_info)
 
@@ -112,18 +113,18 @@ def playground_menu():
 def minigames_menu():
     minigames = []
     if config.has_hamster_token:
-        minigames = client._get_minigames()
+        minigames = HamsterEndpoints.get_config(client.headers, 'minigames')
 
-    games_data = get_games_data()['minigames']
+    games_data = get_games_data(apps=False)
     games_info = {game['title']: {"emoji": game['emoji'], "color": LIGHT_YELLOW} for game in games_data}
     max_width = max(len(game) for game in games_info)
 
     for minigame in minigames:
-        game_name = minigame['id']
+        game_name = minigame.id
         if game_name in games_info:
             games_info[game_name].update({
-                "cooldown": minigame['remainSeconds'],
-                "status": get_status(minigame['isClaimed'])
+                "cooldown": minigame.remainSeconds,
+                "status": get_status(minigame.isClaimed)
             })
 
     menu = f"🎮  {localized_text('minigames_menu_header')}\n"

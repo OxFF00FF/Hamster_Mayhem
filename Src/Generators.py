@@ -49,7 +49,7 @@ def generate_for_game(prefix):
 
 
 async def genetare_for_all_games():
-    games_data = [app for app in get_games_data()['apps'] if app.get('available')]
+    games_data = get_games_data()
 
     if config.has_hamster_token:
         choice = input(choice_text)
