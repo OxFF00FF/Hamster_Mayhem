@@ -48,8 +48,8 @@ class HamsterKombatClicker:
 
         self.season = HamsterUrls.season
         self.currency = 'Diamonds'
-        # self.base_url = f'https://api.hamsterkombatgame.io'
-        # self.season_url = f'https://api.hamsterkombatgame.io/{self.season}'
+        self.base_url = f'https://api.hamsterkombatgame.io'
+        self.season_url = f'https://api.hamsterkombatgame.io/{self.season}'
 
         self.headers = self._get_headers()
         self.user_config: UserConfig = self._get_user_config()
