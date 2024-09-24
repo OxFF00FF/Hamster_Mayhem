@@ -9,7 +9,6 @@ from Src.HamsterClient import client, config
 
 def main():
     try:
-        # client.apply_promocode('MERGE-X43-M7A2-WG25-C33', 'dc128d28-c45b-411c-98ff-ac7726fbaea4')
         banner()
         client.login()
         main_menu()

@@ -48,8 +48,6 @@ class HamsterKombatClicker:
 
         self.season = HamsterUrls.season
         self.currency = 'Diamonds'
-        # self.base_url = f'https://api.hamsterkombatgame.io'
-        # self.season_url = f'https://api.hamsterkombatgame.io/{self.season}'
 
         self.headers = self._get_headers()
         self.user_config: UserConfig = self._get_user_config()
@@ -113,62 +111,6 @@ class HamsterKombatClicker:
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             return result
-
-    def _activity_cooldowns(self) -> list or None:
-        try:
-            result = []
-            response = requests.post(f'{self.season_url}/upgrades-for-buy', headers=self.headers)
-            response.raise_for_status()
-
-            combo = response.json().get('dailyCombo', {})
-            remain_combo = remain_time(combo.get('remainSeconds', 'n/a'))
-            result.append({'combo': {'remain': remain_combo, 'isClaimed': combo.get('isClaimed', False)}})
-
-            response = requests.post(f'{self.season_url}/config', headers=self.headers)
-            response.raise_for_status()
-
-            config_data = response.json()
-            cipher = config_data.get('dailyCipher', {})
-            remain_cipher = remain_time(cipher.get('remainSeconds', 'n/a'))
-            result.append({'cipher': {'remain': remain_cipher, 'isClaimed': cipher.get('isClaimed', False)}})
-
-            response = requests.post(f'{self.season_url}/list-tasks', headers=self.headers)
-            response.raise_for_status()
-
-            tasks = response.json().get('tasks', [])
-            remain_task = 0
-            for task in tasks:
-                if task.get('id') == 'streak_days_special':
-                    remain_task = remain_time(task.get('remainSeconds', 'n/a'))
-                    break
-                else:
-                    remain_task = 'n/a'
-            result.append({'tasks': {'remain': remain_task, 'isClaimed': all(task.get('isCompleted', False) for task in tasks)}})
-
-            response = requests.post(f'{self.season_url}/sync', headers=self.headers)
-            response.raise_for_status()
-
-            user = response.json().get(f'{self.season}User')
-            availableTaps = int(user.get('availableTaps', 0))
-            maxTaps = int(user.get('maxTaps', 0))
-            tapsRecoverPerSec = int(user.get('tapsRecoverPerSec', 0))
-
-            try:
-                current_remain_time = int(availableTaps / tapsRecoverPerSec)
-                total_remain_time = int(maxTaps / tapsRecoverPerSec)
-                taps_remain = remain_time(int(total_remain_time - current_remain_time))
-            except:
-                taps_remain = 'n/a'
-
-            if availableTaps == maxTaps and taps_remain != 'n/a':
-                result.append({'taps': {'remain': 0, 'isClaimed': True}})
-            else:
-                result.append({'taps': {'remain': taps_remain, 'isClaimed': False}})
-            return result
-
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            return
 
     def _get_mini_game_cipher(self, minigame: ResponseData, one_point=False) -> str:
         minigame_cipher = ''
@@ -249,17 +191,14 @@ class HamsterKombatClicker:
 
     def _collect_upgrades_info(self) -> dict or None:
         try:
-            response = requests.post(f'{self.season_url}/upgrades-for-buy', headers=self.headers)
-            response.raise_for_status()
-
             cipher = HamsterEndpoints.get_config(self.headers, 'cipher').cipher
             combo = HamsterEndpoints.get_combo()
             daily_combo: list = combo.combo
 
             total_price, total_profit, cards, cards_info = 0, 0, [], ''
-            upgradesForBuy = response.json()['upgradesForBuy']
+            upgrades_for_buy = HamsterEndpoints.get_upgrades(self.headers).upgradesForBuy
             for upgradeId in daily_combo:
-                for upgrade in upgradesForBuy:
+                for upgrade in upgrades_for_buy:
                     if upgradeId == upgrade['id']:
                         available = upgrade['isAvailable']
                         if available:
@@ -336,10 +275,10 @@ class HamsterKombatClicker:
         try:
             user = HamsterEndpoints.get_user(self.headers)
             if user:
-                available_taps = int(user.availableTaps)
-                max_taps = int(user.maxTaps)
-                earn_per_sec = int(user.earnPerTap)
-                taps_recoverper_sec = int(user.tapsRecoverPerSec)
+                available_taps = int(getattr(user, 'availableTaps', 0))
+                max_taps = int(getattr(user, 'maxTaps', 0))
+                earn_per_sec = int(getattr(user, 'earnPerTap', 0))
+                taps_recoverper_sec = int(getattr(user, 'tapsRecoverPerSec', 0))
 
             total_remain_time = max_taps / taps_recoverper_sec
             current_remain_time = available_taps / taps_recoverper_sec
@@ -430,19 +369,18 @@ class HamsterKombatClicker:
     def complete_daily_combo(self, buy_anyway=False) -> int or None:
         remain = 0
         try:
-            response = requests.post(f'{self.season_url}/upgrades-for-buy', headers=self.headers)
-            response.raise_for_status()
+            upgrades = HamsterEndpoints.get_upgrades(self.headers)
+            combo = upgrades.dailyCombo
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour')
             free_balance = balance.get(f'balance{self.currency}') - self.user_config.balance_threshold
 
-            combo = response.json().get('dailyCombo')
-            already_purchased_cards = set(combo.get('upgradeIds', []))
-            remain = combo.get('remainSeconds', 0)
+            already_purchased_cards = set(combo.upgradeIds)
+            remain = combo.remainSeconds
 
             cards = set(HamsterEndpoints.get_combo().combo)
-            upgrades_for_buy = response.json().get('upgradesForBuy', [])
+
             cards_for_buy = list(cards - already_purchased_cards)
             cards_for_buy_names = ', '.join(cards_for_buy)
 
@@ -456,20 +394,19 @@ class HamsterKombatClicker:
                         return
 
                 for card in cards_for_buy:
-                    for upgrade in upgrades_for_buy:
+                    for upgrade in upgrades:
                         card_id = card.lower().strip()
                         upgrade_id = upgrade.get('id').lower().strip()
 
                         if card_id == upgrade_id:
-                            price = int(upgrade['price'])
+                            price = int(upgrade.price)
                             max_price_limit = max(earn_per_hour, 50000) * 24
 
                             if int(free_balance * 0.8) >= price and price < int(max_price_limit):
-                                print(f"\n{YELLOW}ℹ️  {localized_text('bying_upgrade', upgrade['id'], price)} {WHITE}")
-                                self._buy_upgrade(upgrade['id'])
+                                print(f"{YELLOW}ℹ️  {localized_text('bying_upgrade', upgrade.id, price)} {WHITE}")
+                                self._buy_upgrade(upgrade.id)
 
-                claim_combo = requests.post(f'{self.season_url}/claim-daily-combo', headers=self.headers)
-                claim_combo.raise_for_status()
+                HamsterEndpoints.claim_combo(self.headers)
                 print(f"\n{GREEN}✅  {localized_text('info_combo_completed')}{WHITE}")
 
             else:
@@ -479,7 +416,6 @@ class HamsterKombatClicker:
             print(f"🚫  {localized_text('error_occured')}: {e}")
             return remain
 
-
     def complete_daily_minigame(self, game_id: str) -> int or None:
         remain = 0
         try:
@@ -487,7 +423,6 @@ class HamsterKombatClicker:
             minigame = next((m for m in minigames if game_id.capitalize() == m.id), None)
 
             remain = int(minigame.remainSeconds)
-            next_attempt = remain_time(minigame.remainSecondsToNextAttempt)
             bonus_keys = int(minigame.bonusKeys)
 
             is_claimed = minigame.isClaimed
@@ -659,71 +594,68 @@ class HamsterKombatClicker:
             logging.error(f"🚫  {localized_text('error_occured')}: {e}")
 
     def get_cooldowns(self) -> dict:
-        def _post_request(endpoint):
-            response = requests.post(f'{self.season_url}/{endpoint}', headers=self.headers)
-            response.raise_for_status()
-            return response.json()
-
         result = {}
 
         try:
-            # Fetch config data
-            config_data = _post_request('config')
+            # Fetch cipher data
+            config_data = HamsterEndpoints.get_config(self.headers).to_dict()
             result['cipher'] = {
-                'remain': int(config_data['dailyCipher'].get('remainSeconds', 0)),
-                'completed': config_data['dailyCipher'].get('isClaimed', False)
-            }
-            result['minigames'] = [
-                {
-                    'name': game_id,
-                    'remain': int(data.get('remainSeconds', 0)),
-                    'completed': data.get('isClaimed', False)
-                }
-                for game_id, data in config_data.get('dailyKeysMiniGames', {}).items()
-            ]
+                'remain': int(config_data.get('dailyCipher', {}).get('remainSeconds', 0)),
+                'completed': config_data.get('dailyCipher', {}).get('isClaimed', False)}
 
-            # Fetch upgrades data
-            upgrades_data = _post_request('upgrades-for-buy')
+            result['minigames'] = [{
+                'name': game_id,
+                'remain': int(data.get('remainSeconds', 0)),
+                'completed': data.get('isClaimed', False)}
+                for game_id, data in config_data.get('dailyKeysMiniGames', {}).items()]
+
+            # Fetch combo
+            upgrades_data = HamsterEndpoints.get_upgrades(self.headers).to_dict()
             result['combo'] = {
-                'remain': int(upgrades_data['dailyCombo'].get('remainSeconds', 0)),
-                'completed': upgrades_data['dailyCombo'].get('isClaimed', False)
+                'remain': int(upgrades_data.get('dailyCombo', {}).get('remainSeconds', 0)),
+                'completed': upgrades_data.get('dailyCombo', {}).get('isClaimed', False)
             }
 
             # Fetch tasks data
-            tasks_data = _post_request('list-tasks')
+            tasks_data = HamsterEndpoints.get_tasks(self.headers)
             result['tasks'] = {
-                'remain': int(next((task.get('remainSeconds', 0) for task in tasks_data.get('tasks', []) if task['id'] == 'streak_days_special'), 0)),
-                'completed': next((task.get('isCompleted', False) for task in tasks_data.get('tasks', []) if task['id'] == 'streak_days_special'), False)
+                'remain': int(next((getattr(task, 'remainSeconds', 0) for task in tasks_data if task.id == 'streak_days_special'), 0)),
+                'completed': next((getattr(task, 'isCompleted', False) for task in tasks_data if task.id == 'streak_days_special'), False)
             }
 
             # Fetch taps data
-            taps_data = _post_request('sync').get(f'{self.season}User', {})
-            max_taps = int(taps_data.get('maxTaps', 0))
-            taps_per_sec = int(taps_data.get('tapsRecoverPerSec', 0))
-            available_taps = int(taps_data.get('availableTaps', 0))
+            taps_data = HamsterEndpoints.get_user(self.headers)
+            available_taps = int(getattr(taps_data, 'availableTaps', 0))
+            max_taps = int(getattr(taps_data, 'maxTaps', 0))
+            taps_per_sec = int(getattr(taps_data, 'tapsRecoverPerSec', 0))
+            try:
+                current_remain_time = int(available_taps / taps_per_sec)
+                total_remain_time = int(max_taps / taps_per_sec)
+                taps_remain = remain_time(int(total_remain_time - current_remain_time))
+                remain = int(max_taps / taps_per_sec)
+            except ZeroDivisionError:
+                taps_remain = 'n/a'
+                remain = 'n/a'
+
             result['taps'] = {
-                'remain': int(max_taps / taps_per_sec),
-                'completed': available_taps != max_taps
+                'remain': remain,
+                'completed': available_taps != max_taps,
+                'taps_remain': taps_remain
             }
 
             # Fetch promos data
-            promo_response = _post_request('get-promos')
-            promos = promo_response.get('promos', [])
-            states = promo_response.get('states', [])
-            promo_results = [
-                {
-                    'name': promo['title']['en'],
-                    'remain': int(state.get('receiveKeysRefreshSec', 0)),
-                    'completed': state.get('receiveKeysToday', 0) == promo['keysPerDay']
-                }
-                for promo in promos
-                for state in states
-                if promo['promoId'] == state['promoId']
-            ]
-            result['promos'] = promo_results
+            promos = HamsterEndpoints.get_promos(self.headers)
+            result['promos'] = [{
+                'name': promo.name,
+                'remain': int(promo.seconds),
+                'completed': promo.keys == promo.per_day}
+                for promo in promos]
+
+            return result
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
+            logging.error(traceback.format_exc())
             return result
 
     def bonus_for_one_point(self, minigame: ResponseData) -> int:

@@ -19,6 +19,9 @@ from Src.Colors import *
 
 class ResponseData:
     def __init__(self, **kwargs):
+        self.remainSeconds = None
+        self.isCompleted = None
+        self.remainSeconds = None
         self.promo_id = None
         self.amount = None
         self.type = None
@@ -33,10 +36,6 @@ class ResponseData:
         self.maxPoints = None
         self.upgrades = None
         self.error_message = None
-        self.earnPerTap = None
-        self.tapsRecoverPerSec = None
-        self.maxTaps = None
-        self.availableTaps = None
         self.balanceDiamonds = None
         self.per_day = None
         self.keys = None
@@ -208,10 +207,10 @@ class HamsterEndpoints:
             logging.error(f"🚫  {RED}Не удалось получить список промо игр{WHITE}")
 
     @staticmethod
-    def get_upgrades(headers) -> list[ResponseData]:
+    def get_upgrades(headers) -> ResponseData or list[ResponseData]:
         try:
-            upgrades = get_data(HamsterUrls.upgrades_for_buy, headers).get('upgradesForBuy', [])
-            return [ResponseData.from_dict(upgrade) for upgrade in upgrades]
+            upgrades = get_data(HamsterUrls.upgrades_for_buy, headers)
+            return ResponseData.from_dict(upgrades)
 
         except:
             logging.error(f"🚫  {RED}Не удалось получить список карт{WHITE}")
@@ -313,3 +312,12 @@ class HamsterEndpoints:
 
         except:
             logging.error(f"🚫  {RED}Не удалось активировать промокод: {promocode} {WHITE}")
+    
+    @staticmethod
+    def claim_combo(headers) -> ResponseData:
+        try:
+            data = get_data(HamsterUrls.apply_promo, headers)
+            return ResponseData.from_dict(data)
+
+        except:
+            logging.error(f"🚫  {RED}Не удалось завершить комбо{WHITE}")

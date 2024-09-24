@@ -1,4 +1,5 @@
 import os
+from pprint import pprint
 
 from Src.Api.Endpoints import HamsterEndpoints
 from Src.Colors import *
@@ -9,26 +10,25 @@ not_available = f"{RED}❌{WHITE}"
 
 
 def main_menu():
-    activities = client._activity_cooldowns()
+    activities = client.get_cooldowns()
+    status_dict = {
+        'cipher': (not_available, 'n/a'),
+        'combo': (not_available, 'n/a'),
+        'tasks': (not_available, 'n/a'),
+        'taps': (not_available, 'n/a')}
 
-    status_dict = {'taps': (not_available, 'n/a'),
-                   'tasks': (not_available, 'n/a'),
-                   'cipher': (not_available, 'n/a'),
-                   'combo': (not_available, 'n/a')}
-
-    if activities:
-        for activity in activities:
-            for key in status_dict.keys():
-                if key in activity:
-                    status_dict[key] = (get_status(activity[key]['isClaimed']), activity[key]['remain'])
+    for key in status_dict.keys():
+        if key in activities:
+            if activities[key]['remain'] == 0:
+                remain = 'n/a'
+            status_dict[key] = (get_status(activities[key]['completed']), remain)
 
     def line(index, emoji, label, status, cooldown):
         return f"  {LIGHT_YELLOW}{index} |  {RESET}{emoji} {YELLOW}{label} {WHITE}  {status} · {localized_text('left')}: {cooldown} \n"
 
     menu = f"\n📚  {localized_text('main_menu_header')}"
-    # menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
+    menu += f"  {LIGHT_YELLOW}# |  {RESET}📝 {YELLOW}{localized_text('main_menu_info')} {WHITE} \n"
     # menu += f"  {LIGHT_YELLOW}@ |  {RESET}🤖 {YELLOW}{localized_text('main_menu_run_bot')} {WHITE} \n"
-
     # menu += line(1, '👆', f"{align_main_menu(localized_text('main_menu_taps'))}", *status_dict['taps'])
     menu += line(2, '📑', f"{align_main_menu(localized_text('main_menu_tasks'))}", *status_dict['tasks'])
     # menu += line(3, '🔍', f"{align_main_menu(localized_text('main_menu_cipher'))}", *status_dict['cipher'])
