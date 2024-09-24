@@ -17,45 +17,20 @@ from config import app_config
 from Src.Colors import *
 
 
-def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
-    try:
-        response = requests.post(endpoint, headers=headers, json=data)
-        response.raise_for_status()
-        data = response.json()
-        if data:
-            return data
-
-    except requests.RequestException:
-        error = data.get('error_code')
-        if error:
-            if error == 'BAD_AUTH_TOKEN':
-                print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
-                print(f"{RED}🚫  {localized_text('error_hamster_token_not_specified')}{WHITE}")
-                return {}
-            else:
-                print(f"{RED}🚫  {localized_text('error_occured')}: {data['error_code']}{WHITE}")
-                return {}
-
-        if response:
-            if response.status_code == 401:
-                print(f"🚫  {localized_text('error_occured')}: 401 Unauthorized. check your hamster_token for corrcect")
-                exit(1)
-            elif response.status_code in [502, 503, 404, 500]:
-                print(f"{RED}❌  Кажется хомяк не работает!{WHITE} · Статус: {response.status_code}\n")
-                exit(1)
-
-    except Exception as e:
-        print(f"🚫  {localized_text('error_occured')}: {e}")
-        logging.error(traceback.format_exc())
-        return {}
-
-    except:
-        logging.error(f"🚫  Не удалось установить соединение с хомяком. Проверье подключение к интеренту")
-        return {}
-
-
 class ResponseData:
     def __init__(self, **kwargs):
+        self.promo_id = None
+        self.amount = None
+        self.type = None
+        self.bonus = None
+        self.price = None
+        self.isExpired = None
+        self.cooldownSeconds = None
+        self.isAvailable = None
+        self.level = None
+        self.remain = None
+        self.startDate = None
+        self.maxPoints = None
         self.upgrades = None
         self.error_message = None
         self.earnPerTap = None
@@ -82,6 +57,35 @@ class ResponseData:
 
     def to_dict(self) -> dict:
         return {key: value for key, value in self.__dict__.items() if value is not None}
+
+
+def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
+    try:
+        response = requests.post(endpoint, headers=headers, json=data)
+        response.raise_for_status()
+        success = response.json()
+        return success
+
+    except requests.RequestException:
+        try:
+            error = response.json()
+            print(f"\n{RED}🚫  {localized_text('error_occured')}: {error.get('error_code')}{WHITE}")
+            print(f"{YELLOW}📨  {error.get('error_message')}{WHITE}\n")
+
+        except Exception as e:
+            if response.status_code == 401:
+                print(f"\n{RED}❌ 401 Unauthorized. check your hamster_token for corrcect{WHITE}\n")
+                exit(1)
+            elif response.status_code in [502, 503, 404, 500]:
+                print(f"\n{RED}❌  Кажется хомяк не работает!{WHITE} · Статус: {response.status_code}{WHITE}")
+                print(f"{RED}❌  Не удалось установить соединение с хомяком. Проверье подключение к интеренту{WHITE}\n")
+                exit(1)
+            else:
+                print(f"🚫  {localized_text('error_occured')}: {e}")
+                exit(1)
+    except:
+        logging.error(traceback.format_exc())
+        exit(1)
 
 
 class HamsterEndpoints:
@@ -127,9 +131,8 @@ class HamsterEndpoints:
                 return f"Bearer {auth_token}" if auth_token else None
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logging.error(f"🚫  {RED}Не удалось авторизироваться через телеграм: {e} {WHITE}")
             exit(1)
-
 
     @staticmethod
     def get_user(headers) -> ResponseData:
@@ -137,11 +140,8 @@ class HamsterEndpoints:
             user = get_data(HamsterUrls.sync, headers).get(f'{HamsterUrls.season}User', {})
             return ResponseData.from_dict(user)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось поулчить данные пользователя{WHITE}")
 
     @staticmethod
     def get_account_info(headers) -> ResponseData:
@@ -149,11 +149,8 @@ class HamsterEndpoints:
             account_info = get_data(HamsterUrls.account_info, headers).get('accountInfo', {})
             return ResponseData.from_dict(account_info)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить инфоррмацию аккаунта{WHITE}")
 
     @staticmethod
     def get_combo() -> ResponseData:
@@ -161,37 +158,27 @@ class HamsterEndpoints:
             combo = get_data(HamsterUrls.get_combo)
             return ResponseData.from_dict(combo)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить список комбо карт{WHITE}")
 
     @staticmethod
-    def get_config(headers, key = None) -> ResponseData or list[ResponseData]:
+    def get_config(headers, key=None) -> ResponseData or list[ResponseData]:
         try:
             config = get_data(HamsterUrls.config, headers)
-
             if key == 'cipher':
                 return ResponseData.from_dict(config.get('dailyCipher', {}))
-
             elif key == 'feature':
                 return ResponseData.from_dict(config.get('feature', []))
-
             elif key == 'minigames':
-                return [ResponseData.from_dict(game) for game in config.get('dailyKeysMiniGames', [{}]).values()]
-
+                return [ResponseData.from_dict(game) for game in config.get('dailyKeysMiniGames', []).values()]
             else:
                 return ResponseData.from_dict(config)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить конфиг: {key} {WHITE}")
 
     @staticmethod
-    def get_promos(headers) -> ResponseData or list[ResponseData]:
+    def get_promos(headers) -> list[ResponseData]:
         try:
             promos_data = get_data(HamsterUrls.get_promos, headers)
 
@@ -207,6 +194,7 @@ class HamsterEndpoints:
                         remain = int(state.get('receiveKeysRefreshSec', 0))
                         combined_item = {
                             'name': promo['title']['en'],
+                            'promo_id': promo['promoId'],
                             'reward_type': promo['rewardType'],
                             'remain': remain_time(remain),
                             'keys': recieved_keys,
@@ -216,124 +204,112 @@ class HamsterEndpoints:
                         result.append(combined_item)
             return [ResponseData.from_dict(promo) for promo in result]
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить список промо игр{WHITE}")
 
     @staticmethod
-    def get_upgrades(headers) -> ResponseData or list[ResponseData]:
+    def get_upgrades(headers) -> list[ResponseData]:
         try:
             upgrades = get_data(HamsterUrls.upgrades_for_buy, headers).get('upgradesForBuy', [])
             return [ResponseData.from_dict(upgrade) for upgrade in upgrades]
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить список карт{WHITE}")
 
     @staticmethod
     def buy_upgrade(headers, upgrade_id) -> ResponseData:
         try:
             payload = {'upgradeId': upgrade_id, 'timestamp': int(time.time())}
-            return ResponseData.from_dict(get_data(HamsterUrls.buy_upgrade, headers, payload))
+            data = get_data(HamsterUrls.buy_upgrade, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось улучшить карту: {upgrade_id} {WHITE}")
 
     @staticmethod
-    def tap(headers, available_taps, taps_count) -> ResponseData or list[ResponseData]:
+    def tap(headers, available_taps, taps_count) -> ResponseData:
         try:
             payload = {'count': taps_count, 'availableTaps': available_taps, 'timestamp': int(time.time())}
-            return ResponseData.from_dict(get_data(HamsterUrls.tap, headers, payload))
+            data = get_data(HamsterUrls.tap, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
+        except:
+            logging.error(f"🚫  {RED}Не удалось выполнить тапы: {taps_count}/{available_taps} {WHITE}")
 
     @staticmethod
-    def get_boosts(headers) -> list[ResponseData] or ResponseData:
+    def get_boosts(headers) -> list[ResponseData]:
         try:
             boosts = get_data(HamsterUrls.boosts_for_buy, headers).get('boostsForBuy', [])
             return [ResponseData.from_dict(boost) for boost in boosts]
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить список бустов{WHITE}")
 
     @staticmethod
     def buy_boost(headers, boost_id) -> ResponseData:
         try:
             payload = {'boostId': boost_id, 'timestamp': int(time.time())}
-            return ResponseData.from_dict(get_data(HamsterUrls.buy_boost, headers, payload))
+            data = get_data(HamsterUrls.buy_boost, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
+        except:
+            logging.error(f"🚫  {RED}Не удалось купить буст: {boost_id} {WHITE}")
 
     @staticmethod
-    def get_tasks(headers) -> ResponseData or list[ResponseData]:
+    def get_tasks(headers) -> list[ResponseData]:
         try:
             tasks = get_data(HamsterUrls.list_tasks, headers).get('tasks', [])
             return [ResponseData.from_dict(task) for task in tasks]
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось получить список заданий{WHITE}")
 
     @staticmethod
-    def check_task(headers, task_id) -> ResponseData or list[ResponseData]:
+    def check_task(headers, task_id) -> ResponseData:
         try:
             payload = {'taskId': task_id}
-            return ResponseData.from_dict(get_data(HamsterUrls.check_task, headers, payload))
+            data = get_data(HamsterUrls.check_task, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось завершить задание: {task_id} {WHITE}")
 
     @staticmethod
-    def claim_cipher(headers, cipher) -> ResponseData or list[ResponseData]:
+    def claim_cipher(headers, cipher) -> ResponseData:
         try:
             payload = {'cipher': cipher}
-            return ResponseData.from_dict(get_data(HamsterUrls.claim_daily_cipher, headers, payload))
+            data = get_data(HamsterUrls.claim_daily_cipher, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось завершить шифр: {cipher} {WHITE}")
 
     @staticmethod
-    def start_minigame(headers, minigame_id) -> ResponseData or list[ResponseData]:
+    def start_minigame(headers, minigame_id) -> ResponseData:
         try:
             payload = {'miniGameId': minigame_id}
-            return ResponseData.from_dict(get_data(HamsterUrls.start_keys_minigame, headers, payload))
+            data = get_data(HamsterUrls.start_keys_minigame, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
-
+        except:
+            logging.error(f"🚫  {RED}Не удалось начать миниигру: {minigame_id} {WHITE}")
 
     @staticmethod
-    def claim_minigame(headers, cipher, minigame_id) -> ResponseData or list[ResponseData]:
+    def claim_minigame(headers, cipher, minigame_id) -> ResponseData:
         try:
             payload = {'cipher': cipher, 'miniGameId': minigame_id}
-            return ResponseData.from_dict(get_data(HamsterUrls.claim_daily_keys_minigame, headers, payload))
+            data = get_data(HamsterUrls.claim_daily_keys_minigame, headers, payload)
+            return ResponseData.from_dict(data)
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
-            logging.error(traceback.format_exc())
-            return ResponseData.from_dict({})
+        except:
+            logging.error(f"🚫  {RED}Не удалось завершить миниигру: {minigame_id} {WHITE}")
+
+    @staticmethod
+    def apply_promo(headers, promocode) -> ResponseData:
+        try:
+            payload = {'promoCode': promocode}
+            data = get_data(HamsterUrls.apply_promo, headers, payload)
+            return ResponseData.from_dict(data)
+
+        except:
+            logging.error(f"🚫  {RED}Не удалось активировать промокод: {promocode} {WHITE}")
