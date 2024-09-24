@@ -1,7 +1,7 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
-
+import os
 
 class Config(BaseSettings):
     HAMSTER_TOKEN_1: str
@@ -18,6 +18,8 @@ class Config(BaseSettings):
 
     @property
     def DB_URL_sqlite(self):
+        if not os.path.exists("database/db/"):
+            os.makedirs("database/db/")
         return f"sqlite:///database/db/Hamster_db.sqlite3"
 
     model_config = SettingsConfigDict(env_file='.env')
