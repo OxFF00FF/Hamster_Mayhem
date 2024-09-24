@@ -16,7 +16,7 @@ def generate_promocodes(prefix='', apply_promo=False):
     count = input(kali(localized_text('enter_one'), '~/Playground', localized_text('count_promocodes_to_generate')))
     if count == '':
         count = 1
-        print(f"\n⚠️  {localized_text('count_not_specified')}")
+        print(f"\n⚠️  {localized_text('count_not_specified')}\n")
 
     if int(count) <= 0:
         print(localized_text('error_count_must_great_0'))

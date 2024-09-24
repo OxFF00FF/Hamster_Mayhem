@@ -309,7 +309,7 @@ class HamsterEndpoints:
     def apply_promo(headers, promocode) -> ResponseData:
         try:
             payload = {'promoCode': promocode}
-            data = get_data(HamsterUrls.apply_promo, headers, payload)
+            data = get_data(HamsterUrls.apply_promo, headers, payload).get('reward', {})
             return ResponseData.from_dict(data)
 
         except:

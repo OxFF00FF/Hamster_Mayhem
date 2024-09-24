@@ -537,16 +537,12 @@ class HamsterKombatClicker:
 
                 time.sleep(2)
                 reward = HamsterEndpoints.apply_promo(self.headers, promocode)
-
                 if reward.type == self.currency.lower():
                     print(f"{LIGHT_GREEN}💎  {localized_text('info_currency_recieved', reward.type.title())}: {keys_today + reward.amount}/{keys_limit} {WHITE}\n")
-
                 elif reward.type == 'coins':
                     print(f"{LIGHT_GREEN}🪙  {localized_text('info_currency_recieved', reward.type.title())}: {reward.amount:,}{WHITE}\n".replace(',', ' '))
-
                 elif reward.type == 'keys':
                     print(f"{LIGHT_GREEN}🔑  {localized_text('info_currency_recieved', reward.type.title())}: {reward.amount:,}{WHITE}\n".replace(',', ' '))
-
                 else:
                     print(f"{LIGHT_GREEN}🎉  {localized_text('info_currency_recieved', reward.type.title())}: {reward.amount:,}{WHITE}\n".replace(',', ' '))
             print()
@@ -800,7 +796,7 @@ class HamsterKombatClicker:
                         progress_dict[prefix] = f"{LIGHT_BLUE}{prefix.upper()}{WHITE} · {localized_text('status')}: {overall_progress:.0f}%"
                     else:
                         progress_message = (n + 1) / EVENTS_COUNT * 100
-                        print(f"ℹ️  {LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {progress_message:.0f}%")
+                        print(f"{LIGHT_BLUE}{prefix}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {progress_message:.0f}%")
 
                     if has_code:
                         break
