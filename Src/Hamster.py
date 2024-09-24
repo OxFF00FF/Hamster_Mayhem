@@ -98,7 +98,6 @@ class HamsterKombatClicker:
     def login(self):
         print(f"{DARK_GRAY}ℹ️  {localized_text('sign_in')} {self.user_config.user_name} ({self.user_config.tg_user_id}) {WHITE}")
 
-
     def _get_balance(self) -> dict or None:
         try:
             user = HamsterEndpoints.get_user(self.headers).to_dict()
@@ -297,7 +296,6 @@ class HamsterKombatClicker:
             logging.error(traceback.format_exc())
             return
 
-
     def daily_info(self) -> str or None:
         try:
             upgrades_info = self._collect_upgrades_info()
@@ -395,16 +393,16 @@ class HamsterKombatClicker:
                 if task.id == 'streak_days_special':
                     remain = task.remainSeconds
 
-                if not task.isCompleted and task.id != 'invite_friends':
+                if not task.isCompleted and not task.id.startswith('invite_friends'):
                     HamsterEndpoints.check_task(self.headers, task.id)
-                    print(f"{LIGHT_YELLOW}⭐️  {localized_text('info_task_completed', task.id)}{LIGHT_YELLOW}")
+                    print(f"{LIGHT_YELLOW}⭐️  {localized_text('info_task_completed', task.id)}{WHITE}")
                     any_completed = True
 
             if any_completed:
                 print(f"{GREEN}✅  {localized_text('info_all_tasks_complete')}{WHITE}")
 
             else:
-                print(f"{YELLOW}ℹ️  {localized_text('info_all_tasks_already_complete')}{YELLOW}")
+                print(f"{YELLOW}ℹ️  {localized_text('info_all_tasks_already_complete')}{WHITE}")
             return remain
 
         except Exception as e:
@@ -689,7 +687,6 @@ class HamsterKombatClicker:
 
         except Exception as e:
             logging.error(f"🚫  {localized_text('error_occured')}: {e}")
-
 
     def get_cooldowns(self) -> dict:
         def _post_request(endpoint):

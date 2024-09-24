@@ -9,7 +9,7 @@ from Src.HamsterClient import client, config
 
 def main():
     try:
-        banner()
+        # banner()
         client.login()
         main_menu()
 

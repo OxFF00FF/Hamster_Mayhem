@@ -282,7 +282,7 @@ class HamsterEndpoints:
     @staticmethod
     def get_tasks(headers) -> ResponseData or list[ResponseData]:
         try:
-            tasks = get_data(HamsterUrls.list_tasks, headers)
+            tasks = get_data(HamsterUrls.list_tasks, headers).get('tasks', [])
             return [ResponseData.from_dict(task) for task in tasks]
 
         except Exception as e:
