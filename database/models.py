@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated
 
-from sqlalchemy import ForeignKey, String, BigInteger, Boolean, Integer, text
+from sqlalchemy import ForeignKey, String, BigInteger, Integer, text
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 
 intpk = Annotated[int, mapped_column(primary_key=True)]

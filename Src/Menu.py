@@ -166,7 +166,7 @@ def settings_menu():
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
         f"  {LIGHT_YELLOW}l | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
-        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}config.account.upper(){WHITE}\n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}{config.account.upper()}{WHITE}\n"
         f"  {LIGHT_YELLOW}g | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}a | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}f | {YELLOW} {align_settins(localized_text('setting_save_to_file'))} · {save_to_file}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -6,7 +7,6 @@ from urllib.parse import unquote
 
 import requests
 from fake_useragent import UserAgent
-from pydantic import json
 from pyrogram import Client
 from pyrogram.raw.functions.messages import RequestWebView
 
@@ -92,7 +92,7 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
 class HamsterEndpoints:
 
     @staticmethod
-    async def login_by_telegram(session_name: str = 'hamster_mayhen_session'):
+    async def login_by_telegram(session_name: str = 'hamster_mayhem'):
         ua = UserAgent()
 
         sdir = "sessions"

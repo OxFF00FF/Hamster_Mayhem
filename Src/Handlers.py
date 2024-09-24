@@ -1,9 +1,11 @@
 import asyncio
+import os
 import re
 
 from spinners import Spinners
 
 from Src.Colors import *
+from Src.Hamster import HamsterKombatClicker
 from Src.Hamster_ultimate import HamsterUltimate
 from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game, generate_for_available_games
@@ -13,7 +15,16 @@ from Src.HamsterClient import client, config
 
 
 def handle_main_menu_choice(choice):
-    if choice == '#':
+    if choice == 'a':
+        line_before()
+        config.account = choose_account()
+        new_token = os.getenv(config.account)
+        global client
+        client = HamsterKombatClicker(hamster_token=new_token)
+        line_before()
+        client.login()
+
+    elif choice == '#':
         line_before()
         print(client.daily_info())
 
@@ -46,13 +57,6 @@ def handle_main_menu_choice(choice):
 
     elif choice == 's':
         handle_settings_menu_choice()
-
-    elif choice == 'a':
-        line_before()
-        config.account = choose_account()
-
-        line_before()
-        client.login()
 
     elif choice == '$':
         line_before()

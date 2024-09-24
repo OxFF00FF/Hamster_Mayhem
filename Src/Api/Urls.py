@@ -11,7 +11,7 @@ class HamsterUrls:
 
 
     # Auth
-    auth_by_telegram: AnyUrl = f"{base_url}/{season}/auth/auth-by-telegram-webapp"
+    auth_by_telegram: AnyUrl = f"{base_url}/auth/auth-by-telegram-webapp"
     account_info: AnyUrl = f"{base_url}/auth/account-info"
     ip: AnyUrl = f"{base_url}/ip"
 
