@@ -53,6 +53,7 @@ async def genetare_for_all_games():
 
     if config.has_hamster_token:
         choice = input(choice_text)
+        print()
         apply_promo = str(choice.lower()) == 'y'.lower()
 
     count = input(kali(localized_text('enter_one'), '~/Generate for all', localized_text('count_promocodes_to_generate_all_games')))
