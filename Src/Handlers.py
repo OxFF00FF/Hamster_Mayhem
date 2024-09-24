@@ -1,6 +1,5 @@
 import asyncio
 import os
-import re
 
 from spinners import Spinners
 
@@ -11,7 +10,7 @@ from Src.Accounts import choose_account
 from Src.Generators import genetare_for_all_games, generate_for_game, generate_for_available_games
 from Src.Menu import main_menu, playground_menu, minigames_menu, settings_menu, main_menu_not_logged
 from Src.utils import line_after, line_before, get_games_data, spinners_table, localized_text, kali, remain_time
-from Src.HamsterClient import client, config
+from Src.HamsterClient import config
 
 
 def handle_main_menu_choice(choice):
@@ -19,9 +18,10 @@ def handle_main_menu_choice(choice):
         line_before()
         config.account = choose_account()
         new_token = os.getenv(config.account)
+
         global client
-        client = HamsterKombatClicker(hamster_token=new_token)
         line_before()
+        client = HamsterKombatClicker(hamster_token=new_token)
         client.login()
 
     elif choice == '#':
