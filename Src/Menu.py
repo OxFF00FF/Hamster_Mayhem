@@ -63,20 +63,20 @@ def main_menu_not_logged():
 def playground_menu():
     promos = []
     if config.has_hamster_token:
-        promos = client._get_promos()
+        promos = HamsterEndpoints.get_promos(client.headers)
 
     games_data = get_games_data()
     games_info = {game['title']: {"emoji": game['emoji']} for game in games_data}
     max_width = max(len(game) for game in games_info)
 
     for promo in promos:
-        game_name = promo['name']
+        game_name = promo.name
         if game_name in games_info:
             games_info[game_name].update({
-                "recieved_keys": promo['keys'],
-                "keys_per_day": promo['per_day'],
-                "cooldown": promo['remain'],
-                "status": get_status(promo['isClaimed'])
+                "recieved_keys": promo.keys,
+                "keys_per_day": promo.per_day,
+                "cooldown": promo.remain,
+                "status": get_status(promo.is_claimed)
             })
 
     menu = f"🎮  {localized_text('playground_menu_header')}"
@@ -103,9 +103,9 @@ def playground_menu():
         menu += f"{promo_name}  {promo_status}"
 
     menu += (
-        f"  {LIGHT_YELLOW}* | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}. | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}0 | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}\n"
+        f"  {LIGHT_YELLOW}*  | {RESET}🎉 {YELLOW} {localized_text('playground_menu_for_all_games')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}.  | {RESET}🔙 {YELLOW} {localized_text('back_to_main_menu')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}0  | {RESET}🔚 {YELLOW} {localized_text('exit')} {WHITE}\n"
     )
     print(menu)
 
