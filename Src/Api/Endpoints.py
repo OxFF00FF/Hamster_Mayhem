@@ -19,6 +19,7 @@ from Src.Colors import *
 
 class ResponseData:
     def __init__(self, **kwargs):
+        self.error_code = None
         self.remainSeconds = None
         self.isCompleted = None
         self.remainSeconds = None
@@ -70,6 +71,7 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
             error = response.json()
             print(f"\n{RED}🚫  {localized_text('error_occured')}: {error.get('error_code')}{WHITE}")
             print(f"{YELLOW}📨  {error.get('error_message')}{WHITE}\n")
+            return error
 
         except Exception as e:
             if response.status_code == 401:
@@ -209,8 +211,8 @@ class HamsterEndpoints:
     @staticmethod
     def get_upgrades(headers) -> ResponseData or list[ResponseData]:
         try:
-            upgrades = get_data(HamsterUrls.upgrades_for_buy, headers)
-            return ResponseData.from_dict(upgrades)
+            upgrades = get_data(HamsterUrls.upgrades_for_buy, headers).get('upgradesForBuy', {})
+            return [ResponseData.from_dict(upgrade) for upgrade in upgrades]
 
         except:
             logging.error(f"🚫  {RED}Не удалось получить список карт{WHITE}")

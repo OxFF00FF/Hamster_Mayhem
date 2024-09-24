@@ -58,8 +58,9 @@ def handle_main_menu_choice(choice):
         line_before()
         profitable_cards = client.get_most_profitable_cards()
         print(localized_text('info_rent_coeff_coefficient'))
-
         print(localized_text('top_profit_cards'))
+        print(f"{LIGHT_YELLOW}Чтобы включить или отключить оображение всех карт напишите `all`{WHITE}")
+
         for e, card in enumerate(profitable_cards):
             remain = card['remain']
             expired_at = card['expired_at']
@@ -96,15 +97,18 @@ def handle_main_menu_choice(choice):
         if 0 <= card_index < len(cards):
             card = cards[card_index]
             upgrade_id = card['id']
-            client._buy_upgrade(upgradeId=upgrade_id)
+            client._buy_upgrade(upgrade_id=upgrade_id)
             client.get_most_profitable_cards()
 
-    elif choice.startswith('+'):
-        line_before()
-        match = re.search(pattern=r'\+(.*?)$', string=choice)
-        if match:
-            upgrade_id = match.group(1)
-            client._buy_upgrade(upgradeId=upgrade_id)
+    elif choice == 'all':
+        config.all_cards_in_top = not config.all_cards_in_top
+
+    # elif choice.startswith('+'):
+    #     line_before()
+    #     match = re.search(pattern=r'\+(.*?)$', string=choice)
+    #     if match:
+    #         upgrade_id = match.group(1)
+    #         client._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
         line_before()

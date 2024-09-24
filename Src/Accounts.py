@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from Src.Colors import *
 from Src.Hamster import HamsterKombatClicker
 from Src.Menu import main_menu
-from Src.utils import localized_text, kali
+from Src.utils import localized_text, kali, line_after
 from Src.HamsterClient import client, config
 from Src.Api.Endpoints import HamsterEndpoints
 
@@ -49,5 +49,6 @@ def choose_account():
             return f"HAMSTER_TOKEN_{account_choice}" if account_choice in account_dict else "HAMSTER_TOKEN_1"
 
     else:
-        print(localized_text('one_account_detected'))
+        print(f"ℹ️  {localized_text('one_account_detected')}")
+        line_after(blank_line=False)
         return "HAMSTER_TOKEN_1"

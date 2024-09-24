@@ -151,7 +151,7 @@ class HamsterKombatClicker:
         try:
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour', 0)
-            free_balance = balance.get(f'balance{self.currency}') - self.user_config.balance_threshold
+            free_balance = balance.get(f'balance_{self.currency.lower()}') - self.user_config.balance_threshold
             if self.user_config.balance_threshold == 0:
                 max_price_limit = 0
             else:
@@ -159,26 +159,24 @@ class HamsterKombatClicker:
 
             upgrades = HamsterEndpoints.get_upgrades(self.headers)
             for upgrade in upgrades:
-                upgrade_name = upgrade.name
-                upgrade_level = upgrade.level
-                upgrade_available = upgrade.isAvailable
-                upgrade_expire = upgrade.isExpired
-                upgrade_cooldown = upgrade.cooldownSeconds
-
                 if upgrade_id == upgrade.id:
                     price = int(upgrade.price)
                     if int(free_balance * 0.8) >= price and (max_price_limit == 0 or price < int(max_price_limit)):
-                        if upgrade.isAvailable and not upgrade.isExpired and upgrade_cooldown == 0:
-                            HamsterEndpoints.buy_upgrade(self.headers, upgrade_id)
-                            print(f"{GREEN}✅  {localized_text('info_card_upgraded', upgrade_name, upgrade_level + 1)}{WHITE}")
+                        if upgrade.isAvailable and not upgrade.isExpired and upgrade.cooldownSeconds == 0:
+                            buy_upgrade_response = HamsterEndpoints.buy_upgrade(self.headers, upgrade_id)
+                            if buy_upgrade_response.error_code == 'UPGRADE_MAX_LEVEL':
+                                print(f"{LIGHT_YELLOW}⚠️  Не удалось улучшить карту `{upgrade.name}`{WHITE}")
+                                break
+                            else:
+                                print(f"{GREEN}✅  {localized_text('info_card_upgraded', upgrade.name, upgrade.level + 1)}{WHITE}")
 
-                        elif upgrade_available and upgrade_expire and upgrade_cooldown != 0:
-                            logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade_name)}")
+                        elif upgrade.isAvailable and upgrade.isExpired and upgrade.cooldownSeconds != 0:
+                            logging.error(f"🚫  {localized_text('error_upgrade_not_avaialble_time_expired', upgrade.name)}")
 
                         else:
                             buy_upgrade_response = HamsterEndpoints.buy_upgrade(self.headers, upgrade_id)
                             error_message = buy_upgrade_response.error_message
-                            print(f"{LIGHT_RED}🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade_name}`. {error_message}{WHITE}")
+                            print(f"{LIGHT_RED}🚫  {localized_text('error_upgrade_not_avaialble')} `{upgrade.name}`. {error_message}{WHITE}")
                             return error_message
 
                     else:
@@ -187,6 +185,7 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
+            print(traceback.format_exc())
             return
 
     def _collect_upgrades_info(self) -> dict or None:
@@ -196,7 +195,7 @@ class HamsterKombatClicker:
             daily_combo: list = combo.combo
 
             total_price, total_profit, cards, cards_info = 0, 0, [], ''
-            upgrades_for_buy = HamsterEndpoints.get_upgrades(self.headers).upgradesForBuy
+            upgrades_for_buy = HamsterEndpoints.get_upgrades(self.headers)
             for upgradeId in daily_combo:
                 for upgrade in upgrades_for_buy:
                     if upgradeId == upgrade['id']:
@@ -560,6 +559,7 @@ class HamsterKombatClicker:
         try:
             upgrades = HamsterEndpoints.get_upgrades(self.headers)
             for card in upgrades:
+                card = card.to_dict()
                 cooldown = card.get('cooldownSeconds', 0)
                 card["remain"] = int(cooldown)
 
@@ -599,9 +599,9 @@ class HamsterKombatClicker:
         try:
             # Fetch cipher data
             config_data = HamsterEndpoints.get_config(self.headers).to_dict()
-            result['cipher'] = {
-                'remain': int(config_data.get('dailyCipher', {}).get('remainSeconds', 0)),
-                'completed': config_data.get('dailyCipher', {}).get('isClaimed', False)}
+            # result['cipher'] = {
+            #     'remain': int(config_data.get('dailyCipher', {}).get('remainSeconds', 0)),
+            #     'completed': config_data.get('dailyCipher', {}).get('isClaimed', False)}
 
             result['minigames'] = [{
                 'name': game_id,
@@ -609,12 +609,13 @@ class HamsterKombatClicker:
                 'completed': data.get('isClaimed', False)}
                 for game_id, data in config_data.get('dailyKeysMiniGames', {}).items()]
 
-            # Fetch combo
-            upgrades_data = HamsterEndpoints.get_upgrades(self.headers).to_dict()
-            result['combo'] = {
-                'remain': int(upgrades_data.get('dailyCombo', {}).get('remainSeconds', 0)),
-                'completed': upgrades_data.get('dailyCombo', {}).get('isClaimed', False)
-            }
+            # # Fetch combo
+            # upgrades_data = HamsterEndpoints.get_upgrades(self.headers)
+            # print(upgrades_data)
+            # result['combo'] = {
+            #     'remain': int(upgrades_data.get('dailyCombo', {}).get('remainSeconds', 0)),
+            #     'completed': upgrades_data.get('dailyCombo', {}).get('isClaimed', False)
+            # }
 
             # Fetch tasks data
             tasks_data = HamsterEndpoints.get_tasks(self.headers)
