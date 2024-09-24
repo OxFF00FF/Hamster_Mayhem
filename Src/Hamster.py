@@ -711,9 +711,6 @@ class HamsterKombatClicker:
                 EMOJI = promo['emoji']
 
         async def delay_random():
-            """
-            :return:
-            """
             return random.random() / 3 + 1
 
         async def __generate_client_id() -> str:

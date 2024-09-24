@@ -64,7 +64,7 @@ async def genetare_for_all_games():
     if int(count) <= 0:
         print(localized_text('error_count_must_great_0'))
         exit(1)
-
+    print()
     tasks = [client.get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file, one_game=False) for app in games_data]
     await asyncio.gather(*tasks)
 
