@@ -1,9 +1,12 @@
-import logging
 import os
 import re
 
 from Src.Hamster import HamsterKombatClicker
 from config import app_config
+
+selected_token = os.getenv('SELECTED', app_config.HAMSTER_TOKEN_1)
+client = HamsterKombatClicker(hamster_token=selected_token)
+config = client.user_config
 
 
 def hamster_client(account: str = None, token: str = None):
@@ -31,7 +34,3 @@ def hamster_client(account: str = None, token: str = None):
     except Exception as e:
         print(f"Error initializing HamsterKombatClicker: {e}")
         exit(1)
-
-
-client = hamster_client()
-config = client.user_config

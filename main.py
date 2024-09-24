@@ -3,13 +3,12 @@ import traceback
 
 from Src.Handlers import handle_main_menu_choice, handle_main_menu_not_logged_choice
 from Src.Menu import main_menu
-from Src.utils import banner, localized_text, kali, line_after
+from Src.utils import localized_text, kali, line_after
 from Src.HamsterClient import client, config
 
 
 def main():
     try:
-        banner()
         client.login()
         main_menu()
 
