@@ -1,11 +1,13 @@
 from pydantic import AnyUrl
 
+season = 'interlude'
+currency = 'Diamonds'
+
 
 class HamsterUrls:
     # var: AnyUrl = f"{base_url}/{season}/endpint")
     main_url = "https://hamsterkombatgame.io"
 
-    season = 'interlude'
     base_url: AnyUrl = "https://api.hamsterkombatgame.io"
     datavibe_base_url = "https://api21.datavibe.top/api"
 

@@ -56,7 +56,7 @@ def handle_main_menu_choice(choice):
         profitable_cards = client.get_most_profitable_cards()
         print(localized_text('info_rent_coeff_coefficient'))
         print(localized_text('top_profit_cards'))
-        print(f"{LIGHT_YELLOW}Чтобы включить или отключить оображение всех карт напишите `all`{WHITE}")
+        print(f"{LIGHT_YELLOW}{localized_text('setting_all_cards')}{WHITE}\n")
 
         for e, card in enumerate(profitable_cards):
             remain = card['remain']
@@ -67,20 +67,20 @@ def handle_main_menu_choice(choice):
             else:
                 card_name = f"{LIGHT_RED}{card['name']}{WHITE}"
 
-            price = f"{LIGHT_YELLOW}{card['price']:,}{WHITE} · " \
-                    f"{LIGHT_MAGENTA}+{card['profitPerHour']:,}{WHITE} {localized_text('per_hour')} · " \
-                    f"{MAGENTA}+{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour_after_buy')}".replace(',', ' ')
+            profit = f"{LIGHT_MAGENTA}{card['profitPerHour']:,}{WHITE} / " \
+                     f"{MAGENTA}{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour')}".replace(',', ' ')
 
-            text = f"#️⃣  {e + 1}. {card_name} · {card['level']} level\n" \
-                   f"💰  {YELLOW}{localized_text('price')}: {price}\n" \
+            text = f"#️⃣  {e + 1}. {card_name} · {card['level']} level \n" \
+                   f"💰  {YELLOW}{localized_text('price')}: {LIGHT_YELLOW}{card['price']:,}{WHITE} \n" \
+                   f"📈  {YELLOW}{localized_text('profit')}: {profit} \n" \
                    f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n" \
                    f"📊  {YELLOW}{localized_text('profitability_ratio')}: {LIGHT_CYAN}{card['profitability_ratio']:.4f}%{WHITE}"
 
             if remain != 0:
-                text += f"\n\n🔄  {YELLOW}Будет доступна через: {LIGHT_GREEN}{remain_time(remain)}{WHITE}"
+                text += f"\n\n🔄  {YELLOW}{localized_text('will_be_available_after')}: {LIGHT_GREEN}{remain_time(remain)}{WHITE}"
 
             if expired_at:
-                text += f"\n📅  {YELLOW}Осталось:{WHITE} {LIGHT_GREEN}{expired_at}{WHITE}"
+                text += f"\n📅  {YELLOW}{localized_text('left')}:{WHITE} {LIGHT_GREEN}{expired_at}{WHITE}"
 
             print(text)
             if e < len(profitable_cards) - 1:
@@ -99,13 +99,6 @@ def handle_main_menu_choice(choice):
 
     elif choice == 'all':
         config.all_cards_in_top = not config.all_cards_in_top
-
-    # elif choice.startswith('+'):
-    #     line_before()
-    #     match = re.search(pattern=r'\+(.*?)$', string=choice)
-    #     if match:
-    #         upgrade_id = match.group(1)
-    #         client._buy_upgrade(upgradeId=upgrade_id)
 
     elif choice == 'm':
         line_before()

@@ -1,9 +1,8 @@
-import os
-
 from Src.Api.Endpoints import HamsterEndpoints
 from Src.Colors import *
 from Src.utils import get_status, get_games_data, remain_time, localized_text, align_settins, align_main_menu
 from Src.HamsterClient import client, config
+from config import app_config
 
 not_available = f"{RED}❌{WHITE}"
 
@@ -146,8 +145,8 @@ def settings_menu():
     send_to_group = get_status(config.send_to_group)
     apply_promo = get_status(config.apply_promo)
     save_to_file = get_status(config.save_to_file)
-    chat_id = os.getenv('CHAT_ID')
-    group_url = os.getenv('GROUP_URL')
+    chat_id = app_config.CHAT_ID
+    group_url = app_config.GROUP_URL
 
     if config.balance_threshold == 0:
         balance_threshold = get_status(config.balance_threshold)
@@ -165,7 +164,7 @@ def settings_menu():
 
     menu = f"🛠  {localized_text('settings_menu_header')}"
     menu += (
-        f"  {LIGHT_YELLOW}l | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
+        f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_language'))} · {WHITE}{GREEN}{config.lang.upper()}{WHITE} (ru/en) \n"
         f"  {LIGHT_YELLOW}  | {YELLOW} {align_settins(localized_text('setting_account'))} · {WHITE}{GREEN}{config.account.upper()}{WHITE}\n"
         f"  {LIGHT_YELLOW}g | {YELLOW} {align_settins(localized_text('setting_send_to_group'))} · {send_to_group}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"
         f"  {LIGHT_YELLOW}a | {YELLOW} {align_settins(localized_text('setting_apply_promo'))} · {apply_promo}{WHITE} {localized_text('setting_on_off')} {WHITE} \n"

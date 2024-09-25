@@ -53,8 +53,8 @@ async def genetare_for_all_games():
 
     if config.has_hamster_token:
         choice = input(choice_text)
-        print()
         apply_promo = str(choice.lower()) == 'y'.lower()
+        print()
 
     count = input(kali(localized_text('enter_one'), '~/Generate for all', localized_text('count_promocodes_to_generate_all_games')))
     if count == '':
@@ -64,8 +64,10 @@ async def genetare_for_all_games():
     if int(count) <= 0:
         print(localized_text('error_count_must_great_0'))
         exit(1)
+
     print()
-    tasks = [client.get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file, one_game=False) for app in games_data]
+    tasks = [client.get_promocodes(int(count), config.send_to_group, apply_promo, app["prefix"], config.save_to_file, one_game=False)
+             for app in games_data]
     await asyncio.gather(*tasks)
 
 

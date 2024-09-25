@@ -10,7 +10,7 @@ from fake_useragent import UserAgent
 from pyrogram import Client
 from pyrogram.raw.functions.messages import RequestWebView
 
-from Src.Api.Urls import HamsterUrls
+from Src.Api.Urls import HamsterUrls, season
 from Src.utils import localized_text, remain_time
 from config import app_config
 
@@ -78,13 +78,14 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
                 print(f"\n{RED}❌ 401 Unauthorized. check your hamster_token for corrcect{WHITE}\n")
                 exit(1)
             elif response.status_code in [502, 503, 404, 500]:
-                print(f"\n{RED}❌  Кажется хомяк не работает!{WHITE} · Статус: {response.status_code}{WHITE}")
-                print(f"{RED}❌  Не удалось установить соединение с хомяком. Проверье подключение к интеренту{WHITE}\n")
+                print(f"\n{RED}❌  {localized_text('error_hamster_dont_work')}{WHITE} · Error code: {response.status_code}{WHITE}\n")
                 exit(1)
             else:
-                print(f"🚫  {localized_text('error_occured')}: {e}")
+                print(f"\n{LIGHT_RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
+                print(f"{RED}❌  {localized_text('error_internet_establish_connection')}{WHITE}")
                 exit(1)
     except:
+        print(f"{YELLOW}⚠️  {localized_text('error_network_problem')}{WHITE}\n")
         logging.error(traceback.format_exc())
         exit(1)
 
@@ -132,17 +133,17 @@ class HamsterEndpoints:
                 return f"Bearer {auth_token}" if auth_token else None
 
         except Exception as e:
-            logging.error(f"🚫  {RED}Не удалось авторизироваться через телеграм: {e} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_login_with_telegram')}: {e} {WHITE}")
             exit(1)
 
     @staticmethod
     def get_user(headers) -> ResponseData:
         try:
-            user = get_data(HamsterUrls.sync, headers).get(f'{HamsterUrls.season}User', {})
+            user = get_data(HamsterUrls.sync, headers).get(f'{season}User', {})
             return ResponseData.from_dict(user)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось поулчить данные пользователя{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_userdata')}{WHITE}")
 
     @staticmethod
     def get_account_info(headers) -> ResponseData:
@@ -151,7 +152,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(account_info)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить инфоррмацию аккаунта{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_account_info')}{WHITE}")
 
     @staticmethod
     def get_combo() -> ResponseData:
@@ -160,7 +161,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(combo)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить список комбо карт{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_combo_list')}{WHITE}")
 
     @staticmethod
     def get_config(headers, key=None) -> ResponseData or list[ResponseData]:
@@ -176,7 +177,7 @@ class HamsterEndpoints:
                 return ResponseData.from_dict(config)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить конфиг: {key} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_config')}: {key} {WHITE}")
 
     @staticmethod
     def get_promos(headers) -> list[ResponseData]:
@@ -206,7 +207,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(promo) for promo in result]
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить список промо игр{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_promos')}{WHITE}")
 
     @staticmethod
     def get_upgrades(headers) -> ResponseData or list[ResponseData]:
@@ -215,7 +216,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(upgrade) for upgrade in upgrades]
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить список карт{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_upgrades')}{WHITE}")
 
     @staticmethod
     def buy_upgrade(headers, upgrade_id) -> ResponseData:
@@ -225,7 +226,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось улучшить карту: {upgrade_id} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_upgrade_card')}: {upgrade_id} {WHITE}")
 
     @staticmethod
     def tap(headers, available_taps, taps_count) -> ResponseData:
@@ -235,7 +236,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось выполнить тапы: {taps_count}/{available_taps} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_taps')}: {taps_count}/{available_taps} {WHITE}")
 
     @staticmethod
     def get_boosts(headers) -> list[ResponseData]:
@@ -244,7 +245,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(boost) for boost in boosts]
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить список бустов{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_boosts')}{WHITE}")
 
     @staticmethod
     def buy_boost(headers, boost_id) -> ResponseData:
@@ -254,7 +255,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось купить буст: {boost_id} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_buy_boost')}: {boost_id} {WHITE}")
 
     @staticmethod
     def get_tasks(headers) -> list[ResponseData]:
@@ -263,7 +264,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(task) for task in tasks]
 
         except:
-            logging.error(f"🚫  {RED}Не удалось получить список заданий{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_tasks')}{WHITE}")
 
     @staticmethod
     def check_task(headers, task_id) -> ResponseData:
@@ -273,7 +274,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось завершить задание: {task_id} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_complete_taks')}: {task_id} {WHITE}")
 
     @staticmethod
     def claim_cipher(headers, cipher) -> ResponseData:
@@ -283,7 +284,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось завершить шифр: {cipher} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_complete_cipher')}: {cipher} {WHITE}")
 
     @staticmethod
     def start_minigame(headers, minigame_id) -> ResponseData:
@@ -293,7 +294,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось начать миниигру: {minigame_id} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_start_minigame')}: {minigame_id} {WHITE}")
 
     @staticmethod
     def claim_minigame(headers, cipher, minigame_id) -> ResponseData:
@@ -303,7 +304,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось завершить миниигру: {minigame_id} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_complete_minigame')}: {minigame_id} {WHITE}")
 
     @staticmethod
     def apply_promo(headers, promocode) -> ResponseData:
@@ -313,7 +314,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось активировать промокод: {promocode} {WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('error_failed_apply_promocode')}: {promocode} {WHITE}")
     
     @staticmethod
     def claim_combo(headers) -> ResponseData:
@@ -322,4 +323,4 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}Не удалось завершить комбо{WHITE}")
+            logging.error(f"🚫  {RED}{localized_text('')}{WHITE}")

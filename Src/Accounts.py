@@ -40,7 +40,7 @@ def choose_account():
                 except Exception as ex:
                     print(f"[X] · {LIGHT_RED}{localized_text('error_dont_recieved_account_data', key)}: {ex}{WHITE}")
 
-        print(f"[0] · Остаться в текущем аккаунте (Выйти в главное меню)\n")
+        print(localized_text('stay_in_current_account'))
         accounts_numbers = '/'.join([f"{e + 1}" for e in range(len(account_dict))])  # Измените здесь
         account_choice = input(kali(f"{accounts_numbers}/0", '~/Accounts', localized_text('choose_account')))
         if account_choice in account_dict:

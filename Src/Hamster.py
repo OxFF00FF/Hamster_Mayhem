@@ -16,6 +16,7 @@ import aiohttp
 import requests
 
 from Src.Api.Endpoints import HamsterEndpoints, ResponseData
+from Src.Api.Urls import currency
 from Src.Colors import *
 from Src.utils import (text_to_morse, remain_time, get_games_data, line_before,
                        generation_status, get_salt, localized_text, align_daily_info,
@@ -29,16 +30,11 @@ if platform.system() == 'Windows':
 
 
 class HamsterKombatClicker:
-    currency = 'Diamonds'
 
     def __init__(self, hamster_token):
         init_db()
 
-        if hamster_token is None:
-            self.HAMSTER_TOKEN = app_config.HAMSTER_TOKEN_1
-        else:
-            self.HAMSTER_TOKEN = hamster_token
-
+        self.HAMSTER_TOKEN = hamster_token
         self.BOT_TOKEN = app_config.TELEGRAM_BOT_TOKEN
         self.CHAT_ID = app_config.CHAT_ID
         self.GROUP_URL = app_config.GROUP_URL
@@ -95,9 +91,9 @@ class HamsterKombatClicker:
         try:
             user = HamsterEndpoints.get_user(self.headers).to_dict()
             result = {
-                f'balance_{self.currency.lower()}': int(user.get(f'balance{self.currency}', 0)),
-                'total': int(user.get(f'total{self.currency}', 0)),
-                'keys': int(user.get('balanceKeys', 0)),
+                f'balance_{currency.lower()}': int(user.get(f'balance{currency}', 0)),
+                'total': int(user.get(f'total{currency}', 0)),
+                'keys': int(user.get(f'balance{currency}', 0)),
                 'date': int(user.get('lastSyncUpdate', 0)),
                 'earn_per_hour': int(user.get('earnPassivePerHour', 0))}
             return result
@@ -145,7 +141,7 @@ class HamsterKombatClicker:
         try:
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour', 0)
-            free_balance = balance.get(f'balance_{self.currency.lower()}') - self.user_config.balance_threshold
+            free_balance = balance.get(f'balance_{currency.lower()}') - self.user_config.balance_threshold
             if self.user_config.balance_threshold == 0:
                 max_price_limit = 0
             else:
@@ -159,7 +155,7 @@ class HamsterKombatClicker:
                         if upgrade.isAvailable and not upgrade.isExpired and upgrade.cooldownSeconds == 0:
                             buy_upgrade_response = HamsterEndpoints.buy_upgrade(self.headers, upgrade_id)
                             if buy_upgrade_response.error_code == 'UPGRADE_MAX_LEVEL':
-                                print(f"{LIGHT_YELLOW}⚠️  Не удалось улучшить карту `{upgrade.name}`{WHITE}")
+                                print(f"{LIGHT_YELLOW}⚠️  {localized_text('error_failed_upgrade_card')} `{upgrade.name}` {WHITE}")
                                 break
                             else:
                                 print(f"{GREEN}✅  {localized_text('info_card_upgraded', upgrade.name, upgrade.level + 1)}{WHITE}")
@@ -250,7 +246,7 @@ class HamsterKombatClicker:
             info += f"{result['combo']} \n"
             info += f"{result['cipher']} \n\n"
             info += f"{result['summary']} \n\n"
-            info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('balance'))}{WHITE}{balance[f'balance{self.currency}']:,}\n"
+            info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('balance'))}{WHITE}{balance[f'balance{currency}']:,}\n"
             info += f"💰  {LIGHT_YELLOW}{align_daily_info(localized_text('total'))}{WHITE}{balance['total']:,}\n"
             info += f"🔑  {LIGHT_YELLOW}{align_daily_info(localized_text('keys'))}{WHITE}{balance['keys']:,}\n"
             info += f"🔥  {LIGHT_YELLOW}{align_daily_info(localized_text('total_purhased_cards_count'))}{WHITE}{purhase_upgrades_count}\n"
@@ -367,7 +363,7 @@ class HamsterKombatClicker:
 
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour')
-            free_balance = balance.get(f'balance{self.currency}') - self.user_config.balance_threshold
+            free_balance = balance.get(f'balance{currency}') - self.user_config.balance_threshold
 
             already_purchased_cards = set(combo.upgradeIds)
             remain = combo.remainSeconds
@@ -467,10 +463,12 @@ class HamsterKombatClicker:
                      f">🆔  {self.user_config.tg_user_id} \n" \
                      f"*{completed}*\n" \
                      f"{message}"
+
+            url = f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage"
             try:
-                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": mesage, "parse_mode": "MarkdownV2"})
+                response = requests.post(url, data={"chat_id": int(chat_id), "text": mesage, "parse_mode": "MarkdownV2"})
             except:
-                response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": mesage, "parse_mode": "MarkdownV2"})
+                response = requests.post(url, data={"chat_id": int(self.CHAT_ID), "text": mesage, "parse_mode": "MarkdownV2"})
             response.raise_for_status()
 
         except Exception as e:
@@ -486,24 +484,25 @@ class HamsterKombatClicker:
                 update_date = datetime.fromtimestamp(balance['date']).strftime('%Y-%m-%d %H:%M:%S')
                 result = f"🙍‍  *{self.user_config.user_name}* \n" \
                          f"🆔  `{user_id}` \n\n" \
-                         f"💰  Баланс: *{balance[f'balance{self.currency}']:,}* \n" \
-                         f"🌟  Всего: *{balance['total']:,}* \n" \
-                         f"📈  Доход: *{balance['earn_per_hour']:,}* \n" \
-                         f"🔑  Ключей: *{balance['keys']:,}* \n\n" \
+                         f"💰  {localized_text('balance')}: *{balance[f'balance{currency}']:,}* \n" \
+                         f"🌟  {localized_text('total')}: *{balance['total']:,}* \n" \
+                         f"📈  {localized_text('profit')}: *{balance['earn_per_hour']:,}* \n" \
+                         f"🔑  {localized_text('keys')}: *{balance['keys']:,}* \n\n" \
                          f"🔄  {update_date}"
-                info = result.replace(',', ' ')
+                message = result.replace(',', ' ')
 
+                url = f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage"
                 try:
-                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(chat_id), "text": info, "parse_mode": "Markdown"})
+                    response = requests.post(url, data={"chat_id": int(chat_id), "text": message, "parse_mode": "Markdown"})
                 except:
-                    response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": int(self.CHAT_ID), "text": info, "parse_mode": "Markdown"})
+                    response = requests.post(url, data={"chat_id": int(self.CHAT_ID), "text": message, "parse_mode": "Markdown"})
                 response.raise_for_status()
 
                 if update_time_sec is None:
-                    print(f"{GREEN}✅  {update_date} · Баланс успешно отправлен в в чат{WHITE}")
+                    print(f"{GREEN}✅  {update_date} · {localized_text('balance_sended_to_chat')}{WHITE}")
                     time.sleep(7200)
                 else:
-                    print(f"{GREEN}✅  Баланс успешно отправлен в чат{WHITE}")
+                    print(f"{GREEN}✅  {localized_text('balance_sended_to_chat')}{WHITE}")
                     print(f"\n{balance}\n")
                     return update_time_sec
 
@@ -531,7 +530,7 @@ class HamsterKombatClicker:
 
                 time.sleep(2)
                 reward = HamsterEndpoints.apply_promo(self.headers, promocode)
-                if reward.type == self.currency.lower():
+                if reward.type == currency.lower():
                     print(f"{LIGHT_GREEN}💎  {localized_text('info_currency_recieved', reward.type.title())}: {keys_today + reward.amount}/{keys_limit} {WHITE}\n")
                 elif reward.type == 'coins':
                     print(f"{LIGHT_GREEN}🪙  {localized_text('info_currency_recieved', reward.type.title())}: {reward.amount:,}{WHITE}\n".replace(',', ' '))
@@ -651,7 +650,6 @@ class HamsterKombatClicker:
 
     def bonus_for_one_point(self, minigame: ResponseData) -> int:
         HamsterEndpoints.start_minigame(self.headers, minigame.id)
-
         cipher = self._get_mini_game_cipher(minigame, one_point=True)
         bonus = HamsterEndpoints.claim_minigame(self.headers, cipher, minigame.id).bonus
         return bonus
@@ -683,7 +681,8 @@ class HamsterKombatClicker:
                 if not is_claimed:
                     result.append({'prefix': prefix, 'count': count})
                 else:
-                    print(f"{YELLOW}ℹ️  Промокоды для {LIGHT_YELLOW}`{promo_name}`{YELLOW} сегодня уже получены{WHITE}")
+                    promo = f"{LIGHT_YELLOW}`{promo_name}`{WHITE}"
+                    print(f"{YELLOW}ℹ️  {localized_text('info_all_promo_for_game_recieved', promo)}{WHITE}")
 
             if not result:
                 print(f"{YELLOW}ℹ️  {localized_text('info_all_promocodes_already_recieved')}{WHITE}")
@@ -714,12 +713,12 @@ class HamsterKombatClicker:
 
         async def __get_client_token(session, client_id: str) -> str:
             client_token = ''
-            url = 'https://api.gamepromo.io/promo/login-client'
+            login_client = 'https://api.gamepromo.io/promo/login-client'
             headers = {'Content-Type': 'application/json'}
             payload = {'appToken': APP_TOKEN, 'clientId': client_id, 'clientOrigin': 'deviceid'}
 
             try:
-                async with session.post(url, json=payload, headers=headers) as response:
+                async with session.post(login_client, json=payload, headers=headers) as response:
                     response.raise_for_status()
 
                     data = await response.json()
@@ -732,12 +731,12 @@ class HamsterKombatClicker:
 
         async def __emulate_progress(session, client_token: str) -> str:
             has_code = ''
-            url = 'https://api.gamepromo.io/promo/register-event'
+            register_event_url = 'https://api.gamepromo.io/promo/register-event'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
             payload = {'promoId': PROMO_ID, 'eventId': str(uuid.uuid4()), 'eventOrigin': 'undefined'}
 
             try:
-                async with session.post(url, json=payload, headers=headers) as response:
+                async with session.post(register_event_url, json=payload, headers=headers) as response:
                     data = await response.json()
                     response.raise_for_status()
 
@@ -750,12 +749,12 @@ class HamsterKombatClicker:
 
         async def __get_promocode(session, client_token: str) -> str:
             promo_code = ''
-            url = 'https://api.gamepromo.io/promo/create-code'
+            create_code_url = 'https://api.gamepromo.io/promo/create-code'
             headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {client_token}'}
             payload = {'promoId': PROMO_ID}
 
             try:
-                async with session.post(url, json=payload, headers=headers) as response:
+                async with session.post(create_code_url, json=payload, headers=headers) as response:
                     data = await response.json()
 
                     response.raise_for_status()
@@ -793,7 +792,7 @@ class HamsterKombatClicker:
                         break
 
                 promo_code = await __get_promocode(session, client_token)
-                status_message = f"{LIGHT_BLUE}{prefix:<5}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
+                status_message = f"{LIGHT_BLUE}{prefix.ljust(5)}{WHITE} [{index}/{keys_count}] · {localized_text('status')}: {generation_status(promo_code)}"
                 print(f"\r{status_message}", flush=True)
                 return promo_code
 
@@ -857,10 +856,12 @@ class HamsterKombatClicker:
 
         if send_to_group:
             try:
-                telegram_response = requests.post(f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage", data={"chat_id": self.CHAT_ID, "parse_mode": "Markdown", "text": result})
+                url = f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage"
+                json_data = {"chat_id": self.CHAT_ID, "parse_mode": "Markdown", "text": result}
+                telegram_response = requests.post(url, data=json_data)
                 telegram_response.raise_for_status()
                 time.sleep(3)
-                print(f"✅  {GREEN}{localized_text('main_menu_promocodes')} `{TITLE}` {localized_text('sent_to_group')}{WHITE}")
+                print(f"✅  {GREEN}{localized_text('main_menu_promocodes')} {LIGHT_YELLOW}`{TITLE}`{GREEN} {localized_text('sent_to_group')}{WHITE}")
 
             except Exception as error:
                 print(f"🚫  Error during request to telegram API")

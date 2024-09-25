@@ -2,6 +2,7 @@ import asyncio
 import threading
 import time
 
+from Src.Api.Urls import currency
 from Src.Colors import *
 from config import app_config
 from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, bot_start
@@ -11,7 +12,6 @@ print_lock = threading.Lock()
 
 
 class HamsterUltimate:
-    currency = "Diamonds"
 
     def __init__(self):
         self.config = client.user_config
@@ -32,11 +32,11 @@ class HamsterUltimate:
                 message = f"🔄  {localized_text('next_balance_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = client._get_balance()
-                balance = f"✅  Баланс получен \n" \
-                          f"💰  Баланс: {info[f'balance{self.currency}']:,} \n" \
-                          f"🌟  Всего: {info['total']:,} \n" \
-                          f"📈  Доход: {info['earn_per_hour']:,} в час\n" \
-                          f"🔑  Ключей: {info['keys']:,}"
+                balance = f"✅  {localized_text('balance_recieved')} \n" \
+                          f"💰  {localized_text('balance')}: {info[f'balance{currency}']:,} \n" \
+                          f"🌟  {localized_text('total')}: {info['total']:,} \n" \
+                          f"📈  {localized_text('profit')}: {info['earn_per_hour']:,} в час\n" \
+                          f"🔑  {localized_text('keys')}: {info['keys']:,}"
                 client.send_to_chat(self.chat_id, message, balance.replace(',', ' '))
                 line_after(blank_line=False)
             time.sleep(remain)

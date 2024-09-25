@@ -9,6 +9,7 @@ from random import randint
 import requests
 from spinners import Spinners
 from Src.Colors import *
+from config import app_config
 
 
 def banner():
@@ -34,7 +35,7 @@ def banner():
 
 
 def localized_text(key, *args, **kwargs):
-    lang = 'en'
+    lang = app_config.LANG
     try:
         with open('data/translations.json', 'r', encoding='utf-8') as f:
             translations = json.load(f)
