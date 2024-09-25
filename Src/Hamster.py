@@ -141,7 +141,7 @@ class HamsterKombatClicker:
         try:
             balance = self._get_balance()
             earn_per_hour = balance.get('earn_per_hour', 0)
-            free_balance = balance.get(f'balance_{currency.lower()}') - self.user_config.balance_threshold
+            free_balance = balance.get(f'balance{currency}') - self.user_config.balance_threshold
             if self.user_config.balance_threshold == 0:
                 max_price_limit = 0
             else:
