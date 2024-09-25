@@ -66,6 +66,11 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
         success = response.json()
         return success
 
+    except requests.ConnectionError:
+        print(f"{RED}❌  {localized_text('error_internet_establish_connection')}{WHITE}")
+        print(f"{YELLOW}⚠️  {localized_text('error_network_problem')}{WHITE}\n")
+        exit(1)
+
     except requests.RequestException:
         try:
             error = response.json()
@@ -84,8 +89,8 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
                 print(f"\n{LIGHT_RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
                 print(f"{RED}❌  {localized_text('error_internet_establish_connection')}{WHITE}")
                 exit(1)
+
     except:
-        print(f"{YELLOW}⚠️  {localized_text('error_network_problem')}{WHITE}\n")
         logging.error(traceback.format_exc())
         exit(1)
 
@@ -147,12 +152,13 @@ class HamsterEndpoints:
 
     @staticmethod
     def get_account_info(headers) -> ResponseData:
-        try:
-            account_info = get_data(HamsterUrls.account_info, headers).get('accountInfo', {})
-            return ResponseData.from_dict(account_info)
+        # try:
+        data = get_data(HamsterUrls.account_info, headers)
+        account_info = data.get('accountInfo', {})
+        return ResponseData.from_dict(account_info)
 
-        except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_account_info')}{WHITE}")
+        # except:
+        #     logging.error(f"🚫  {RED}{localized_text('error_failed_get_account_info')}{WHITE}")
 
     @staticmethod
     def get_combo() -> ResponseData:
