@@ -14,7 +14,7 @@ def main():
 
         while True:
             if config.has_hamster_token:
-                choice = input(kali('#/@/1/2/3/4/5/6/a/$/+/s/m/0', '~/Main menu', localized_text('choose_action')))
+                choice = input(kali('#/2/5/6/a/$/s/m/0', '~/Main menu', localized_text('choose_action')))
                 handle_main_menu_choice(choice)
 
             else:

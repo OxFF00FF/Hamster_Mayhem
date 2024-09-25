@@ -689,7 +689,8 @@ class HamsterKombatClicker:
 
         except Exception as e:
             print(f"🚫  {localized_text('error_occured')}: {e}")
-            return result, remain
+
+        return result, remain
 
     async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
         games_data = get_games_data()
