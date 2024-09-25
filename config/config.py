@@ -23,7 +23,7 @@ class Config(BaseSettings):
     @property
     def DB_URL_sqlite(self):
         db_path = 'database/db'
-        if not os.path.exists('db_path'):
+        if not os.path.exists(db_path):
             os.makedirs(db_path)
 
         return f"sqlite:///{db_path}/Hamster_db.sqlite3"
