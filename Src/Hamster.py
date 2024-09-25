@@ -93,7 +93,7 @@ class HamsterKombatClicker:
             result = {
                 'balance': int(user.get(f'balance{currency}', 0)),
                 'total': int(user.get(f'total{currency}', 0)),
-                'keys': int(user.get(f'balance{currency}', 0)),
+                'keys': int(user.get(f'balanceKeys', 0)),
                 'date': int(user.get('lastSyncUpdate', 0)),
                 'earn_per_hour': int(user.get('earnPassivePerHour', 0))}
             return result
