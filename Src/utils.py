@@ -34,7 +34,7 @@ def banner():
 
 
 def localized_text(key, *args, **kwargs):
-    lang = 'ru'
+    lang = 'en'
     try:
         with open('data/translations.json', 'r', encoding='utf-8') as f:
             translations = json.load(f)

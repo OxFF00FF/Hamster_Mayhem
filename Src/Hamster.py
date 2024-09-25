@@ -14,25 +14,22 @@ from random import randint
 
 import aiohttp
 import requests
-# from bs4 import BeautifulSoup as BS
-# from fuzzywuzzy import fuzz
-from Src.Api.Urls import HamsterUrls
-from config import app_config
-from database.queries import SyncORM as db, UserConfig
-from database.queries import ConfigManager
 
+from Src.Api.Endpoints import HamsterEndpoints, ResponseData
 from Src.Colors import *
 from Src.utils import (text_to_morse, remain_time, get_games_data, line_before,
                        generation_status, get_salt, localized_text, align_daily_info,
                        align_summary, line_after, update_spinner, loading_v2, kali)
-from database.queries import init_db
-from Src.Api.Endpoints import HamsterEndpoints, ResponseData
+from config import app_config
+from database.queries import ConfigManager, UserConfig, init_db
+from database.queries import SyncORM as db
 
 if platform.system() == 'Windows':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 class HamsterKombatClicker:
+    currency = 'Diamonds'
 
     def __init__(self, hamster_token):
         init_db()
@@ -45,9 +42,6 @@ class HamsterKombatClicker:
         self.BOT_TOKEN = app_config.TELEGRAM_BOT_TOKEN
         self.CHAT_ID = app_config.CHAT_ID
         self.GROUP_URL = app_config.GROUP_URL
-
-        self.season = HamsterUrls.season
-        self.currency = 'Diamonds'
 
         self.headers = self._get_headers()
         self.user_config: UserConfig = self._get_user_config()

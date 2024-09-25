@@ -11,6 +11,7 @@ print_lock = threading.Lock()
 
 
 class HamsterUltimate:
+    currency = "Diamonds"
 
     def __init__(self):
         self.config = client.user_config
@@ -32,7 +33,7 @@ class HamsterUltimate:
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = client._get_balance()
                 balance = f"✅  Баланс получен \n" \
-                          f"💰  Баланс: {info['balanceCoins']:,} \n" \
+                          f"💰  Баланс: {info[f'balance{self.currency}']:,} \n" \
                           f"🌟  Всего: {info['total']:,} \n" \
                           f"📈  Доход: {info['earn_per_hour']:,} в час\n" \
                           f"🔑  Ключей: {info['keys']:,}"
