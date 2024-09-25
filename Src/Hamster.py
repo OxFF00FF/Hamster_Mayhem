@@ -91,7 +91,7 @@ class HamsterKombatClicker:
         try:
             user = HamsterEndpoints.get_user(self.headers).to_dict()
             result = {
-                f'balance_{currency.lower()}': int(user.get(f'balance{currency}', 0)),
+                'balance': int(user.get(f'balance{currency}', 0)),
                 'total': int(user.get(f'total{currency}', 0)),
                 'keys': int(user.get(f'balance{currency}', 0)),
                 'date': int(user.get('lastSyncUpdate', 0)),

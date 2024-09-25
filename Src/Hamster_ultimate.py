@@ -33,7 +33,7 @@ class HamsterUltimate:
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = client._get_balance()
                 balance = f"✅  {localized_text('balance_recieved')} \n" \
-                          f"💰  {localized_text('balance')}: {info[f'balance{currency}']:,} \n" \
+                          f"💰  {localized_text('balance')}: {info['balance']:,} \n" \
                           f"🌟  {localized_text('total')}: {info['total']:,} \n" \
                           f"📈  {localized_text('profit')}: {info['earn_per_hour']:,} в час\n" \
                           f"🔑  {localized_text('keys')}: {info['keys']:,}"
