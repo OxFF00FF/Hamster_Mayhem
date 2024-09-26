@@ -512,6 +512,8 @@ class HamsterKombatClicker:
     def apply_promocode(self, promocode, promo_id):
         try:
             promos = HamsterEndpoints.get_promos(self.headers)
+
+            keys_today = 0
             for promo in promos:
                 if promo.promo_id == promo_id:
                     try:
@@ -692,7 +694,7 @@ class HamsterKombatClicker:
 
         return result, remain
 
-    async def get_promocodes(self, count=1, send_to_group=None, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
+    async def get_promocodes(self, count=1, send_to_group=False, apply_promo=False, prefix=None, save_to_file=None, one_game=None):
         games_data = get_games_data()
 
         for promo in games_data:

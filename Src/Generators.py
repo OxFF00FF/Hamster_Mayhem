@@ -22,6 +22,7 @@ def generate_promocodes(prefix='', apply_promo=False):
         print(localized_text('error_count_must_great_0'))
 
     try:
+        print()
         asyncio.run(client.get_promocodes(int(count), config.send_to_group, apply_promo, prefix, config.save_to_file, one_game=True))
 
     except Exception as e:
@@ -39,8 +40,10 @@ def generate_for_game(prefix):
         else:
             choice = input(choice_text)
             if choice.lower() == 'y':
+                print()
                 generate_promocodes(prefix=prefix, apply_promo=True)
             elif choice == '':
+                print()
                 generate_promocodes(prefix=prefix)
             else:
                 print(f"ℹ️  {localized_text('no_such_option')}")

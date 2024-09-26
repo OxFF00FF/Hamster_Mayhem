@@ -4,7 +4,7 @@ import re
 from Src.Hamster import HamsterKombatClicker
 from config import app_config
 
-selected_token = os.getenv('SELECTED', app_config.HAMSTER_TOKEN_1)
+selected_token = os.getenv('SELECTED', app_config.HAMSTER_TOKEN_2)
 client = HamsterKombatClicker(hamster_token=selected_token)
 config = client.user_config
 

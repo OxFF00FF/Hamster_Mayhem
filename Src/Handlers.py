@@ -146,9 +146,7 @@ def handle_playground_menu_choice():
     while True:
         playground_menu()
         choice = input(kali(f"{'/'.join(games)}/*/./0", '~/Playground', localized_text('choose_action')))
-
-        line_before()
-
+        print()
         if choice in games_prefix:
             generate_for_game(games_prefix[choice])
 
