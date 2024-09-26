@@ -514,6 +514,7 @@ class HamsterKombatClicker:
             promos = HamsterEndpoints.get_promos(self.headers)
 
             keys_today = 0
+            keys_limit = 1
             for promo in promos:
                 if promo.promo_id == promo_id:
                     try:
