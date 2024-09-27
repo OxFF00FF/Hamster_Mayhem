@@ -470,8 +470,8 @@ class HamsterKombatClicker:
                 response = requests.post(url, data={"chat_id": int(self.CHAT_ID), "text": mesage, "parse_mode": "MarkdownV2"})
             response.raise_for_status()
 
-        except Exception as e:
-            print(f"🚫  {localized_text('error_occured')}: {e}")
+        except Exception:
+            print(f"{RED}🚫  {localized_text('error_occured')}. Telegram API Error: {response.json()}{WHITE}")
             return
 
     def send_balance_to_group(self, update_time_sec: int = None, chat_id: int = None):
@@ -492,9 +492,9 @@ class HamsterKombatClicker:
 
                 url = f"https://api.telegram.org/bot{self.BOT_TOKEN}/sendMessage"
                 try:
-                    response = requests.post(url, data={"chat_id": int(chat_id), "text": message, "parse_mode": "Markdown"})
+                    response = requests.post(url, data={"chat_id": chat_id, "text": message, "parse_mode": "Markdown"})
                 except:
-                    response = requests.post(url, data={"chat_id": int(self.CHAT_ID), "text": message, "parse_mode": "Markdown"})
+                    response = requests.post(url, data={"chat_id": self.CHAT_ID, "text": message, "parse_mode": "Markdown"})
                 response.raise_for_status()
 
                 if update_time_sec is None:

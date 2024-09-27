@@ -1,5 +1,6 @@
 {
     "ru": {
+        "currency": "Валюта",
         "sign_in": "Вы вошли как",
         "main_menu_header": "Главное меню \n  Какую активность хотите выполнить?\n",
         "playground_menu_header": "Игровая площадка \n  Для какой игры хотите получить промокоды?\n",
@@ -320,7 +321,7 @@
         "next_taps_after": "Next taps after",
         "next_cipher_after": "Next cipher after",
         "next_tasks_after": "Next tasks after",
-        "next_balance_after": "Next balance afternext balance after",
+        "next_balance_after": "Next balance after",
         "next_minigame_after": "Next after",
         "next_combo_after": "Next combo after",
         "next_purhase_after": "Next purhase after",
@@ -372,6 +373,7 @@
         "error_failed_complete_combo": "Failed to complete combo",
         "error_hamster_dont_work": "The hamster doesn't seem to work!",
         "error_internet_establish_connection": "Failed to establish connection with hamster",
-        "error_network_problem": "You may have network problems. Check your internet connection"
+        "error_network_problem": "You may have network problems. Check your internet connection",
+        "currency": "Сurrency"
     }
 }

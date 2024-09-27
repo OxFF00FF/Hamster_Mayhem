@@ -6,6 +6,7 @@ from Src.Colors import *
 from config import app_config
 from Src.utils import line_before, line_after, remain_time, localized_text, current_time, random_delay, bot_start
 from Src.HamsterClient import client
+from Src.Api.Urls import currency
 
 print_lock = threading.Lock()
 
@@ -16,9 +17,11 @@ class HamsterUltimate:
         self.config = client.user_config
         self.user_info = f"{self.config.user_name} ({self.config.tg_user_id})"
 
-        self.chat_id = app_config.BOT_LOGS_GROUP_ID or app_config.CHAT_ID
-        if self.chat_id is None:
-            print(f"{BOLD}{LIGHT_RED}⚠  CHAT_ID not specified in your .env file {RESET}{WHITE}")
+        self.chat_id = app_config.BOT_LOGS_GROUP_ID
+        if self.chat_id is None or self.chat_id == "":
+            self.chat_id = app_config.CHAT_ID
+            if self.chat_id is None or self.chat_id == "":
+                print(f"\n{BOLD}{LIGHT_RED}⚠  CHAT_ID not specified in your .env file {RESET}{WHITE}")
 
     def process_balance(self):
         while True:
@@ -31,7 +34,8 @@ class HamsterUltimate:
                 message = f"🔄  {localized_text('next_balance_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
                 info = client._get_balance()
-                balance = f"✅  {localized_text('balance_recieved')} \n" \
+                balance = f"✅  {localized_text('bot_balance_recieved')} \n" \
+                          f"💎  {localized_text('currency')}: {currency} \n" \
                           f"💰  {localized_text('balance')}: {info['balance']:,} \n" \
                           f"🌟  {localized_text('total')}: {info['total']:,} \n" \
                           f"📈  {localized_text('profit')}: {info['earn_per_hour']:,} в час\n" \

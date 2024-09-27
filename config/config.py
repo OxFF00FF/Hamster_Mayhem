@@ -20,8 +20,8 @@ class Config(BaseSettings):
 
     GROUP_URL: Optional[str] = Field(default=None)
 
-    CHAT_ID: Optional[int] = Field(default=None)
-    BOT_LOGS_GROUP_ID: Optional[int] = Field(default=None)
+    CHAT_ID: Optional[str] = Field(default=None)
+    BOT_LOGS_GROUP_ID: Optional[str] = Field(default=None)
 
     @validator('CHAT_ID', 'BOT_LOGS_GROUP_ID', pre=True, always=True)
     def validate_int_fields(self, value):
