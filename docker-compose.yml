@@ -1,0 +1,20 @@
+# docker run -d --name hamster_mayhem_USERNAME -e HAMSTER_TOKEN_1="XXX" -e TELEGRAM_BOT_TOKEN=XXX -e CHAT_ID=XXX oxff00ff/hamster_mayhem_service
+
+version: '3'
+services:
+  hamster-mayhem:
+    image: oxff00ff/hamster_mayhem_service:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Hamster_Mayhem_ultimate
+    environment:
+      - HAMSTER_TOKEN_1=${HAMSTER_TOKEN_1}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - CHAT_ID=${CHAT_ID}
+    volumes:
+      - ./Src:/app/Src
+      - ./requirements.txt:/app/requirements.txt
+      - ./.env:/app/.env
+      - ./main_bot.py:/app/main_bot.py
+    restart: unless-stopped

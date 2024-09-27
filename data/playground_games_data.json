@@ -1,0 +1,252 @@
+{
+    "promos": {
+        "loginAttemptTimeoutSec": 15,
+        "loginSameIpLimitSec": 600,
+        "loginSameIpLimitCount": 20,
+        "loginSessionTimeoutSec": 86400,
+        "registerEventTimeoutSec": 20
+    },
+    "apps": [
+        {
+            "appToken": "d02fc404-8985-4305-87d8-32bd4e66bb16",
+            "promoId": "d02fc404-8985-4305-87d8-32bd4e66bb16",
+            "prefix": "FCTRY",
+            "title": "Factory World",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDFED",
+            "emoji": "\uD83C\uDFED",
+            "available": true
+        },
+        {
+            "appToken": "daab8f83-8ea2-4ad0-8dd5-d33363129640",
+            "promoId": "daab8f83-8ea2-4ad0-8dd5-d33363129640",
+            "prefix": "WATER",
+            "title": "Among Water",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDEA4",
+            "emoji": "\uD83D\uDEA4",
+            "available": true
+        },
+        {
+            "appToken": "eb518c4b-e448-4065-9d33-06f3039f0fcb",
+            "promoId": "eb518c4b-e448-4065-9d33-06f3039f0fcb",
+            "prefix": "INFCT",
+            "title": "Infected Frontier",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83C\uDFCD",
+            "emoji": "\uD83C\uDFCD",
+            "available": true
+        },
+        {
+            "appToken": "4bdc17da-2601-449b-948e-f8c7bd376553",
+            "promoId": "4bdc17da-2601-449b-948e-f8c7bd376553",
+            "prefix": "COUNT",
+            "title": "Count Masters",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDD22",
+            "emoji": "\uD83D\uDD22",
+            "available": true
+        },
+        {
+            "appToken": "d2378baf-d617-417a-9d99-d685824335f0",
+            "promoId": "d2378baf-d617-417a-9d99-d685824335f0",
+            "prefix": "PIN",
+            "title": "Pin Out Master",
+            "eventsCount": 10,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDCCC",
+            "emoji": "\uD83D\uDCCC",
+            "available": true
+        },
+        {
+            "appToken": "4bf4966c-4d22-439b-8ff2-dc5ebca1a600",
+            "promoId": "4bf4966c-4d22-439b-8ff2-dc5ebca1a600",
+            "prefix": "HIDE",
+            "title": "Hide Ball",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83E\uDD4E",
+            "emoji": "\uD83E\uDD4E",
+            "available": true
+        },
+        {
+            "appToken": "bc72d3b9-8e91-4884-9c33-f72482f0db37",
+            "promoId": "bc72d3b9-8e91-4884-9c33-f72482f0db37",
+            "prefix": "BOUNC",
+            "title": "Bouncemasters",
+            "eventsCount": 7,
+            "registerEventTimeout": 150000,
+            "text": "\uD83C\uDFD0",
+            "emoji": "\uD83C\uDFD0",
+            "available": true
+        },
+        {
+            "appToken": "d1690a07-3780-4068-810f-9b5bbf2931b2",
+            "promoId": "b4170868-cef0-424f-8eb9-be0622e8e8e3",
+            "prefix": "CUBE",
+            "title": "Chain Cube 2048",
+            "eventsCount": 7,
+            "registerEventTimeout": 20000,
+            "text": "🎲  Гоняем кубы за вас",
+            "emoji": "🎲",
+            "available": true
+        },
+        {
+            "appToken": "82647f43-3f87-402d-88dd-09a90025313f",
+            "promoId": "c4480ac7-e178-4973-8061-9ed5b2e17954",
+            "prefix": "TRAIN",
+            "title": "Train Miner",
+            "eventsCount": 2,
+            "registerEventTimeout": 120000,
+            "text": "🚂  Проходим поезда, чтобы вам не пришлось)",
+            "emoji": "🚂",
+            "available": true
+        },
+        {
+            "appToken": "8d1cc2ad-e097-4b86-90ef-7a27e19fb833",
+            "promoId": "dc128d28-c45b-411c-98ff-ac7726fbaea4",
+            "prefix": "MERGE",
+            "title": "Merge Away",
+            "eventsCount": 10,
+            "registerEventTimeout": 20000,
+            "text": "💎  Объединяем предметы вместо вас",
+            "emoji": "💎",
+            "available": true
+        },
+        {
+            "appToken": "61308365-9d16-4040-8bb0-2f4a4c69074c",
+            "promoId": "61308365-9d16-4040-8bb0-2f4a4c69074c",
+            "prefix": "TWERK",
+            "title": "Twerk Race",
+            "eventsCount": 10,
+            "registerEventTimeout": 20000,
+            "text": "🏃  Бежим куда-то",
+            "emoji": "🏃",
+            "available": true
+        },
+        {
+            "appToken": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
+            "promoId": "2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71",
+            "prefix": "POLY",
+            "title": "Polysphere",
+            "eventsCount": 17,
+            "registerEventTimeout": 3000,
+            "text": "🐋  Восстанавливаем изображения за вас",
+            "emoji": "🐋",
+            "available": true
+        },
+        {
+            "appToken": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
+            "promoId": "ef319a80-949a-492e-8ee0-424fb5fc20a6",
+            "prefix": "TRIM",
+            "title": "Mow and Trim",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "🌾  Косим траву",
+            "emoji": "🌾",
+            "available": true
+        },
+        {
+            "appToken": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
+            "promoId": "b2436c89-e0aa-4aed-8046-9b0515e1c46b",
+            "prefix": "ZOO",
+            "title": "Zoopolis",
+            "eventsCount": 10,
+            "registerEventTimeout": 22000,
+            "text": "🦁  Уже незнаю что придумать",
+            "emoji": "🦁",
+            "available": true
+        },
+        {
+            "appToken": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
+            "promoId": "e68b39d2-4880-4a31-b3aa-0393e7df10c7",
+            "prefix": "TILE",
+            "title": "Tile Trio",
+            "eventsCount": 22,
+            "registerEventTimeout": 20000,
+            "text": "🀄️",
+            "emoji": "🀄️",
+            "available": true
+        },
+        {
+            "appToken": "112887b0-a8af-4eb2-ac63-d82df78283d9",
+            "promoId": "112887b0-a8af-4eb2-ac63-d82df78283d9",
+            "prefix": "FLUF",
+            "title": "Fluff Crusade",
+            "eventsCount": 5,
+            "registerEventTimeout": 120000,
+            "text": "🏹",
+            "emoji": "🏹",
+            "available": true
+        },
+        {
+            "appToken": "04ebd6de-69b7-43d1-9c4b-04a6ca3305af",
+            "promoId": "04ebd6de-69b7-43d1-9c4b-04a6ca3305af",
+            "prefix": "STONE",
+            "title": "Stone Age",
+            "eventsCount": 10,
+            "registerEventTimeout": 20000,
+            "text": "\uD83D\uDDFF",
+            "emoji": "\uD83D\uDDFF",
+            "available": true
+        },
+        {
+            "appToken": "d28721be-fd2d-4b45-869e-9f253b554e50",
+            "promoId": "43e35910-c168-4634-ad4f-52fd764a843f",
+            "prefix": "BIKE",
+            "title": "Bike Ride 3D",
+            "eventsCount": 17,
+            "registerEventTimeout": 20000,
+            "text": "🚴  Катаемся на велосипедах, чтобы вам не пришлось)",
+            "emoji": "🚴",
+            "available": false
+        },
+        {
+            "appToken": "8814a785-97fb-4177-9193-ca4180ff9da8",
+            "promoId": "8814a785-97fb-4177-9193-ca4180ff9da8",
+            "prefix": "RACE",
+            "title": "Mud Racing",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "🚙  Едем за ключами вместо вас",
+            "emoji": "🚙",
+            "available": false
+        },
+        {
+            "appToken": "b6de60a0-e030-48bb-a551-548372493523",
+            "promoId": "c7821fa7-6632-482c-9635-2bd5798585f9",
+            "prefix": "GANGS",
+            "title": "Gangs Wars",
+            "eventsCount": 30,
+            "registerEventTimeout": 40000,
+            "text": "🏹  Кого задолбали новые игры ставьте + в чат, посмотрим сколько нас",
+            "emoji": "🏹",
+            "available": false
+        },
+        {
+            "appToken": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
+            "promoId": "bc0971b8-04df-4e72-8a3e-ec4dc663cd11",
+            "prefix": "CAFE",
+            "title": "Cafe Dash",
+            "eventsCount": 20,
+            "registerEventTimeout": 22000,
+            "text": "Cafe Dash",
+            "emoji": "🍵",
+            "available": false
+        }
+    ],
+    "minigames": [
+        {
+            "title": "Candles",
+            "emoji": "📊"
+        },
+        {
+            "title": "Tiles",
+            "emoji": "💠"
+        }
+    ]
+}
