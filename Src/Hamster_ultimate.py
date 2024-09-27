@@ -18,7 +18,7 @@ class HamsterUltimate:
 
         self.chat_id = app_config.BOT_LOGS_GROUP_ID
         if self.chat_id is None:
-            self.chat_id = app_config.CHAT_ID
+            self.chat_id = int(app_config.CHAT_ID)
 
     def process_balance(self):
         while True:

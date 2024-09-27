@@ -13,7 +13,7 @@ class Config(BaseSettings):
     HAMSTER_TOKEN_3: Optional[str] = Field(default=None)
 
     TELEGRAM_BOT_TOKEN: Optional[str] = Field(default=None)
-    CHAT_ID: Optional[int] = Field(default=None)
+    CHAT_ID: Optional[str] = Field(default=None)
     GROUP_URL: Optional[str] = Field(default=None)
     BOT_LOGS_GROUP_ID: Optional[int] = Field(default=None)
 

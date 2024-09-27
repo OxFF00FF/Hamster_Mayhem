@@ -36,7 +36,7 @@ class HamsterKombatClicker:
 
         self.HAMSTER_TOKEN = hamster_token
         self.BOT_TOKEN = app_config.TELEGRAM_BOT_TOKEN
-        self.CHAT_ID = app_config.CHAT_ID
+        self.CHAT_ID = int(app_config.CHAT_ID)
         self.GROUP_URL = app_config.GROUP_URL
 
         self.headers = self._get_headers()

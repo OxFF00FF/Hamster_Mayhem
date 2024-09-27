@@ -145,7 +145,7 @@ def settings_menu():
     send_to_group = get_status(config.send_to_group)
     apply_promo = get_status(config.apply_promo)
     save_to_file = get_status(config.save_to_file)
-    chat_id = app_config.CHAT_ID
+    chat_id = int(app_config.CHAT_ID)
     group_url = app_config.GROUP_URL
 
     if config.balance_threshold == 0:
