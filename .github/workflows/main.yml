@@ -30,8 +30,8 @@ jobs:
           git config --global user.name "OxFF00FF"
           git config --global user.email "wot_98_98@mail.ru"
           git add Src/__init__.py
-          git commit -m "build v$NEW_VERSION"
-          git push
+          git commit --amend -m "build v$NEW_VERSION"
+          git push --force
 
 #      - name: Create GitHub Release
 #        uses: ncipollo/release-action@v1
