@@ -572,6 +572,10 @@ class HamsterKombatClicker:
                     else:
                         card["payback_period"] = float('inf')
                         card["profitability_ratio"] = 0
+
+                    if card['level'] - 1 == card.get('maxLevel', 0):
+                        continue
+
                     evaluated_cards.append(card)
 
             sorted_cards = sorted(evaluated_cards, key=lambda x: x["profitability_ratio"], reverse=True)
