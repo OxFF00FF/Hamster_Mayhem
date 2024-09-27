@@ -16,9 +16,9 @@ class HamsterUltimate:
         self.config = client.user_config
         self.user_info = f"{self.config.user_name} ({self.config.tg_user_id})"
 
-        self.chat_id = app_config.BOT_LOGS_GROUP_ID
+        self.chat_id = app_config.BOT_LOGS_GROUP_ID or app_config.CHAT_ID
         if self.chat_id is None:
-            self.chat_id = int(app_config.CHAT_ID)
+            print(f"{BOLD}{LIGHT_RED}⚠  CHAT_ID not specified in your .env file {RESET}{WHITE}")
 
     def process_balance(self):
         while True:
@@ -36,12 +36,7 @@ class HamsterUltimate:
                           f"🌟  {localized_text('total')}: {info['total']:,} \n" \
                           f"📈  {localized_text('profit')}: {info['earn_per_hour']:,} в час\n" \
                           f"🔑  {localized_text('keys')}: {info['keys']:,}"
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, balance.replace(',', ' '))
-
+                client.send_to_chat(self.chat_id, message, balance.replace(',', ' '))
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -55,12 +50,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_taps_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"👆  {localized_text('info_taps_completed')}")
-
+                client.send_to_chat(self.chat_id, message, f"👆  {localized_text('info_taps_completed')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -74,12 +64,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_tasks_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"📑  {localized_text('info_all_tasks_complete')}")
-
+                client.send_to_chat(self.chat_id, message, f"📑  {localized_text('info_all_tasks_complete')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -93,12 +78,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_cipher_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"🔍  {localized_text('info_cipher_completed')}")
-
+                client.send_to_chat(self.chat_id, message, f"🔍  {localized_text('info_cipher_completed')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -112,12 +92,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_combo_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"💰  {localized_text('info_combo_completed')}")
-
+                client.send_to_chat(self.chat_id, message, f"💰  {localized_text('info_combo_completed')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -131,12 +106,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"🪙  {localized_text('info_minigame_complete', 'Tiles')}")
-
+                client.send_to_chat(self.chat_id, message, f"🪙  {localized_text('info_minigame_complete', 'Tiles')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -150,12 +120,7 @@ class HamsterUltimate:
 
                 message = f"🔄  {localized_text('next_minigame_after')}: {remain_time(remain)}"
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"🔑  {localized_text('info_minigame_complete', 'Candles')}")
-
+                client.send_to_chat(self.chat_id, message, f"🔑  {localized_text('info_minigame_complete', 'Candles')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -171,12 +136,7 @@ class HamsterUltimate:
                 most_profitable_cards = client.get_most_profitable_cards(top=5)
                 [client._buy_upgrade(card) for card in most_profitable_cards]
                 print(f"{LIGHT_YELLOW}{message}{WHITE}")
-
-                if self.chat_id is None:
-                    print(f"⚠  CHAT_ID not specified in your .env file. ")
-                else:
-                    client.send_to_chat(self.chat_id, message, f"🛍  {localized_text('upgrades_purhased')}")
-
+                client.send_to_chat(self.chat_id, message, f"🛍  {localized_text('upgrades_purhased')}")
                 line_after(blank_line=False)
             time.sleep(remain)
 
@@ -196,12 +156,7 @@ class HamsterUltimate:
                     message = f"🔄  {localized_text('next_keys_promocodes_after')}: {remain_time(sleep_between_games)}"
                     print(f"{LIGHT_YELLOW}{message}{WHITE}")
                     keys_recieved = localized_text('info_keys_recieved').split()[-1]
-
-                    if self.chat_id is None:
-                        print(f"⚠  CHAT_ID not specified in your .env file. ")
-                    else:
-                        client.send_to_chat(self.chat_id, message, f"🎁  {promo_prefix} · {keys_recieved}: {keys_count}")
-
+                    client.send_to_chat(self.chat_id, message, f"🎁  {promo_prefix} · {keys_recieved}: {keys_count}")
                     time.sleep(sleep_between_games)
                 if games:
                     print(f"{GREEN}✅  {localized_text('all_promocodes_recieved')}{WHITE}")

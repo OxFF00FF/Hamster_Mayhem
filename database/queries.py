@@ -44,7 +44,7 @@ class SyncORM:
                 'lang': 'ru',
                 'bonus_for_one_point': 0,
                 'group_url': app_config.GROUP_URL,
-                'chat_id': int(app_config.CHAT_ID),
+                'chat_id': app_config.CHAT_ID,
                 'cards_in_top': 10,
                 'all_cards_in_top': False,
                 'has_hamster_token': False,
