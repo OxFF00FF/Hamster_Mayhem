@@ -64,13 +64,15 @@ def handle_main_menu_choice(choice):
 
             if remain == 0:
                 card_name = f"{GREEN}{card['name']}{WHITE}"
+                em = '✳️'
             else:
                 card_name = f"{LIGHT_RED}{card['name']}{WHITE}"
+                em = '🅾️'
 
             profit = f"{LIGHT_MAGENTA}{card['profitPerHour']:,}{WHITE} / " \
                      f"{MAGENTA}{card['profitPerHourDelta']:,}{WHITE} {localized_text('per_hour')}".replace(',', ' ')
 
-            text = f"#️⃣  {e + 1}. {card_name} · {card['level']} level \n" \
+            text = f"{em}  {e + 1}. {card_name} · {card['level']} level \n" \
                    f"💰  {YELLOW}{localized_text('price')}: {LIGHT_YELLOW}{card['price']:,}{WHITE} \n" \
                    f"📈  {YELLOW}{localized_text('profit')}: {profit} \n" \
                    f"🕞  {YELLOW}{localized_text('payback_time')}: {LIGHT_GREEN}{card['payback_period']}{WHITE} (~{card['payback_days']} {localized_text('days')}) \n" \

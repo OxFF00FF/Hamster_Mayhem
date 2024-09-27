@@ -37,7 +37,7 @@ def main_menu():
         # f"  {LIGHT_YELLOW}a |  {RESET}🔐 {YELLOW}{localized_text('main_menu_accounts')} {WHITE} \n"
         f"  {LIGHT_YELLOW}$ |  {RESET}💲 {YELLOW}{localized_text('main_menu_most_profitable_cards')} {WHITE} \n"
         # f"  {LIGHT_YELLOW}+ |  {RESET}📥 {YELLOW}{localized_text('main_menu_buy_card')} {WHITE} \n"
-        f"  {LIGHT_YELLOW}s |  {RESET}🛠 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
+        f"  {LIGHT_YELLOW}s |  {RESET}🔧 {YELLOW}{localized_text('main_menu_settings')} {WHITE} \n"
         f"  {LIGHT_YELLOW}m |  {RESET}📝 {YELLOW}{localized_text('main_menu_show_menu')} {WHITE} \n"
         f"  {LIGHT_YELLOW}0 |  {RESET}🔚 {YELLOW}{localized_text('exit')} {WHITE}\n"
     )
