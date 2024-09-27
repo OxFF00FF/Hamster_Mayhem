@@ -76,6 +76,8 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
             error = response.json()
             print(f"\n{RED}🚫  {localized_text('error_occured')}: {error.get('error_code')}{WHITE}")
             print(f"{YELLOW}📨  {error.get('error_message')}{WHITE}\n")
+            print(f"{LIGHT_YELLOW}🛠  Endpoint: {endpoint}{WHITE}")
+            print(f"{LIGHT_YELLOW}🛠  Error type: {error.get('type')}, In: {error.get('on')}{WHITE}\n")
             return error
 
         except Exception as e:
@@ -88,7 +90,7 @@ def get_data(endpoint: str, headers: dict = None, data=None) -> dict:
             else:
                 print(f"\n{LIGHT_RED}🚫  {localized_text('error_occured')}: {e}{WHITE}")
                 print(f"{RED}❌  {localized_text('error_internet_establish_connection')}{WHITE}")
-                exit(1)
+        exit(1)
 
     except:
         logging.error(traceback.format_exc())
@@ -138,7 +140,7 @@ class HamsterEndpoints:
                 return f"Bearer {auth_token}" if auth_token else None
 
         except Exception as e:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_login_with_telegram')}: {e} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_login_with_telegram')}: {e} {WHITE}")
             exit(1)
 
     @staticmethod
@@ -148,17 +150,21 @@ class HamsterEndpoints:
             return ResponseData.from_dict(user)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_userdata')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_userdata')}{WHITE}")
 
     @staticmethod
     def get_account_info(headers) -> ResponseData:
         try:
             data = get_data(HamsterUrls.account_info, headers)
             account_info = data.get('accountInfo', {})
-            return ResponseData.from_dict(account_info)
+            if account_info:
+                return ResponseData.from_dict(account_info)
+            else:
+                exit(1)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_account_info')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_account_info')}{WHITE}")
+            exit(1)
 
     @staticmethod
     def get_combo() -> ResponseData:
@@ -167,7 +173,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(combo)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_combo_list')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_combo_list')}{WHITE}")
 
     @staticmethod
     def get_config(headers, key=None) -> ResponseData or list[ResponseData]:
@@ -183,7 +189,7 @@ class HamsterEndpoints:
                 return ResponseData.from_dict(config)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_config')}: {key} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_config')}: {key} {WHITE}")
 
     @staticmethod
     def get_promos(headers) -> list[ResponseData]:
@@ -213,7 +219,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(promo) for promo in result]
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_promos')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_promos')}{WHITE}")
 
     @staticmethod
     def get_upgrades(headers) -> ResponseData or list[ResponseData]:
@@ -222,7 +228,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(upgrade) for upgrade in upgrades]
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_upgrades')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_upgrades')}{WHITE}")
 
     @staticmethod
     def buy_upgrade(headers, upgrade_id) -> ResponseData:
@@ -232,7 +238,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_upgrade_card')}: {upgrade_id} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_upgrade_card')}: {upgrade_id} {WHITE}")
 
     @staticmethod
     def tap(headers, available_taps, taps_count) -> ResponseData:
@@ -242,7 +248,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_taps')}: {taps_count}/{available_taps} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_taps')}: {taps_count}/{available_taps} {WHITE}")
 
     @staticmethod
     def get_boosts(headers) -> list[ResponseData]:
@@ -251,7 +257,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(boost) for boost in boosts]
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_boosts')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_boosts')}{WHITE}")
 
     @staticmethod
     def buy_boost(headers, boost_id) -> ResponseData:
@@ -261,7 +267,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_buy_boost')}: {boost_id} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_buy_boost')}: {boost_id} {WHITE}")
 
     @staticmethod
     def get_tasks(headers) -> list[ResponseData]:
@@ -270,7 +276,7 @@ class HamsterEndpoints:
             return [ResponseData.from_dict(task) for task in tasks]
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_get_tasks')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_get_tasks')}{WHITE}")
 
     @staticmethod
     def check_task(headers, task_id) -> ResponseData:
@@ -280,7 +286,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_complete_taks')}: {task_id} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_complete_taks')}: {task_id} {WHITE}")
 
     @staticmethod
     def claim_cipher(headers, cipher) -> ResponseData:
@@ -290,7 +296,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_complete_cipher')}: {cipher} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_complete_cipher')}: {cipher} {WHITE}")
 
     @staticmethod
     def start_minigame(headers, minigame_id) -> ResponseData:
@@ -300,7 +306,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_start_minigame')}: {minigame_id} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_start_minigame')}: {minigame_id} {WHITE}")
 
     @staticmethod
     def claim_minigame(headers, cipher, minigame_id) -> ResponseData:
@@ -310,7 +316,7 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_complete_minigame')}: {minigame_id} {WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_complete_minigame')}: {minigame_id} {WHITE}")
 
     @staticmethod
     def apply_promo(headers, promocode) -> ResponseData:
@@ -320,8 +326,8 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('error_failed_apply_promocode')}: {promocode} {WHITE}")
-    
+            logging.error(f"{RED}🚫  {localized_text('error_failed_apply_promocode')}: {promocode} {WHITE}")
+
     @staticmethod
     def claim_combo(headers) -> ResponseData:
         try:
@@ -329,4 +335,4 @@ class HamsterEndpoints:
             return ResponseData.from_dict(data)
 
         except:
-            logging.error(f"🚫  {RED}{localized_text('')}{WHITE}")
+            logging.error(f"{RED}🚫  {localized_text('error_failed_complete_combo')}{WHITE}")

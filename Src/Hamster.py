@@ -61,7 +61,6 @@ class HamsterKombatClicker:
         }
 
     def _get_user_config(self):
-        user_config = {}
         try:
             account_info = HamsterEndpoints.get_account_info(self.headers)
             user_id = account_info.id
