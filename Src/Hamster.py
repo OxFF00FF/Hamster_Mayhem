@@ -64,7 +64,7 @@ class HamsterKombatClicker:
         user_config = {}
         try:
             account_info = HamsterEndpoints.get_account_info(self.headers)
-            user_id = int(account_info.id)
+            user_id = account_info.id
             username = account_info.name
 
             if not db.user_exist(user_id):

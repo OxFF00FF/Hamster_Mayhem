@@ -152,13 +152,13 @@ class HamsterEndpoints:
 
     @staticmethod
     def get_account_info(headers) -> ResponseData:
-        # try:
-        data = get_data(HamsterUrls.account_info, headers)
-        account_info = data.get('accountInfo', {})
-        return ResponseData.from_dict(account_info)
+        try:
+            data = get_data(HamsterUrls.account_info, headers)
+            account_info = data.get('accountInfo', {})
+            return ResponseData.from_dict(account_info)
 
-        # except:
-        #     logging.error(f"🚫  {RED}{localized_text('error_failed_get_account_info')}{WHITE}")
+        except:
+            logging.error(f"🚫  {RED}{localized_text('error_failed_get_account_info')}{WHITE}")
 
     @staticmethod
     def get_combo() -> ResponseData:
