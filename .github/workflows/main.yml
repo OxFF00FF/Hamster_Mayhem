@@ -16,21 +16,23 @@ jobs:
           VERSION=$(grep -Po "(?<=__version__ = ')[^']+" Src/__init__.py)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Increment version
+      - name: Increment version and update __init__.py
         id: increment_version
         run: |
           LAST_PART=$(echo $VERSION | awk -F'.' '{print $4}')
           NEW_LAST_PART=$(printf "%03d" $((10#$LAST_PART + 1)))
           NEW_VERSION=$(echo $VERSION | awk -F'.' -v new_last_part=$NEW_LAST_PART '{print $1"."$2"."$3"."new_last_part}')
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           sed -i "s/__version__ = '$VERSION'/__version__ = '$NEW_VERSION'/" Src/__init__.py
 
-      - name: Commit version update
-        run: |
+          # Stage the changes for commit
           git config --global user.name "OxFF00FF"
           git config --global user.email "wot_98_98@mail.ru"
           git add Src/__init__.py
-          git commit --amend -m "build v$NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Commit and push version update
+        run: |
+          git commit -m "build v$NEW_VERSION"
           git push
 
 #      - name: Create GitHub Release
