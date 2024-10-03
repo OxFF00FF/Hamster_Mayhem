@@ -43,14 +43,11 @@ def localized_text(key, *args, **kwargs):
         logging.error(f"Failed to decode file `translations.json`")
         exit(1)
 
-    # Перевод для указанного языка
     message = translations.get(lang, {}).get(key)
 
     if message is None:
-        # Логирование отсутствующего перевода
         logging.warning(f"No translation available for language code `{lang}` and key `{key}`")
 
-        # Проверка наличия английского перевода
         message = translations.get('en', {}).get(key)
         if message is None:
             logging.warning(f"No English definition found for key `{key}` in translations.json")

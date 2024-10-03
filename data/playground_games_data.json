@@ -8,6 +8,17 @@
     },
     "apps": [
         {
+            "appToken": "ed526e8c-e6c8-40fd-b72a-9e78ff6a2054",
+            "promoId": "ed526e8c-e6c8-40fd-b72a-9e78ff6a2054",
+            "prefix": "COOK",
+            "title": "Cooking Stories",
+            "eventsCount": 20,
+            "registerEventTimeout": 20000,
+            "text": "\uD83E\uDDD1\u200D\uD83C\uDF73",
+            "emoji": "\uD83E\uDDD1\u200D\uD83C\uDF73",
+            "available": true
+        },
+        {
             "appToken": "d02fc404-8985-4305-87d8-32bd4e66bb16",
             "promoId": "d02fc404-8985-4305-87d8-32bd4e66bb16",
             "prefix": "FCTRY",
