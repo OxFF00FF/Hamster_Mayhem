@@ -211,6 +211,4 @@
 Вам нужно будет перейти в папку проекта `cd Hamsters_mayhem` и запустить `python main.py`
 
 ### Видео инструкция
-https://github.com/user-attachments/assets/cadbd13e-e932-4e30-9cec-e7a231d4a748
-
-
+https://github.com/user-attachments/assets/d5bebca1-55bf-495f-8178-d4a2b90e60b8
