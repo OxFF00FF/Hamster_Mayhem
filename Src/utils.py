@@ -180,16 +180,6 @@ def generation_status(status):
     return f"{LIGHT_GREEN}{localized_text('received')}{WHITE}" if status else f"{RED}{localized_text('not_recieved')}{WHITE}"
 
 
-def get_salt(salt):
-    try:
-        with open('data/salt.json', 'r', encoding='utf-8') as f:
-            data = json.loads(f.read())
-        return data[salt]
-
-    except Exception as e:
-        logging.error(e)
-
-
 def spinners_table(num_columns=3):
     data = [f"{i + 1}. {spinner_name.name}" for i, spinner_name in enumerate(Spinners)]
 

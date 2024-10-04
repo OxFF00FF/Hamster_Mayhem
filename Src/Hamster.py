@@ -19,7 +19,7 @@ from Src.Api.Endpoints import HamsterEndpoints, ResponseData
 from Src.Api.Urls import currency
 from Src.Colors import *
 from Src.utils import (text_to_morse, remain_time, get_games_data, line_before,
-                       generation_status, get_salt, localized_text, align_daily_info,
+                       generation_status, localized_text, align_daily_info,
                        align_summary, line_after, update_spinner, loading_v2, kali)
 from config import app_config
 from database.queries import ConfigManager, UserConfig, init_db
@@ -113,6 +113,9 @@ class HamsterKombatClicker:
             start_date = minigame.startDate
             user_id = HamsterEndpoints.get_user(self.headers).id
 
+            salt_ = "R1cHard_AnA1"
+            _salt = "G1ve_Me_y0u7_Pa55w0rD"
+
             unix_start_date = int(datetime.fromisoformat(start_date.replace("Z", "+00:00")).timestamp())
             number_len = len(str(unix_start_date))
             index = (unix_start_date % (number_len - 2)) + 1
@@ -126,7 +129,7 @@ class HamsterKombatClicker:
                 else:
                     cipher += str(randint(0, 9))
 
-            sig = base64.b64encode(hashlib.sha256(f"{get_salt('salt_')}{score}{get_salt('_salt')}".encode()).digest()).decode()
+            sig = base64.b64encode(hashlib.sha256(f"{salt_}{score}{_salt}".encode()).digest()).decode()
 
             cipher_string = "|".join([cipher, user_id, mini_game_id, score, sig])
             minigame_cipher = base64.b64encode(cipher_string.encode()).decode()
